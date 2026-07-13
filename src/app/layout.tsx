@@ -1,18 +1,17 @@
-"use client";
+import "./globals.css";
 
-import { useState, type ReactNode } from "react";
-import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
+import { QueryProvider } from "@/providers/query-provider";
 
-import { createQueryClient } from "@/lib/query/query-client";
-
-interface QueryProviderProps {
-  children: ReactNode;
-}
-
-export function QueryProvider({ children }: QueryProviderProps) {
-  const [queryClient] = useState<QueryClient>(() => createQueryClient());
-
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <html lang="ko">
+      <body>
+        <QueryProvider>{children}</QueryProvider>
+      </body>
+    </html>
   );
 }
