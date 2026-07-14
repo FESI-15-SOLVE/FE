@@ -957,12 +957,12 @@ export interface OauthCreateParams {
   provider: "google" | "kakao";
 }
 
-export interface GetTeamIdParams {
+export interface GetUsersParams {
   /** @example "dallaem" */
   teamId: string;
 }
 
-export interface PatchTeamIdParams {
+export interface PatchUsersParams {
   /** @example "dallaem" */
   teamId: string;
 }
@@ -1107,7 +1107,7 @@ export interface JoinedListParams {
   teamId: string;
 }
 
-export interface GetTeamId2Params {
+export interface GetMeetingsParams {
   /**
    * 정렬 기준: dateTime(모임 일시), registrationEnd(모집 마감일), participantCount(참가자 수)
    * @default "dateTime"

@@ -15,7 +15,7 @@
     "test:watch": "vitest --watch",
     "test:coverage": "vitest run --coverage",
     "test:run": "vitest run",
-    "gen:api": "pnpm dlx swagger-typescript-api generate -p https://together-dallaem-api.vercel.app/openapi.json -o ./src/api -n api.ts --extract-request-params --extract-request-body --modular --responses"
+    "gen:api": "pnpm dlx swagger-typescript-api generate -p https://together-dallaem-api.vercel.app/openapi.json -o ./src/api -n api.ts --extract-request-params --extract-request-body --modular --responses --module-name-first-tag"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
