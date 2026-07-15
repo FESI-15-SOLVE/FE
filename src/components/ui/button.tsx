@@ -15,6 +15,8 @@ const buttonVariants = cva(
         tertiary:
           "bg-background bg-white text-slate-600 border-1  border-slate-200",
         custom: "",
+        ghost:
+          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
       },
       size: {
         default: "h-10 px-4 text-sm",
