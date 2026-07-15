@@ -7,7 +7,7 @@ import icHeartEmpty from "@/assets/svg/ic-heart-empty.svg";
 import { cn } from "@/lib/utils";
 
 const wishButtonVariants = cva(
-  "group/button rounded-[50px] bg-white inline-flex shrink-0 items-center justify-center font-semibold whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none [&_img]:pointer-events-none [&_img]:shrink-0",
+  "group/button transition-all rounded-[50px] bg-white inline-flex shrink-0 items-center justify-center font-semibold whitespace-nowrap outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50  disabled:pointer-events-none [&_img]:shrink-0 [&_img]:transition-transform active:[&_img]:scale-75 aria-pressed:[&_img]:scale-110",
   {
     variants: {
       size: {
@@ -37,6 +37,7 @@ export default function WishButton({
     <ButtonPrimitive
       data-slot="button"
       className={cn(wishButtonVariants({ size, className }))}
+      {...props}
     >
       <Image src={isWished ? icHeartFull : icHeartEmpty} alt="찜 버튼" />
     </ButtonPrimitive>
