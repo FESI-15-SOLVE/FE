@@ -45,9 +45,13 @@ export default function SocialButton({
     <ButtonPrimitive
       data-slot="button"
       className={cn(socialButtonVariants({ variant, size, className }))}
+      {...props}
     >
-      <Image src={socialButtonIcons[variant ?? "google"]} alt="" />
-      {props.children}
+      <Image
+        src={socialButtonIcons[variant ?? "google"]}
+        alt={`${variant === "google" ? "구글" : "카카오"}로 계속하기`}
+      />
+      {`${variant === "google" ? "구글" : "카카오"}로 계속하기`}
     </ButtonPrimitive>
   );
 }
