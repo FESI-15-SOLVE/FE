@@ -32,6 +32,7 @@ export default function CreateButton({
     <ButtonPrimitive
       data-slot="button"
       className={cn(createButtonVariants({ size, className }))}
+      {...props}
     >
       <Image src={icPlus} alt="생성 버튼" />
       {size === "lg" && props.children}
