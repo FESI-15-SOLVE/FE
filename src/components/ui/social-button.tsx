@@ -33,27 +33,18 @@ const socialButtonVariants = cva(
 );
 
 interface SocialButtonProps
-  extends ButtonPrimitive.Props, VariantProps<typeof socialButtonVariants> {
-  onClick?: () => void;
-}
+  extends ButtonPrimitive.Props, VariantProps<typeof socialButtonVariants> {}
 
 export default function SocialButton({
-  onClick,
   className,
   variant = "google",
   size = "default",
   ...props
 }: SocialButtonProps) {
-  const handleClick = () => {
-    if (onClick) {
-      onClick();
-    }
-  };
   return (
     <ButtonPrimitive
       data-slot="button"
       className={cn(socialButtonVariants({ variant, size, className }))}
-      onClick={handleClick}
     >
       <Image src={socialButtonIcons[variant ?? "google"]} alt="" />
       {props.children}
