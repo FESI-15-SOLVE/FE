@@ -21,29 +21,19 @@ const createButtonVariants = cva(
 );
 
 interface CreateButtonProps
-  extends ButtonPrimitive.Props, VariantProps<typeof createButtonVariants> {
-  onClick: () => void;
-}
+  extends ButtonPrimitive.Props, VariantProps<typeof createButtonVariants> {}
 
 export default function CreateButton({
-  onClick,
   className,
   size = "default",
   ...props
 }: CreateButtonProps) {
-  const handleClick = () => {
-    if (onClick) {
-      onClick();
-    }
-  };
-
   return (
     <ButtonPrimitive
       data-slot="button"
       className={cn(createButtonVariants({ size, className }))}
-      onClick={handleClick}
     >
-      <Image src={icPlus} alt="" />
+      <Image src={icPlus} alt="생성 버튼" />
       {size === "lg" && props.children}
     </ButtonPrimitive>
   );
