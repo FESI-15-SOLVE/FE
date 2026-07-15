@@ -29,28 +29,18 @@ const primaryButtonVariants = cva(
 );
 
 interface PrimaryButtonProps
-  extends ButtonPrimitive.Props, VariantProps<typeof primaryButtonVariants> {
-  onClick?: () => void;
-}
+  extends ButtonPrimitive.Props, VariantProps<typeof primaryButtonVariants> {}
 
 export default function PrimaryButton({
-  onClick,
   className,
   variant = "default",
   size = "default",
   ...props
 }: PrimaryButtonProps) {
-  const handleClick = () => {
-    if (onClick) {
-      onClick();
-    }
-  };
-
   return (
     <ButtonPrimitive
       data-slot="button"
       className={cn(primaryButtonVariants({ variant, size, className }))}
-      onClick={handleClick}
       {...props}
     />
   );
