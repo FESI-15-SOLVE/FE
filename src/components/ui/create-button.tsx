@@ -24,6 +24,7 @@ export default function CreateButton({
   return (
     <Button
       variant="custom"
+      size="custom"
       className={cn(createButtonSizeVariants[size], className)}
       {...props}
     >
