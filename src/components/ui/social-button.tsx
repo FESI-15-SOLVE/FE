@@ -1,5 +1,6 @@
 import Image, { type StaticImageData } from "next/image";
 import { Button } from "@/components/ui/button";
+import { Button as ButtonPrimitive } from "@base-ui/react/button";
 
 import icGoogle from "@/assets/svg/ic-google.svg";
 import icKakao from "@/assets/svg/ic-kakao.svg";
@@ -17,16 +18,14 @@ const socialButtonConfig: Record<
 
 const commonClassName = "bg-background text-slate-800 gap-3";
 
-interface SocialButtonProps {
+interface SocialButtonProps extends ButtonPrimitive.Props {
   snsType: SocialButtonType;
-  className?: string;
-  onClick?: () => void;
 }
 
 export default function SocialButton({
   snsType,
   className,
-  onClick,
+  ...props
 }: SocialButtonProps) {
   const { icon, text, bgClassName } = socialButtonConfig[snsType];
 
@@ -34,7 +33,7 @@ export default function SocialButton({
     <Button
       className={cn(commonClassName, bgClassName, className)}
       variant="custom"
-      onClick={onClick}
+      {...props}
     >
       <Image src={icon} alt="" />
       {`${text}로 계속하기`}
