@@ -16,7 +16,7 @@ const socialButtonConfig: Record<
   kakao: { icon: icKakao, text: "카카오", bgClassName: "bg-[#FFEE01]" },
 };
 
-const commonClassName = "bg-background text-slate-800 gap-3";
+const commonClassName = "text-slate-800 gap-3";
 
 interface SocialButtonProps extends ButtonPrimitive.Props {
   snsType: SocialButtonType;
