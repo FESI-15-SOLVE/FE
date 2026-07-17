@@ -36,11 +36,11 @@ export default function WishButton({
 }: WishButtonProps) {
   return (
     <Button
+      {...props}
       variant="custom"
       size="custom"
       aria-pressed={isWished}
       className={cn(wishButtonVariants({ size }), className)}
-      {...props}
     >
       <Image src={isWished ? icHeartFull : icHeartEmpty} alt="" />
     </Button>
