@@ -40,6 +40,7 @@ export default function WishButton({
       variant="custom"
       size="custom"
       aria-pressed={isWished}
+      aria-label={isWished ? "찜 취소" : "찜하기"}
       className={cn(wishButtonVariants({ size }), className)}
     >
       <Image src={isWished ? icHeartFull : icHeartEmpty} alt="" />
