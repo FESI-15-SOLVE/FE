@@ -74,8 +74,11 @@ export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
   return (
     <header className="border-b border-zinc-200 bg-white/95 backdrop-blur-md w-full">
       <div className="mx-auto flex h-16 max-w-[1280px] items-center px-4 sm:px-6 lg:px-8">
-        <a href="/" className="inline-flex items-center text-2xl font-semibold text-emerald-600 mr-6">
-          같이달램
+        <a href="/" className="inline-flex items-center mr-6">
+          <picture>
+            <source media="(min-width: 745px)" srcSet="/src/assets/images/logo_pc.png" />
+            <img src="/src/assets/images/logo_mo.png" alt="같이달램 로고" className="h-10 w-auto" />
+          </picture>
         </a>
 
         <div className="hidden [@media(min-width:745px)]:flex items-center gap-6 text-sm font-medium text-zinc-700">
