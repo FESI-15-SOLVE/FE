@@ -53,8 +53,26 @@ export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
     }
   }, [isMobileMenuOpen]);
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 745px)");
+    const handleMediaChange = (event: MediaQueryListEvent) => {
+      if (event.matches && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+
+        const menu = mobileMenuRef.current;
+        if (!menu) return;
+
+        gsap.killTweensOf(menu);
+        gsap.set(menu, { clearProps: "all" });
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleMediaChange);
+    return () => mediaQuery.removeEventListener("change", handleMediaChange);
+  }, [isMobileMenuOpen]);
+
   return (
-    <header className="border-b border-zinc-200 bg-white/95 backdrop-blur-md">
+    <header className="border-b border-zinc-200 bg-white/95 backdrop-blur-md w-full">
       <div className="mx-auto flex h-16 max-w-[1280px] items-center px-4 sm:px-6 lg:px-8">
         <a href="/" className="inline-flex items-center text-2xl font-semibold text-emerald-600 mr-6">
           같이달램
