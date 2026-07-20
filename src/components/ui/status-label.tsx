@@ -22,7 +22,7 @@ const statusLabelVariants = cva(
 
 export interface StatusLabelProps
   extends
-    React.HTMLAttributes<HTMLDivElement>,
+    React.HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof statusLabelVariants> {
   label?: string;
 }
@@ -34,12 +34,12 @@ export function StatusLabel({
   ...props
 }: StatusLabelProps) {
   return (
-    <div className={cn(statusLabelVariants({ size, className }))} {...props}>
+    <span className={cn(statusLabelVariants({ size, className }))} {...props}>
       <span className="check-circle from-gradient-start-500 to-gradient-end-500 inline-flex shrink-0 items-center justify-center self-center rounded-full bg-linear-to-r text-white">
         <Check aria-hidden="true" />
       </span>
       <span>{label}</span>
-    </div>
+    </span>
   );
 }
 
