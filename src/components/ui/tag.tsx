@@ -26,7 +26,7 @@ const tagVariants = cva(
 
 export interface TagProps
   extends
-    React.HTMLAttributes<HTMLDivElement>,
+    React.HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof tagVariants> {
   /** 태그 내부 좌측 아이콘 */
   icon?: React.ReactNode;
@@ -34,12 +34,12 @@ export interface TagProps
 
 function Tag({ className, variant, size, icon, children, ...props }: TagProps) {
   return (
-    <div className={cn(tagVariants({ variant, size, className }))} {...props}>
+    <span className={cn(tagVariants({ variant, size, className }))} {...props}>
       {icon && (
         <span className="inline-flex shrink-0 items-center">{icon}</span>
       )}
       <span>{children}</span>
-    </div>
+    </span>
   );
 }
 
