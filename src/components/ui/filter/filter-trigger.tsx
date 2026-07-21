@@ -29,8 +29,8 @@ export interface FilterTriggerProps
   extends
     Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value">,
     VariantProps<typeof filterTriggerVariants> {
-  value?: string | string[];
-  defaultValue?: string;
+  value: string | string[];
+  defaultValue: string;
   children?: React.ReactNode;
   icon?: React.ReactNode | boolean;
 }
@@ -40,7 +40,7 @@ export function FilterTrigger({
   size,
   isSelected = false,
   value,
-  defaultValue = "지역 전체",
+  defaultValue,
   children,
   icon = true,
   ...props
