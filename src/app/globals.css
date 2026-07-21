@@ -70,6 +70,30 @@
   --color-blue-500: var(--blue-500);
   --color-blue-600: var(--blue-600);
   --color-error-500: var(--error-500);
+
+  --color-gradient-start-100: var(--gradient-start-100);
+  --color-gradient-end-100: var(--gradient-end-100);
+  --color-gradient-start-200: var(--gradient-start-200);
+  --color-gradient-end-200: var(--gradient-end-200);
+  --color-gradient-start-500: var(--gradient-start-500);
+  --color-gradient-end-500: var(--gradient-end-500);
+  --color-gradient-start-600: var(--gradient-start-600);
+  --color-gradient-end-600: var(--gradient-end-600);
+}
+
+@utility border-gradient-* {
+  border-style: solid;
+  border-width: var(--border-gradient-width, 1px);
+  border-color: transparent;
+  background-image:
+    linear-gradient(var(--color-card), var(--color-card)),
+    linear-gradient(
+      to right,
+      --value(--color-gradient-start-*),
+      --value(--color-gradient-end-*)
+    );
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
 }
 
 :root {
@@ -127,6 +151,15 @@
   --blue-500: #2099fdff;
   --blue-600: #337affff;
   --error-500: #e91616ff;
+
+  --gradient-start-100: #e9fbf1;
+  --gradient-end-100: #e9fcfc;
+  --gradient-start-200: #def8ea;
+  --gradient-end-200: #d9f6f4;
+  --gradient-start-500: #17da71;
+  --gradient-end-500: #08ddf0;
+  --gradient-start-600: #00d361;
+  --gradient-end-600: #00b9de;
 }
 
 .dark {
