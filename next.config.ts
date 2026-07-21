@@ -17,11 +17,21 @@ const nextConfig: NextConfig = {
   turbopack: {
     rules: {
       "*.svg": {
-        loaders: ["@svgr/webpack"],
+        loaders: [
+          {
+            loader: "@svgr/webpack",
+            options: {
+              icon: true,
+              typescript: true,
+              ext: "tsx",
+            },
+          },
+        ],
         as: "*.js",
       },
     },
   },
+
   webpack: (config) => {
     // @ts-expect-error 타입 에러 무시
     const fileLoaderRule = config.module.rules.find((rule) =>
@@ -42,6 +52,7 @@ const nextConfig: NextConfig = {
           {
             loader: "@svgr/webpack",
             options: {
+              icon: true,
               typescript: true,
               ext: "tsx",
             },
