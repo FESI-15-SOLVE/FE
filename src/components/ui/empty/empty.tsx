@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { EmptyIllustration } from "./empty-illustration";
 
-const emptyStateVariants = cva(
+const emptyVariants = cva(
   "flex flex-col items-center justify-center text-center font-sans select-none w-full",
   {
     variants: {
@@ -33,17 +33,17 @@ const messageVariants = cva("font-medium text-slate-500 text-center", {
   },
 });
 
-export interface EmptyStateProps
+export interface EmptyProps
   extends
     React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof emptyStateVariants> {
+    VariantProps<typeof emptyVariants> {
   message?: React.ReactNode;
   description?: React.ReactNode;
   icon?: React.ReactNode;
   action?: React.ReactNode;
 }
 
-export function EmptyState({
+export function Empty({
   className,
   size,
   message = "아직 만든 모임이 없어요",
@@ -51,9 +51,9 @@ export function EmptyState({
   icon,
   action,
   ...props
-}: EmptyStateProps) {
+}: EmptyProps) {
   return (
-    <div className={cn(emptyStateVariants({ size, className }))} {...props}>
+    <div className={cn(emptyVariants({ size, className }))} {...props}>
       <div className="shrink-0">{icon ?? <EmptyIllustration />}</div>
 
       <div className="space-y-1">
@@ -72,5 +72,10 @@ export function EmptyState({
   );
 }
 
-export { emptyStateVariants };
-export default EmptyState;
+export type EmptyStateProps = EmptyProps;
+export {
+  Empty as EmptyState,
+  emptyVariants,
+  emptyVariants as emptyStateVariants,
+};
+export default Empty;

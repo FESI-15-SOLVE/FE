@@ -1,2 +1,2 @@
 export * from "./empty-illustration";
-export * from "./empty-state";
+export * from "./empty";
