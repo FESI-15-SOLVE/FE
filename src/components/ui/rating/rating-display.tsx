@@ -33,8 +33,8 @@ export interface RatingDisplayProps
 export function RatingDisplay({
   className,
   size,
-  score = 5,
   maxScore = 5,
+  score = maxScore,
   icon: Icon = IconHeart,
   ...props
 }: RatingDisplayProps) {

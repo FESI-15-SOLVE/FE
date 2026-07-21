@@ -22,15 +22,14 @@ export interface RatingInputProps
 export function RatingInput({
   className,
   size,
-  score = 5,
   maxScore = 5,
+  score = maxScore,
   icon: Icon = IconHeart,
   onChange,
   ...props
 }: RatingInputProps) {
   const { displayScore, handleItemHover, handleMouseLeave } = useHoverPreview({
     score,
-    readOnly: false,
   });
 
   const handleRatingClick = (newScore: number) => {

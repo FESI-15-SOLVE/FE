@@ -17,11 +17,14 @@ export function ProgressBar({
   showIcon = true,
   showCounter = true,
   valueText,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
   ...props
 }: ProgressBarProps) {
-  const safeTotal = total > 0 ? total : 1;
-  const safeCurrent = Math.max(0, Math.min(current, safeTotal));
-  const defaultAriaValueText = `${safeCurrent} / ${safeTotal}명 참여`;
+  const displayTotal = Math.max(0, total);
+  const safeTotal = displayTotal || 1;
+  const safeCurrent = Math.max(0, Math.min(current, displayTotal));
+  const defaultAriaValueText = `${safeCurrent} / ${displayTotal}명 참여`;
 
   return (
     <div
@@ -38,6 +41,8 @@ export function ProgressBar({
         <Progress
           value={safeCurrent}
           max={safeTotal}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledby}
           aria-valuetext={valueText ?? defaultAriaValueText}
           className="**:data-[slot=progress-indicator]:from-gradient-start-500 **:data-[slot=progress-indicator]:to-gradient-end-500 flex-1 gap-0 **:data-[slot=progress-indicator]:rounded-full **:data-[slot=progress-indicator]:bg-linear-to-r **:data-[slot=progress-track]:h-1.5 **:data-[slot=progress-track]:bg-slate-200"
         />
@@ -48,7 +53,7 @@ export function ProgressBar({
           <span className="font-semibold tracking-tight text-green-500">
             {safeCurrent}
           </span>
-          <span className="text-slate-600">/{safeTotal}</span>
+          <span className="text-slate-600">/{displayTotal}</span>
         </div>
       )}
     </div>
