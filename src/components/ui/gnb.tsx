@@ -1,9 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import { Bell, Menu, User, X } from "lucide-react";
 
 interface GnbProps {
@@ -20,55 +18,18 @@ const menuItems = [
 
 export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const mobileMenuContentRef = useRef<HTMLDivElement>(null);
-  const timelineRef = useRef<gsap.core.Timeline | null>(null);
-
-  useEffect(() => {
-    const menu = mobileMenuRef.current;
-    const content = mobileMenuContentRef.current;
-    if (!menu || !content) return;
-
-    timelineRef.current?.kill();
-
-    const tl = gsap.timeline({ paused: true, defaults: { duration: 0.34, ease: "power3.out" } });
-    tl.set(menu, { display: "block", overflow: "hidden", autoAlpha: 0, height: 0 });
-    tl.to(menu, { height: "auto", autoAlpha: 1 });
-
-    tl.eventCallback("onReverseComplete", () => gsap.set(menu, { display: "none" }));
-
-    timelineRef.current = tl;
-
-    return () => {
-      timelineRef.current?.kill();
-      timelineRef.current = null;
-    };
-  }, []);
-
-  useEffect(() => {
-    const tl = timelineRef.current;
-    if (!tl) return;
-    if (isMobileMenuOpen) tl.play();
-    else tl.reverse();
-  }, [isMobileMenuOpen]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 745px)");
     const handleMediaChange = (event: MediaQueryListEvent) => {
-      if (event.matches && isMobileMenuOpen) {
+      if (event.matches) {
         setIsMobileMenuOpen(false);
-
-        const menu = mobileMenuRef.current;
-        if (!menu) return;
-
-        timelineRef.current?.reverse();
-        gsap.set(menu, { clearProps: "all" });
       }
     };
 
     mediaQuery.addEventListener("change", handleMediaChange);
     return () => mediaQuery.removeEventListener("change", handleMediaChange);
-  }, [isMobileMenuOpen]);
+  }, []);
 
   return (
     <header className="border-b border-zinc-200 bg-white/95 backdrop-blur-md w-full">
@@ -80,7 +41,7 @@ export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
           </picture>
         </Link>
 
-        <div className="hidden desktop-flex items-center gap-6 text-sm font-medium text-zinc-700">
+        <div className="hidden min-[745px]:flex items-center gap-6 text-sm font-medium text-zinc-700">
           {menuItems.map((item) => {
             const count = notificationCounts[item.label] ?? 0;
             return (
@@ -107,21 +68,21 @@ export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
             <>
               <button
                 type="button"
-                className="hidden desktop-inline-flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 text-zinc-600 transition hover:bg-zinc-100"
+                className="hidden min-[745px]:inline-flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 text-zinc-600 transition hover:bg-zinc-100"
                 aria-label="알림"
               >
                 <Bell className="h-5 w-5" />
               </button>
               <button
                 type="button"
-                className="hidden desktop-inline-flex h-10 w-10 items-center justify-center rounded-full bg-zinc-100 text-zinc-600 ring-1 ring-zinc-200 transition hover:ring-2"
+                className="hidden min-[745px]:inline-flex h-10 w-10 items-center justify-center rounded-full bg-zinc-100 text-zinc-600 ring-1 ring-zinc-200 transition hover:ring-2"
                 aria-label="프로필"
               >
                 <User className="h-5 w-5" />
               </button>
             </>
           ) : (
-            <div className="hidden desktop-inline-flex items-center gap-3">
+            <div className="hidden min-[745px]:inline-flex items-center gap-3">
               <Link
                 href="/login"
                 className="inline-flex items-center justify-center rounded-md border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-900 transition hover:bg-zinc-50"
@@ -139,7 +100,7 @@ export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
 
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 text-zinc-600 transition duration-300 hover:bg-zinc-100 desktop-hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 text-zinc-600 transition duration-300 hover:bg-zinc-100 min-[745px]:hidden"
             aria-expanded={isMobileMenuOpen}
             aria-label={isMobileMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
             onClick={() => setIsMobileMenuOpen((current) => !current)}
@@ -149,12 +110,8 @@ export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
         </div>
       </div>
 
-      <div
-        ref={mobileMenuRef}
-        className="overflow-hidden border-t border-zinc-200 bg-white hidden desktop-hidden"
-        style={{ display: "none", height: 0, opacity: 0 }}
-      >
-        <div ref={mobileMenuContentRef} className="space-y-2 px-4 py-4">
+      <div className="overflow-hidden border-t border-zinc-200 bg-white min-[745px]:hidden" style={{ display: isMobileMenuOpen ? "block" : "none" }}>
+        <div className="space-y-2 px-4 py-4">
           {menuItems.map((item) => {
             const count = notificationCounts[item.label] ?? 0;
             return (
