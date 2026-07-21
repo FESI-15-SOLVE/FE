@@ -26,6 +26,7 @@ export function RatingInput({
   score = maxScore,
   icon: Icon = IconHeart,
   onChange,
+  onMouseLeave,
   ...props
 }: RatingInputProps) {
   const { displayScore, handleItemHover, handleMouseLeave } = useHoverPreview({
@@ -39,7 +40,10 @@ export function RatingInput({
   return (
     <div
       className={cn(ratingVariants({ size, className }))}
-      onMouseLeave={handleMouseLeave}
+      onMouseLeave={(e) => {
+        handleMouseLeave();
+        onMouseLeave?.(e);
+      }}
       role="radiogroup"
       aria-label="평점 선택"
       {...props}
