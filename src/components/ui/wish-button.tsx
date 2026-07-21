@@ -2,8 +2,7 @@ import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
-import icHeartFull from "@/assets/svg/ic-heart-full.svg";
-import icHeartEmpty from "@/assets/svg/ic-heart-empty.svg";
+import { IconHeartEmpty, IconHeartFull } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 
@@ -43,7 +42,7 @@ export default function WishButton({
       aria-label={isWished ? "찜 취소" : "찜하기"}
       className={cn(wishButtonVariants({ size }), className)}
     >
-      <Image src={isWished ? icHeartFull : icHeartEmpty} alt="" />
+      <Image src={isWished ? IconHeartFull : IconHeartEmpty} alt="" />
     </Button>
   );
 }
