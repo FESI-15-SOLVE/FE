@@ -8,6 +8,8 @@ import { useHoverPreview } from "@/hooks/ui";
 import { Button } from "@/components/ui/button";
 import { ratingVariants } from "./rating-display";
 
+import { getSafeRatingScores } from "./utils";
+
 export interface RatingInputProps
   extends Omit<HTMLAttributes<HTMLDivElement>, "onChange">,
     VariantProps<typeof ratingVariants> {
@@ -22,15 +24,17 @@ export interface RatingInputProps
 export function RatingInput({
   className,
   size,
-  maxScore = 5,
-  score = maxScore,
+  maxScore,
+  score,
   icon: Icon = IconHeart,
   onChange,
   onMouseLeave,
   ...props
 }: RatingInputProps) {
+  const { safeScore, safeMaxScore } = getSafeRatingScores(score, maxScore);
+
   const { displayScore, handleItemHover, handleMouseLeave } = useHoverPreview({
-    score,
+    score: safeScore,
   });
 
   const handleRatingClick = (newScore: number) => {
@@ -48,10 +52,10 @@ export function RatingInput({
       aria-label="평점 선택"
       {...props}
     >
-      {Array.from({ length: Math.max(1, maxScore) }, (_, index) => {
+      {Array.from({ length: safeMaxScore }, (_, index) => {
         const ratingValue = index + 1;
         const isFilled = ratingValue <= Math.round(displayScore);
-        const isChecked = ratingValue === Math.round(score);
+        const isChecked = ratingValue === Math.round(safeScore);
 
         return (
           <Button

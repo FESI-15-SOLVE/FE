@@ -3,6 +3,8 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { IconHeart } from "@/components/icons";
 
+import { getSafeRatingScores } from "./utils";
+
 export const ratingVariants = cva(
   "inline-flex shrink-0 items-center gap-0.5 select-none",
   {
@@ -33,21 +35,23 @@ export interface RatingDisplayProps
 export function RatingDisplay({
   className,
   size,
-  maxScore = 5,
-  score = maxScore,
+  maxScore,
+  score,
   icon: Icon = IconHeart,
   ...props
 }: RatingDisplayProps) {
+  const { safeScore, safeMaxScore } = getSafeRatingScores(score, maxScore);
+
   return (
     <div
       className={cn(ratingVariants({ size, className }))}
       role="img"
-      aria-label={`평점 ${score}점 (만점 ${maxScore}점)`}
+      aria-label={`평점 ${safeScore}점 (만점 ${safeMaxScore}점)`}
       {...props}
     >
-      {Array.from({ length: Math.max(1, maxScore) }, (_, index) => {
+      {Array.from({ length: safeMaxScore }, (_, index) => {
         const ratingValue = index + 1;
-        const isFilled = ratingValue <= Math.round(score);
+        const isFilled = ratingValue <= Math.round(safeScore);
 
         return (
           <Icon
