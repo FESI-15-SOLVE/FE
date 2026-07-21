@@ -92,7 +92,7 @@ export function Rating({
           >
             <Icon
               className={cn(
-                "shrink-0 transition-colors duration-150",
+                "size-auto shrink-0 transition-colors duration-150",
                 isFilled ? "text-green-500" : "text-slate-200",
               )}
               aria-hidden="true"
