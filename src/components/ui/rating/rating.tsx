@@ -2,7 +2,7 @@ import type { ComponentType, HTMLAttributes } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { IconHeart } from "@/components/icons";
-import { useHoverPreview } from "@/hooks";
+import { useHoverPreview } from "@/hooks/ui";
 import { Button } from "@/components/ui/button";
 
 const ratingVariants = cva(
