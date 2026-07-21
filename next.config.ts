@@ -20,14 +20,13 @@ const nextConfig: NextConfig = {
         loaders: [
           {
             loader: "@svgr/webpack",
-            options: {
-              icon: true,
-              typescript: true,
-              ext: "tsx",
-            },
+            options: { icon: true, typescript: true, ext: "tsx" },
           },
         ],
         as: "*.js",
+        condition: {
+          path: /assets\/icons\//,
+        },
       },
     },
   },
