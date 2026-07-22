@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import { IconFilter } from "@/components/icons";
+import { IconFilter, IconChevronDown } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 
 const filterTriggerVariants = cva(
@@ -27,47 +27,50 @@ const filterTriggerVariants = cva(
 
 export interface FilterTriggerProps
   extends
-    Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value">,
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof filterTriggerVariants> {
-  value: string | string[];
-  defaultValue: string;
   children?: React.ReactNode;
-  icon?: React.ReactNode | boolean;
+  mode?: "filter" | "sort";
+  leftIcon?: React.ReactNode | boolean;
+  rightIcon?: React.ReactNode | boolean;
 }
 
 export function FilterTrigger({
   className,
   size,
   isSelected = false,
-  value,
-  defaultValue,
   children,
-  icon = true,
+  mode = "filter",
+  leftIcon,
+  rightIcon,
   ...props
 }: FilterTriggerProps) {
-  const formattedValue = Array.isArray(value)
-    ? value.length > 0
-      ? value.join(", ")
-      : defaultValue
-    : (value ?? defaultValue);
+  const defaultLeft = mode === "sort";
+  const defaultRight = mode === "filter";
 
-  const displayValue = children ?? formattedValue;
+  const showLeft = leftIcon ?? defaultLeft;
+  const showRight = rightIcon ?? defaultRight;
 
   return (
     <Button
       type="button"
       variant={"custom"}
       size={"custom"}
-      aria-pressed={isSelected ?? undefined}
+      aria-expanded={isSelected ?? undefined}
       className={cn(filterTriggerVariants({ size, isSelected, className }))}
       {...props}
     >
-      {icon === true ? (
+      {showLeft === true ? (
         <IconFilter className="shrink-0 text-current" aria-hidden="true" />
       ) : (
-        icon
+        showLeft && showLeft
       )}
-      {displayValue && <span>{displayValue}</span>}
+      {children && <span>{children}</span>}
+      {showRight === true ? (
+        <IconChevronDown className="shrink-0 text-current" aria-hidden="true" />
+      ) : (
+        showRight && showRight
+      )}
     </Button>
   );
 }
