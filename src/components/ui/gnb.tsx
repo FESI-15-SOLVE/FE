@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Bell, Menu, User, X } from "lucide-react";
+import { NotificationPanel, initialNotifications, type NotificationItem } from "@/components/ui/notification";
 
 interface GnbProps {
   isLoggedIn?: boolean;
@@ -18,6 +19,12 @@ const menuItems = [
 
 export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
+  const [shouldRenderNotificationPanel, setShouldRenderNotificationPanel] = useState(false);
+  const [notifications, setNotifications] = useState<NotificationItem[]>(initialNotifications);
+  const panelContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const unreadNotificationCount = notifications.filter((notification) => !notification.isRead).length;
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 745px)");
@@ -30,6 +37,51 @@ export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
     mediaQuery.addEventListener("change", handleMediaChange);
     return () => mediaQuery.removeEventListener("change", handleMediaChange);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        panelContainerRef.current &&
+        !panelContainerRef.current.contains(event.target as Node)
+      ) {
+        setIsNotificationPanelOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (isNotificationPanelOpen) {
+      setShouldRenderNotificationPanel(true);
+      return;
+    }
+
+    if (!isNotificationPanelOpen && shouldRenderNotificationPanel) {
+      const timeoutId = window.setTimeout(() => {
+        setShouldRenderNotificationPanel(false);
+      }, 220);
+      return () => window.clearTimeout(timeoutId);
+    }
+  }, [isNotificationPanelOpen, shouldRenderNotificationPanel]);
+
+  const handleNotificationClick = (id: number) => {
+    setNotifications((currentNotifications) =>
+      currentNotifications.map((notification) =>
+        notification.id === id ? { ...notification, isRead: true } : notification,
+      ),
+    );
+  };
+
+  const handleMarkAllRead = () => {
+    setNotifications((currentNotifications) =>
+      currentNotifications.map((notification) => ({
+        ...notification,
+        isRead: true,
+      })),
+    );
+  };
 
   return (
     <header className="border-b border-zinc-200 bg-white/95 backdrop-blur-md w-full">
@@ -63,15 +115,27 @@ export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
           })}
         </div>
 
-        <div className="flex items-center gap-3 ml-auto">
+        <div className="relative flex items-center gap-3 ml-auto" ref={panelContainerRef}>
           {isLoggedIn ? (
             <>
               <button
                 type="button"
-                className="hidden min-[745px]:inline-flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 text-zinc-600 transition hover:bg-zinc-100"
+                className="hidden min-[745px]:inline-flex relative h-10 w-10 items-center justify-center rounded-full border border-zinc-200 text-zinc-600 transition hover:bg-zinc-100"
                 aria-label="알림"
+                aria-expanded={isNotificationPanelOpen}
+                onClick={() => {
+                  if (isNotificationPanelOpen) {
+                    setIsNotificationPanelOpen(false);
+                  } else {
+                    setShouldRenderNotificationPanel(true);
+                    setIsNotificationPanelOpen(true);
+                  }
+                }}
               >
                 <Bell className="h-5 w-5" />
+                {unreadNotificationCount > 0 ? (
+                  <span className="absolute -right-1 -top-1 inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
+                ) : null}
               </button>
               <button
                 type="button"
@@ -80,6 +144,14 @@ export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
               >
                 <User className="h-5 w-5" />
               </button>
+              {shouldRenderNotificationPanel ? (
+                <NotificationPanel
+                  isOpen={isNotificationPanelOpen}
+                  notifications={notifications}
+                  onNotificationClick={handleNotificationClick}
+                  onMarkAllRead={handleMarkAllRead}
+                />
+              ) : null}
             </>
           ) : (
             <div className="hidden min-[745px]:inline-flex items-center gap-3">
