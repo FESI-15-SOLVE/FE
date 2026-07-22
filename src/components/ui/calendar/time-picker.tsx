@@ -21,10 +21,11 @@ export interface TimePickerProps {
 interface TimeColumnProps {
   items: number[];
   selected: number;
+  label: string;
   onSelect: (value: number) => void;
 }
 
-function TimeColumn({ items, selected, onSelect }: TimeColumnProps) {
+function TimeColumn({ items, selected, label, onSelect }: TimeColumnProps) {
   const selectedRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -35,13 +36,20 @@ function TimeColumn({ items, selected, onSelect }: TimeColumnProps) {
   }, [selected]);
 
   return (
-    <div className="flex h-full flex-col gap-2.5 overflow-y-auto px-2 py-2.5 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-200 [&::-webkit-scrollbar-thumb:hover]:bg-slate-300 [&::-webkit-scrollbar-track]:bg-transparent">
+    <div
+      role="listbox"
+      aria-label={label}
+      className="flex h-full flex-col gap-2.5 overflow-y-auto px-2 py-2.5 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-200 [&::-webkit-scrollbar-thumb:hover]:bg-slate-300 [&::-webkit-scrollbar-track]:bg-transparent"
+    >
       {items.map((item) => {
         const isSelected = item === selected;
         return (
           <button
             key={item}
             ref={isSelected ? selectedRef : null}
+            role="option"
+            aria-selected={isSelected}
+            aria-label={`${item}${label}`}
             type="button"
             onClick={() => onSelect(item)}
             className={cn(
@@ -78,12 +86,14 @@ export function TimePicker({
     >
       <TimeColumn
         items={HOURS}
+        label="시"
         selected={hour}
         onSelect={(h) => onHourChange?.(h)}
       />
       <div className="h-full w-px bg-slate-200" />
       <TimeColumn
         items={minutes}
+        label="분"
         selected={minute}
         onSelect={(m) => onMinuteChange?.(m)}
       />
