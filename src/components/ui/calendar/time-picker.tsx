@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button";
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
 function getMinutes(step: number) {
+  if (!Number.isInteger(step) || step <= 0 || step > 60) {
+    throw new RangeError("minusStep은 1과 60 사이의 정수여야합니다.");
+  }
   return Array.from({ length: Math.floor(60 / step) }, (_, i) => i * step);
 }
-
 export interface TimePickerProps {
   hour?: number;
   minute?: number;
@@ -80,6 +82,10 @@ export function TimePicker({
 }: TimePickerProps) {
   const minutes = getMinutes(minuteStep);
 
+  // 부모로부터 유효하지 않은 값(범위 이탈 등)이 올 경우 UI가 깨지지 않도록 안전한 값으로 폴백
+  const safeHour = HOURS.includes(hour) ? hour : 0;
+  const safeMinute = minutes.includes(minute) ? minute : 0;
+
   return (
     <div
       className={cn(
@@ -90,14 +96,14 @@ export function TimePicker({
       <TimeColumn
         items={HOURS}
         label="시"
-        selected={hour}
+        selected={safeHour}
         onSelect={(h) => onHourChange?.(h)}
       />
       <div className="h-full w-px bg-slate-200" />
       <TimeColumn
         items={minutes}
         label="분"
-        selected={minute}
+        selected={safeMinute}
         onSelect={(m) => onMinuteChange?.(m)}
       />
     </div>
