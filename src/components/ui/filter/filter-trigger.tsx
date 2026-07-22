@@ -27,7 +27,7 @@ const filterTriggerVariants = cva(
 
 export interface FilterTriggerProps
   extends
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "type" | "aria-expanded">,
     VariantProps<typeof filterTriggerVariants> {
   children?: React.ReactNode;
   mode?: "filter" | "sort";
@@ -53,19 +53,19 @@ export function FilterTrigger({
 
   return (
     <Button
-      type="button"
       variant={"custom"}
       size={"custom"}
-      aria-expanded={isSelected ?? undefined}
       className={cn(filterTriggerVariants({ size, isSelected, className }))}
       {...props}
+      type="button"
+      aria-expanded={isSelected ?? undefined}
     >
       {showLeft === true ? (
         <IconFilter className="shrink-0 text-current" aria-hidden="true" />
       ) : (
         showLeft && showLeft
       )}
-      {children && <span>{children}</span>}
+      {children != null && <span>{children}</span>}
       {showRight === true ? (
         <IconChevronDown className="shrink-0 text-current" aria-hidden="true" />
       ) : (

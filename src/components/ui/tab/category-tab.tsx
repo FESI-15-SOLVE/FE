@@ -26,7 +26,7 @@ const categoryTabVariants = cva(
 
 export interface CategoryTabProps extends Omit<
   HTMLAttributes<HTMLButtonElement>,
-  "children"
+  "children" | "type" | "role" | "aria-checked" | "aria-label"
 > {
   label: string;
   imageUrl: string;
@@ -44,12 +44,12 @@ export function CategoryTab({
 }: CategoryTabProps) {
   return (
     <button
+      className={cn(categoryTabVariants({ isSelected }), className)}
+      {...props}
       type="button"
       role="radio"
       aria-checked={isSelected}
       aria-label={label}
-      className={cn(categoryTabVariants({ isSelected }), className)}
-      {...props}
     >
       <span
         className={cn(
