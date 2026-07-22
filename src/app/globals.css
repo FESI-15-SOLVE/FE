@@ -5,6 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --breakpoint-mobile: 745px;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
@@ -205,5 +207,26 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+@layer utilities {
+  .desktop-flex {
+  }
+  .desktop-inline-flex {
+  }
+  .desktop-hidden {
+  }
+
+  @media (min-width: var(--breakpoint-mobile)) {
+    .desktop-flex {
+      display: flex;
+    }
+    .desktop-inline-flex {
+      display: inline-flex;
+    }
+    .desktop-hidden {
+      display: none !important;
+    }
   }
 }
