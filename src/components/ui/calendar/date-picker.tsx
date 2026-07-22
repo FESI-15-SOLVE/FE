@@ -9,25 +9,24 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 
 export interface DatePickerProps {
-  date?: Date;
-  onDateChange?: (date?: Date) => void;
+  defaultDate?: Date;
   onReset?: () => void;
   onApply?: (date?: Date) => void;
   className?: string;
 }
 
 export function DatePicker({
-  date,
-  onDateChange,
+  defaultDate,
   onReset,
   onApply,
   className,
 }: DatePickerProps) {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(date);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    defaultDate,
+  );
 
   const handleSelect = (newDate: Date | undefined) => {
     setSelectedDate(newDate);
-    onDateChange?.(newDate);
   };
 
   const handleReset = () => {
@@ -74,3 +73,4 @@ export function DatePicker({
     </div>
   );
 }
+
