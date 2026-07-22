@@ -35,7 +35,7 @@ function Calendar({
         weekday:
           "flex-1 flex items-center justify-center font-sans text-sm font-semibold text-slate-600 h-8 select-none",
         week: "flex w-full",
-        day: " flex-1 flex items-center justify-center relative p-2.5 w-8 h-8 hover:bg-green-200 rounded-[8px] text-sm",
+        day: " flex-1 flex items-center justify-center relative w-8 h-8 hover:bg-green-200 rounded-[8px] text-sm",
         selected:
           "text-green-600 font-semibold rounded-lg bg-green-200 hover:bg-green-200",
         today: "text-green-600 font-semibold",
