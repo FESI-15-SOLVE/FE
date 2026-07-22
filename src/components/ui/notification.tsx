@@ -73,42 +73,70 @@ export function NotificationPanel({
   useLayoutEffect(() => {
     if (!panelRef.current) return;
 
+    const isMobile = window.matchMedia("(max-width: 744px)").matches;
+
     if (isOpen) {
-      gsap.fromTo(
-        panelRef.current,
-        { opacity: 0, scale: 0.7, y: -24, borderRadius: 64 },
-        {
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          borderRadius: 32,
-          duration: 0.8,
-          ease: "elastic.out(1, 0.7)",
-          transformOrigin: "top right",
-          keyframes: [
-            { scale: 0.82, opacity: 0.55, y: -20, duration: 0.2 },
-            { scale: 1.08, opacity: 0.95, y: 8, duration: 0.25 },
-            { scale: 1, opacity: 1, y: 0, duration: 0.35 },
-          ],
-        },
-      );
+      if (isMobile) {
+        gsap.fromTo(
+          panelRef.current,
+          { opacity: 0, x: 40, scale: 0.96, borderRadius: 32, transformOrigin: "right center" },
+          {
+            opacity: 1,
+            x: 0,
+            scale: 1,
+            borderRadius: 32,
+            duration: 0.45,
+            ease: "power3.out",
+          },
+        );
+      } else {
+        gsap.fromTo(
+          panelRef.current,
+          { opacity: 0, scale: 0.7, y: -24, borderRadius: 64 },
+          {
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            borderRadius: 32,
+            duration: 0.8,
+            ease: "elastic.out(1, 0.7)",
+            transformOrigin: "top right",
+            keyframes: [
+              { scale: 0.82, opacity: 0.55, y: -20, duration: 0.2 },
+              { scale: 1.08, opacity: 0.95, y: 8, duration: 0.25 },
+              { scale: 1, opacity: 1, y: 0, duration: 0.35 },
+            ],
+          },
+        );
+      }
     } else {
-      gsap.to(panelRef.current, {
-        opacity: 0,
-        scale: 0.78,
-        y: -20,
-        borderRadius: 64,
-        duration: 0.55,
-        ease: "power4.in",
-        transformOrigin: "top right",
-      });
+      if (isMobile) {
+        gsap.to(panelRef.current, {
+          opacity: 0,
+          x: 36,
+          scale: 0.96,
+          borderRadius: 32,
+          duration: 0.3,
+          ease: "power3.in",
+        });
+      } else {
+        gsap.to(panelRef.current, {
+          opacity: 0,
+          scale: 0.78,
+          y: -20,
+          borderRadius: 64,
+          duration: 0.55,
+          ease: "power4.in",
+          transformOrigin: "top right",
+        });
+      }
     }
   }, [isOpen]);
 
   return (
     <div
       ref={panelRef}
-      className="absolute right-0 top-full z-50 mt-3 w-[26rem] min-w-[22rem] rounded-[32px] border border-zinc-200 bg-white shadow-[0_30px_60px_rgba(15,23,42,0.08)]"
+      className="fixed top-16 left-0 right-0 z-50 w-full rounded-tr-[32px] rounded-bl-[32px] border border-zinc-200 bg-white shadow-[0_30px_60px_rgba(15,23,42,0.08)] min-[745px]:absolute min-[745px]:top-full min-[745px]:right-0 min-[745px]:left-auto min-[745px]:mt-3 min-[745px]:w-[26rem] min-[745px]:min-w-[22rem] min-[745px]:rounded-[32px]"
       style={{ opacity: isOpen ? 1 : 0 }}
     >
       <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-200">

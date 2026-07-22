@@ -139,6 +139,30 @@ export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
               </button>
               <button
                 type="button"
+                className="inline-flex min-[745px]:hidden relative h-10 w-10 items-center justify-center rounded-full border border-zinc-200 text-zinc-600 transition duration-300 hover:bg-zinc-100"
+                aria-label={isNotificationPanelOpen ? "알림 닫기" : "알림 열기"}
+                aria-expanded={isNotificationPanelOpen}
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  if (isNotificationPanelOpen) {
+                    setIsNotificationPanelOpen(false);
+                  } else {
+                    setShouldRenderNotificationPanel(true);
+                    setIsNotificationPanelOpen(true);
+                  }
+                }}
+              >
+                {isNotificationPanelOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Bell className="h-5 w-5" />
+                )}
+                {unreadNotificationCount > 0 && !isNotificationPanelOpen ? (
+                  <span className="absolute -right-1 -top-1 inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
+                ) : null}
+              </button>
+              <button
+                type="button"
                 className="hidden min-[745px]:inline-flex h-10 w-10 items-center justify-center rounded-full bg-zinc-100 text-zinc-600 ring-1 ring-zinc-200 transition hover:ring-2"
                 aria-label="프로필"
               >
@@ -175,7 +199,10 @@ export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
             className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 text-zinc-600 transition duration-300 hover:bg-zinc-100 min-[745px]:hidden"
             aria-expanded={isMobileMenuOpen}
             aria-label={isMobileMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
-            onClick={() => setIsMobileMenuOpen((current) => !current)}
+            onClick={() => {
+              setIsNotificationPanelOpen(false);
+              setIsMobileMenuOpen((current) => !current);
+            }}
           >
             {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
