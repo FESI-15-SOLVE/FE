@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
@@ -44,9 +45,11 @@ function TimeColumn({ items, selected, label, onSelect }: TimeColumnProps) {
       {items.map((item) => {
         const isSelected = item === selected;
         return (
-          <button
+          <Button
             key={item}
             ref={isSelected ? selectedRef : null}
+            variant={"custom"}
+            size={"custom"}
             role="option"
             aria-selected={isSelected}
             aria-label={`${item}${label}`}
@@ -60,7 +63,7 @@ function TimeColumn({ items, selected, label, onSelect }: TimeColumnProps) {
             )}
           >
             {item.toString().padStart(2, "0")}
-          </button>
+          </Button>
         );
       })}
     </div>
