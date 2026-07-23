@@ -2,16 +2,16 @@ import { Tag } from './tag';
 import { IconAlarm } from '@/components/icons';
 
 interface AlarmTagProps {
-  value: string;
+  children: React.ReactNode;
 }
 
-function AlarmTag({ value }: AlarmTagProps) {
+function AlarmTag({ children }: AlarmTagProps) {
   return (
     <Tag
-      className="border-blue-500"
+      className="border-blue-500 text-blue-500 font-semibold"
       icon={<IconAlarm className="text-blue-500 size-5" />}
     >
-      <span className="text-blue-500 font-semibold">{value}</span>
+      {children}
     </Tag>
   );
 }
