@@ -19,7 +19,9 @@ const buttonVariants = cva(
           "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
       },
       size: {
-        default: "h-10 px-4 text-sm",
+        default:
+          "h-10 md:h-12 lg:h-15 px-4 rounded-lg md:rounded-12 lg:rounded-16 text-sm md:text-base lg:text-xl",
+        sm: "h-10 px-4 text-sm",
         md: "h-12 px-4 rounded-12 text-base",
         lg: "h-15 px-4 rounded-16 text-xl",
         custom: "",
@@ -36,6 +38,7 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  children,
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
   return (
@@ -44,7 +47,7 @@ function Button({
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     >
-      {props.children}
+      {children}
     </ButtonPrimitive>
   );
 }
