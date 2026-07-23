@@ -7,7 +7,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans:
+    'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo',
+    'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', sans-serif;
+  --font-tenada: 'Tenada', sans-serif;
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -79,6 +84,19 @@
   --color-gradient-end-500: var(--gradient-end-500);
   --color-gradient-start-600: var(--gradient-start-600);
   --color-gradient-end-600: var(--gradient-end-600);
+
+  /* Typography Overrides & Custom Displays */
+  --text-xl: 1.25rem; /* 20px */
+  --text-xl--line-height: 1.875rem; /* 30px */
+
+  --text-display-md: 2.5rem; /* 40px */
+  --text-display-md--line-height: 3.5rem; /* 56px */
+
+  --text-display-lg: 3rem; /* 48px */
+  --text-display-lg--line-height: 3.75rem; /* 60px */
+
+  --text-display-xl: 3.5rem; /* 56px */
+  --text-display-xl--line-height: 4.25rem; /* 68px */
 }
 
 @utility border-gradient-* {
