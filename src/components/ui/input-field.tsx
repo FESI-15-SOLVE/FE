@@ -55,7 +55,7 @@ export function InputField({
       {hint &&
         (isInvalid ? (
           <FieldError id={hintId} className="ml-1">
-            {hint.errorMessage || hint.description}
+            {hint.errorMessage ?? hint.description}
           </FieldError>
         ) : (
           <FieldDescription id={hintId} className="ml-1">
