@@ -1,7 +1,13 @@
 import * as React from 'react';
-import { Field, FieldLabel, FieldContent, FieldError } from '@/components/ui/field';
+import {
+  Field,
+  FieldLabel,
+  FieldContent,
+  FieldError,
+} from '@/components/ui/field';
 
 export interface InputFieldProps {
+  id?: string;
   label?: React.ReactNode;
   required?: boolean;
   error?: string;
@@ -10,6 +16,7 @@ export interface InputFieldProps {
 }
 
 function InputField({
+  id,
   label,
   required,
   error,
@@ -19,8 +26,8 @@ function InputField({
   return (
     <Field data-invalid={!!error} className={className}>
       {label && (
-        <FieldLabel className="flex items-center gap-0.5 font-medium text-neutral-800">
-          {label} {required && <span className="text-brand-500">*</span>}
+        <FieldLabel htmlFor={id} className="flex items-center gap-0.5 font-medium text-neutral-800">
+          {label} {required && <span className="text-green-500">*</span>}
         </FieldLabel>
       )}
       <FieldContent>{children}</FieldContent>

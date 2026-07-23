@@ -44,7 +44,7 @@ export function SocialButton({
     <Button
       variant="ghost"
       className={cn(
-        'w-56 px-4 py-3 rounded-xl text-base font-semibold gap-3 h-auto',
+        'px-4 py-3 rounded-xl text-base font-semibold gap-3 h-auto',
         config.className,
         className,
       )}
