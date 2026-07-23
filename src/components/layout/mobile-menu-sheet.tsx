@@ -3,17 +3,15 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { IconMenu, IconPerson } from '@/components/icons';
+import { IconMenu, IconDelete } from '@/components/icons';
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
+  SheetClose,
 } from '@/components/ui/sheet';
-import { CountBadge } from '@/components/ui/badge';
 import { NAV_LINKS } from '@/constants/navigation';
-import { Logo } from '@/components/ui/logo';
+import { MobileMenuNav } from './mobile-menu-nav';
 
 interface MobileMenuSheetProps {
   isOpen: boolean;
@@ -28,75 +26,48 @@ export function MobileMenuSheet({
 }: MobileMenuSheetProps) {
   const pathname = usePathname();
 
+  // 로그인 상태에 따라 '마이페이지' 링크 추가
+  const links = isLoggedIn
+    ? [...NAV_LINKS, { href: '/mypage', label: '마이페이지' }]
+    : NAV_LINKS;
+
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger>
-        <IconMenu className="size-6 flex  text-slate-600 hover:text-neutral-900" />
+        <IconMenu className="size-6 flex text-slate-600 hover:text-neutral-900" />
       </SheetTrigger>
       <SheetContent
         side="right"
-        className="w-75 sm:w-85 p-0 flex flex-col bg-white"
+        showCloseButton={false}
+        className="w-78.5 p-0 flex flex-col bg-white rounded-l-[24px] shadow-[0px_4px_16px_0px_rgba(0,0,0,0.04)] border-none"
       >
-        <SheetHeader className="p-4 border-b border-gray-100 text-left">
-          <SheetTitle>
-            <Logo size="sm" />
-          </SheetTitle>
-        </SheetHeader>
+        <div className="flex flex-col h-full pt-6 pb-4">
+          {/* 상단 닫기 버튼 */}
+          <div className="flex items-center px-6 mb-6 shrink-0">
+            <SheetClose className="flex size-6 items-center justify-center text-neutral-900 hover:opacity-80 transition-opacity outline-none">
+              <IconDelete className="size-full" />
+            </SheetClose>
+          </div>
 
-        <div className="flex flex-col flex-1 overflow-y-auto p-4">
-          {/* 모바일 시트 내 유저 프로필 */}
-          {isLoggedIn ? (
-            <div className="flex items-center gap-4 mb-8 p-2">
-              <div className="flex size-11 items-center justify-center overflow-hidden rounded-full bg-slate-200 text-slate-400 shrink-0">
-                <IconPerson className="size-6" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-base font-semibold text-neutral-900">
-                  럽윈즈올
-                </span>
-                <span className="text-sm font-medium text-slate-500">
-                  lovewins@codeit.com
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-between mb-8 p-2">
-              <span className="text-base font-medium text-neutral-700">
-                로그인이 필요합니다
-              </span>
+          {/* 네비게이션 링크 목록 */}
+          <MobileMenuNav 
+            links={links} 
+            isLoggedIn={isLoggedIn} 
+            onLinkClick={() => setIsOpen(false)} 
+          />
+
+          {/* 비로그인 시 하단 로그인 버튼 */}
+          {!isLoggedIn && (
+            <div className="flex justify-end px-4 mt-auto">
               <Link
                 href="/login"
                 onClick={() => setIsOpen(false)}
-                className="text-sm font-semibold text-green-500"
+                className="p-4 text-base font-medium text-neutral-400 hover:text-neutral-900 tracking-[-0.32px] transition-colors"
               >
                 로그인
               </Link>
             </div>
           )}
-
-          {/* 모바일 네비게이션 링크 */}
-          <nav className="flex flex-col gap-2">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className={cn(
-                  'flex items-center gap-2 p-3 rounded-xl text-base transition-colors',
-                  pathname === link.href
-                    ? 'bg-green-50 font-semibold text-green-500'
-                    : 'font-medium text-slate-600 hover:bg-slate-50 hover:text-neutral-900',
-                )}
-              >
-                {link.label}
-                {link.hasBadge && isLoggedIn && (
-                  <div className="ml-auto">
-                    <CountBadge count={1} />
-                  </div>
-                )}
-              </Link>
-            ))}
-          </nav>
         </div>
       </SheetContent>
     </Sheet>
