@@ -1,19 +1,18 @@
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 
 import { IconHeartEmpty, IconHeartFull } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 
 const wishButtonVariants = cva(
-  "bg-white rounded-full [&_img]:shrink-0 [&_img]:transition-transform active:[&_img]:scale-75 aria-pressed:[&_img]:scale-110",
+  "bg-white rounded-full [&_svg]:shrink-0 [&_svg]:transition-transform active:[&_svg]:scale-75 aria-pressed:[&_svg]:scale-110",
   {
     variants: {
       size: {
-        small: "h-10 w-10 [&_img]:size-5",
-        medium: "h-12 w-12 [&_img]:size-6",
-        large: "h-15 w-15 [&_img]:size-8",
+        small: "size-10",
+        medium: "size-12",
+        large: "size-15",
       },
     },
     defaultVariants: {
@@ -33,6 +32,10 @@ export default function WishButton({
   isWished,
   ...props
 }: WishButtonProps) {
+  const Icon = isWished ? IconHeartFull : IconHeartEmpty;
+  const iconSize =
+    size === "medium" ? "size-6" : size === "large" ? "size-8" : "size-5";
+
   return (
     <Button
       {...props}
@@ -42,7 +45,7 @@ export default function WishButton({
       aria-label={isWished ? "찜 취소" : "찜하기"}
       className={cn(wishButtonVariants({ size }), className)}
     >
-      <Image src={isWished ? IconHeartFull : IconHeartEmpty} alt="" />
+      <Icon className={iconSize} />
     </Button>
   );
 }
