@@ -31,9 +31,7 @@ export function MobileMenuSheet({
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger>
-        <button className="flex p-1 text-slate-600 hover:text-neutral-900">
-          <IconMenu className="size-6" />
-        </button>
+        <IconMenu className="size-6 flex p-1 text-slate-600 hover:text-neutral-900" />
       </SheetTrigger>
       <SheetContent
         side="right"
