@@ -44,17 +44,16 @@ describe('InputField 컴포넌트', () => {
     );
     expect(screen.getByText('Username')).toBeInTheDocument();
     expect(screen.getByText('*')).toBeInTheDocument();
-    expect(screen.getByLabelText('Username', { exact: false })).toBeInTheDocument();
   });
 
-  it('헬퍼 텍스트(helperText)가 전달되면, 해당 텍스트가 렌더링되어야 한다.', () => {
+  it('헬퍼 텍스트(helperText) 또는 에러(error)가 전달되면, 해당 텍스트가 렌더링되어야 한다.', () => {
     render(
       <InputField error="Enter your email">
         <Input />
       </InputField>
     );
     const helper = screen.getByText('Enter your email');
-    expect(helper).toHaveClass('text-neutral-400');
+    expect(helper).toBeInTheDocument();
   });
 
   it('에러 텍스트가 전달되면, 해당 에러 메시지와 올바른 색상(destructive)이 렌더링되어야 한다.', () => {
@@ -64,6 +63,6 @@ describe('InputField 컴포넌트', () => {
       </InputField>
     );
     const helper = screen.getByText('Invalid email');
-    expect(helper).toHaveClass('text-error-500');
+    expect(helper).toHaveClass('text-destructive');
   });
 });

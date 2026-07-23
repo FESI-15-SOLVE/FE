@@ -1,15 +1,15 @@
-import Image from "next/image";
+import Image from 'next/image';
 import {
   Card,
   CardHeader,
   CardTitle,
   CardContent,
   CardFooter,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { formatMeetingDateTime } from "@/lib/date";
-import { MeetingWithHost } from "@/api/data-contracts";
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { formatMeetingDateTime } from '@/lib/date';
+import { MeetingWithHost } from '@/api/data-contracts';
 
 export interface DetailCardProps {
   /** API에서 전달받는 모임 데이터 (MeetingWithHost) */
@@ -20,36 +20,36 @@ export interface DetailCardProps {
   onBookmarkToggle?: () => void;
   /** 버튼 텍스트 커스텀 */
   actionText?: string;
-  actionVariant?: "default" | "secondary" | "tertiary" | "ghost";
+  actionVariant?: 'default' | 'secondary' | 'tertiary' | 'ghost';
   actionDisabled?: boolean;
   className?: string;
 }
 
 export const DUMMY_DETAIL_CARD_MEETING: MeetingWithHost = {
   id: 1,
-  teamId: "dallaem",
-  name: "달램핏 오피스 스트레칭",
-  type: "달램핏",
-  region: "을지로 3가",
-  address: "서울시 중구 을지로 3가",
+  teamId: 'dallaem',
+  name: '달램핏 오피스 스트레칭',
+  type: '달램핏',
+  region: '을지로 3가',
+  address: '서울시 중구 을지로 3가',
   latitude: 37.5665,
   longitude: 126.978,
-  dateTime: "2026-11-17T17:30:00.000Z",
-  registrationEnd: "2026-11-16T23:59:59.000Z",
+  dateTime: '2026-11-17T17:30:00.000Z',
+  registrationEnd: '2026-11-16T23:59:59.000Z',
   capacity: 20,
   participantCount: 20,
-  image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600",
-  description: "달램핏 스트레칭",
+  image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600',
+  description: '달램핏 스트레칭',
   canceledAt: null,
-  confirmedAt: "2026-11-10T10:00:00.000Z",
+  confirmedAt: '2026-11-10T10:00:00.000Z',
   hostId: 1,
   createdBy: 1,
-  createdAt: "2026-11-01T10:00:00.000Z",
-  updatedAt: "2026-11-01T10:00:00.000Z",
+  createdAt: '2026-11-01T10:00:00.000Z',
+  updatedAt: '2026-11-01T10:00:00.000Z',
   host: {
     id: 1,
-    name: "홍길동",
-    image: "https://example.com/profile.jpg",
+    name: '홍길동',
+    image: 'https://example.com/profile.jpg',
   },
   isFavorited: true,
   isJoined: true,
@@ -85,19 +85,19 @@ export function DetailCard({
   } = meeting;
 
   // 상태 바지 텍스트 ("이용 완료" | "이용 예정")
-  const statusBadgeText = isCompleted ? "이용 완료" : "이용 예정";
+  const statusBadgeText = isCompleted ? '이용 완료' : '이용 예정';
 
   // 개설 확정/대기 바지 텍스트 ("개설 확정" | "개설 대기")
-  const subBadgeText = confirmedAt ? "개설 확정" : "개설 대기";
+  const subBadgeText = confirmedAt ? '개설 확정' : '개설 대기';
 
   // 일시 포맷팅 (공통 유틸 활용)
   const { dateText, timeText } = formatMeetingDateTime(dateTime);
 
   // 액션 버튼 텍스트 및 변형(variant)
   const resolvedActionText =
-    actionText ?? (isJoined ? "예약 취소하기" : "참여하기");
+    actionText ?? (isJoined ? '예약 취소하기' : '참여하기');
   const resolvedActionVariant =
-    actionVariant ?? (isJoined ? "secondary" : "default");
+    actionVariant ?? (isJoined ? 'secondary' : 'default');
 
   return (
     <Card
@@ -106,20 +106,20 @@ export function DetailCard({
            - 모바일: rounded-2xl (20px), p-5 (20px), gap-4 (16px), flex-col
            - 데스크톱 (sm 이상): rounded-3xl (32px), p-6 (24px), gap-6 (24px), flex-row
         */
-        "flex w-full flex-col gap-4 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all sm:flex-row sm:items-stretch sm:gap-6 sm:rounded-3xl sm:p-6",
+        'flex w-full flex-col gap-4 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all sm:flex-row sm:items-stretch sm:gap-6 sm:rounded-3xl sm:p-6',
         className,
       )}
     >
       {/* Thumbnail Image Section */}
       <div
         className={cn(
-          "relative h-44 w-full shrink-0 overflow-hidden rounded-2xl bg-slate-100 sm:h-47 sm:w-47",
+          'relative h-44 w-full shrink-0 overflow-hidden rounded-2xl bg-slate-100 sm:h-47 sm:w-47',
         )}
       >
         {image ? (
           <Image
             src={image}
-            alt={name ?? "모임 이미지"}
+            alt={name ?? '모임 이미지'}
             fill
             className="object-cover"
           />
@@ -139,10 +139,10 @@ export function DetailCard({
           <svg
             aria-hidden="true"
             className={cn(
-              "size-5 transition-colors",
+              'size-5 transition-colors',
               isFavorited
-                ? "fill-red-500 stroke-red-500 text-red-500"
-                : "fill-none stroke-current",
+                ? 'fill-red-500 stroke-red-500 text-red-500'
+                : 'fill-none stroke-current',
             )}
             strokeWidth="2"
             viewBox="0 0 24 24"

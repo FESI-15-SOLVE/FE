@@ -14,7 +14,7 @@ const mockMeeting = {
   isSaved: false,
 };
 
-describe('DetailCard', () => {
+describe('DetailCard 컴포넌트', () => {
   it('모임의 세부 정보를 올바르게 렌더링해야 합니다.', () => {
     render(<DetailCard meeting={mockMeeting} />);
     expect(screen.getByText('달램핏 오피스 스트레칭')).toBeInTheDocument();

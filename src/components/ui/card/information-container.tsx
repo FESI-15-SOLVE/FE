@@ -4,12 +4,12 @@ import {
   CardTitle,
   CardContent,
   CardFooter,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tag } from "@/components/ui/tag";
-import { cn } from "@/lib/utils";
-import { formatMeetingDateTime, formatDeadlineText } from "@/lib/date";
-import { MeetingWithHost } from "@/api/data-contracts";
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Tag } from '@/components/ui/tag';
+import { cn } from '@/lib/utils';
+import { formatMeetingDateTime, formatDeadlineText } from '@/lib/date';
+import { MeetingWithHost } from '@/api/data-contracts';
 
 export interface InformationContainerProps {
   /** API 모임 데이터 (필수) */
@@ -26,29 +26,29 @@ export interface InformationContainerProps {
 
 export const DUMMY_INFORMATION_CONTAINER_MEETING: MeetingWithHost = {
   id: 1,
-  teamId: "dallaem",
-  name: "작은 독서 습관 만들기",
-  type: "취미/여가",
-  region: "중구",
-  address: "서울시 중구 자양동 123-45",
+  teamId: 'dallaem',
+  name: '작은 독서 습관 만들기',
+  type: '취미/여가',
+  region: '중구',
+  address: '서울시 중구 자양동 123-45',
   latitude: 37.5407,
   longitude: 127.0693,
-  dateTime: "2026-01-07T17:30:00.000Z",
-  registrationEnd: "2026-01-07T21:00:00.000Z",
+  dateTime: '2026-01-07T17:30:00.000Z',
+  registrationEnd: '2026-01-07T21:00:00.000Z',
   capacity: 10,
   participantCount: 5,
-  image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600",
-  description: "함께 운동하며 건강을 챙겨요!",
+  image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600',
+  description: '함께 운동하며 건강을 챙겨요!',
   canceledAt: null,
   confirmedAt: null,
   hostId: 1,
   createdBy: 1,
-  createdAt: "2026-02-01T10:00:00.000Z",
-  updatedAt: "2026-02-01T10:00:00.000Z",
+  createdAt: '2026-02-01T10:00:00.000Z',
+  updatedAt: '2026-02-01T10:00:00.000Z',
   host: {
     id: 1,
-    name: "홍길동",
-    image: "https://example.com/profile.jpg",
+    name: '홍길동',
+    image: 'https://example.com/profile.jpg',
   },
   isFavorited: false,
   isJoined: false,
@@ -65,7 +65,7 @@ export function InformationContainer({
   meeting = DUMMY_INFORMATION_CONTAINER_MEETING,
   onAction,
   onBookmarkToggle,
-  actionText = "참여하기",
+  actionText = '참여하기',
   actionDisabled = false,
   className,
 }: InformationContainerProps) {
@@ -85,7 +85,7 @@ export function InformationContainer({
            - 모바일: rounded-2xl (20px), p-5 (20px), gap-6 (24px)
            - 데스크톱 (md 이상): rounded-3xl (32px), p-10 (40px), gap-10 (40px)
         */
-        "flex w-full flex-col justify-between gap-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:gap-10 md:rounded-3xl md:p-10",
+        'flex w-full flex-col justify-between gap-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:gap-10 md:rounded-3xl md:p-10',
         className,
       )}
     >
@@ -160,10 +160,10 @@ export function InformationContainer({
           <svg
             aria-hidden="true"
             className={cn(
-              "size-5 transition-colors md:size-8",
+              'size-5 transition-colors md:size-8',
               isFavorited
-                ? "fill-red-500 stroke-red-500 text-red-500"
-                : "fill-none stroke-current",
+                ? 'fill-red-500 stroke-red-500 text-red-500'
+                : 'fill-none stroke-current',
             )}
             strokeWidth="2"
             viewBox="0 0 24 24"

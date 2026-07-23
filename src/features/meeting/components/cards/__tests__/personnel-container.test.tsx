@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { PersonnelContainer } from '../personnel-container';
 
-describe('PersonnelContainer', () => {
+describe('PersonnelContainer 컴포넌트', () => {
   it('참여자 수가 올바르게 렌더링되어야 합니다', () => {
     render(
       <PersonnelContainer 

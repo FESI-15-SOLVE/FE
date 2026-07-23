@@ -16,7 +16,7 @@ const mockMeeting = {
   isSaved: false,
 };
 
-describe('GroupCard', () => {
+describe('GroupCard 컴포넌트', () => {
   it('모임의 세부 정보를 올바르게 렌더링해야 합니다.', () => {
     render(
       <GroupCard meeting={mockMeeting} isClosed={false} isConfirmed={true} />,
