@@ -4,7 +4,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Tag } from '@/components/ui/tag';
 import { Button, UtilityButton } from '@/components/ui/button';
-import { IconHeart, IconCrown, IconMeatballs } from '@/components/icons';
+import { IconCrown, IconMeatballs } from '@/components/icons';
 
 export interface InformationCardProps {
   meeting: {
@@ -69,16 +69,8 @@ export function InformationCard({
               </span>
             </Tag>
           )}
-          <div className="flex items-center justify-center px-2 py-0.5 bg-white border border-[#ddd] rounded-md sm:rounded-lg">
-            <span className="text-xs sm:text-sm font-medium text-neutral-500">
-              {meeting.date}
-            </span>
-          </div>
-          <div className="flex items-center justify-center px-2 py-0.5 bg-white border border-[#ddd] rounded-md sm:rounded-lg">
-            <span className="text-xs sm:text-sm font-medium text-neutral-500">
-              {meeting.time}
-            </span>
-          </div>
+          <InfoTag>{meeting.date}</InfoTag>
+          <InfoTag>{meeting.time}</InfoTag>
         </div>
 
         {/* 제목 및 방장 표시 */}
@@ -121,6 +113,16 @@ export function InformationCard({
           참여하기
         </Button>
       </div>
+    </div>
+  );
+}
+
+function InfoTag({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-center px-2 py-0.5 bg-white border border-slate-200 rounded-md sm:rounded-lg">
+      <span className="text-xs sm:text-sm font-medium text-neutral-500">
+        {children}
+      </span>
     </div>
   );
 }
