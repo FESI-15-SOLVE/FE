@@ -29,13 +29,20 @@ const nextConfig: NextConfig = {
                   },
                 ],
               },
+              icon: true,
+              typescript: true,
+              ext: "tsx",
             },
           },
         ],
         as: "*.js",
+        condition: {
+          path: /assets\/icons\//,
+        },
       },
     },
   },
+
   webpack: (config) => {
     // @ts-expect-error 타입 에러 무시
     const fileLoaderRule = config.module.rules.find((rule) =>
@@ -56,6 +63,7 @@ const nextConfig: NextConfig = {
           {
             loader: "@svgr/webpack",
             options: {
+              icon: true,
               typescript: true,
               ext: "tsx",
             },
