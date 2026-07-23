@@ -3,7 +3,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const textAreaVariants = cva(
-  'w-full h-[120px] bg-gray-50 text-neutral-800 placeholder-neutral-400 border border-transparent rounded-xl p-3 outline-none resize-none focus:border-brand-500 focus:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
+  'w-full h-[120px] bg-gray-50 text-neutral-800 placeholder-neutral-400 border rounded-xl p-3 outline-none resize-none focus:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
   {
     variants: {
       inputSize: {
@@ -11,8 +11,8 @@ const textAreaVariants = cva(
         sm: 'text-sm',
       },
       destructive: {
-        true: 'border-danger-500 focus:border-danger-500',
-        false: '',
+        true: 'border-error-500 focus:border-error-500',
+        false: 'border-transparent focus:border-brand-500',
       },
     },
     defaultVariants: {

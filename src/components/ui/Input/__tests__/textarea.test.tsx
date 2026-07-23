@@ -23,7 +23,7 @@ describe('TextArea 컴포넌트', () => {
   it('destructive prop이 true일 때 destructive 스타일 클래스가 적용된다', () => {
     render(<TextArea placeholder="Enter description" destructive />);
     const textarea = screen.getByPlaceholderText('Enter description');
-    expect(textarea).toHaveClass('border-danger-500');
+    expect(textarea).toHaveClass('border-error-500');
   });
 
   it('기본 스타일과 커스텀 className이 정상적으로 병합된다', () => {
@@ -52,6 +52,6 @@ describe('TextAreaField 컴포넌트', () => {
     expect(screen.getByText('Write something')).toHaveClass('text-neutral-400');
 
     rerender(<TextAreaField helperText="Write something" destructive />);
-    expect(screen.getByText('Write something')).toHaveClass('text-danger-500');
+    expect(screen.getByText('Write something')).toHaveClass('text-error-500');
   });
 });

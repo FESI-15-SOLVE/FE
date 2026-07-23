@@ -19,7 +19,7 @@ describe('Input 컴포넌트', () => {
   it('destructive prop이 true일 때 destructive 스타일 클래스가 적용된다', () => {
     render(<Input placeholder="Enter text" destructive />);
     const input = screen.getByPlaceholderText('Enter text');
-    expect(input).toHaveClass('border-danger-500');
+    expect(input).toHaveClass('border-error-500');
   });
 
   it('기본 스타일과 커스텀 className이 정상적으로 병합된다', () => {
@@ -49,9 +49,9 @@ describe('InputField 컴포넌트', () => {
     expect(helper).toHaveClass('text-neutral-400');
   });
 
-  it('destructive가 true일 때 helperText에 danger 색상이 적용된다', () => {
+  it('destructive가 true일 때 helperText에 error 색상이 적용된다', () => {
     render(<InputField helperText="Invalid email" destructive />);
     const helper = screen.getByText('Invalid email');
-    expect(helper).toHaveClass('text-danger-500');
+    expect(helper).toHaveClass('text-error-500');
   });
 });

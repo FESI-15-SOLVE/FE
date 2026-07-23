@@ -54,7 +54,7 @@ function InputField({
             className={cn(
               'font-medium',
               inputSize === 'sm' ? 'text-xs leading-4' : 'text-sm leading-5',
-              destructive ? 'text-danger-500' : 'text-neutral-400',
+              destructive ? 'text-error-500' : 'text-neutral-400',
             )}
           >
             {helperText}

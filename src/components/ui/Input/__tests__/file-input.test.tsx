@@ -3,9 +3,8 @@ import userEvent from '@testing-library/user-event';
 import { FileInput } from '../file-input';
 
 describe('FileInput 컴포넌트', () => {
-  it('value가 null일 때 업로드 아이콘과 파일 첨부 텍스트를 렌더링한다', () => {
+  it('value가 null일 때 파일 첨부 텍스트를 렌더링한다', () => {
     render(<FileInput value={null} />);
-    expect(screen.getByAltText('Upload Icon')).toBeInTheDocument();
     expect(screen.getByText('파일 첨부')).toBeInTheDocument();
   });
 
