@@ -31,7 +31,7 @@ export function MobileMenuSheet({
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger>
-        <IconMenu className="size-6 flex p-1 text-slate-600 hover:text-neutral-900" />
+        <IconMenu className="size-6 flex  text-slate-600 hover:text-neutral-900" />
       </SheetTrigger>
       <SheetContent
         side="right"
@@ -44,7 +44,7 @@ export function MobileMenuSheet({
         </SheetHeader>
 
         <div className="flex flex-col flex-1 overflow-y-auto p-4">
-          {/* User Profile in Mobile Sheet */}
+          {/* 모바일 시트 내 유저 프로필 */}
           {isLoggedIn ? (
             <div className="flex items-center gap-4 mb-8 p-2">
               <div className="flex size-11 items-center justify-center overflow-hidden rounded-full bg-slate-200 text-slate-400 shrink-0">
@@ -74,7 +74,7 @@ export function MobileMenuSheet({
             </div>
           )}
 
-          {/* Mobile Navigation Links */}
+          {/* 모바일 네비게이션 링크 */}
           <nav className="flex flex-col gap-2">
             {NAV_LINKS.map((link) => (
               <Link
