@@ -57,11 +57,11 @@ export function GroupCard({
       className={cn(
         'bg-white relative overflow-hidden flex cursor-pointer transition-shadow hover:shadow-md border border-gray-100',
         'flex-col w-full rounded-3xl pb-5',
-        'sm:flex-row sm:p-6 sm:gap-[20px] sm:items-stretch',
+        'sm:flex-row sm:p-6 sm:gap-5 sm:items-stretch',
       )}
     >
       {/* 썸네일 영역 */}
-      <div className="relative shrink-0 w-full h-39 sm:w-[170px] sm:h-[170px] sm:rounded-3xl overflow-hidden bg-gray-100 rounded-t-3xl">
+      <div className="relative shrink-0 w-full h-39 sm:w-42.5 sm:h-42.5 sm:rounded-3xl overflow-hidden bg-gray-100 rounded-t-3xl">
         <Image
           src={meeting.imageUrl}
           alt={meeting.title}
