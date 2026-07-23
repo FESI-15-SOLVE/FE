@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useScrollToCenter } from "@/hooks/ui";
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
@@ -29,20 +29,17 @@ interface TimeColumnProps {
 }
 
 function TimeColumn({ items, selected, label, onSelect }: TimeColumnProps) {
-  const selectedRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    selectedRef.current?.scrollIntoView({
-      block: "center",
-      behavior: "smooth",
-    });
-  }, [selected]);
+  const { selectedRef, containerRef } = useScrollToCenter<
+    HTMLButtonElement,
+    HTMLDivElement
+  >(selected);
 
   return (
     <div
+      ref={containerRef}
       role="listbox"
       aria-label={label}
-      className="flex h-full flex-col gap-2.5 overflow-y-auto px-2 py-2.5 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-200 [&::-webkit-scrollbar-thumb:hover]:bg-slate-300 [&::-webkit-scrollbar-track]:bg-transparent"
+      className="relative flex h-full flex-col gap-2.5 overflow-y-auto px-2 py-2.5 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-200 [&::-webkit-scrollbar-thumb:hover]:bg-slate-300 [&::-webkit-scrollbar-track]:bg-transparent"
     >
       {items.map((item) => {
         const isSelected = item === selected;
