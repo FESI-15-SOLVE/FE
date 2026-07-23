@@ -70,70 +70,72 @@ export function DetailCard({
       </div>
 
       {/* 콘텐츠 영역 */}
-      <div className="flex flex-col flex-1 px-5 mt-4 sm:px-0 sm:mt-0 py-1 justify-between">
-        <div className="flex flex-col gap-3">
-          {/* 배지 영역 */}
-          {badgeStatuses.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {badgeStatuses.map((status, idx) => (
-                <StatusBadge key={idx} status={status} />
-              ))}
-            </div>
-          )}
+      <div className="flex flex-col  flex-1 px-5 mt-4 sm:px-0 sm:mt-0 py-1 justify-between">
+        <div className="flex flex-col gap-3 h-full justify-between">
+          <div>
+            {/* 배지 영역 */}
+            {badgeStatuses.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-3">
+                {badgeStatuses.map((status, idx) => (
+                  <StatusBadge key={idx} status={status} />
+                ))}
+              </div>
+            )}
 
-          {/* 제목 */}
-          <h3 className="text-xl font-semibold text-gray-900 tracking-[-0.4px]">
-            {meeting.title}
-          </h3>
-
-          {/* 상세 메타 정보 (참가자수, 위치, 날짜, 시간) */}
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-medium mt-1">
-            <div className="flex items-center gap-1 text-gray-900">
-              <IconPerson className="size-4" />
-              <span>
-                {meeting.participantCount}/{meeting.maxParticipant}
-              </span>
-            </div>
-
-            <MetaItem label="위치" value={meeting.location} ml />
-            <Divider />
-
-            <MetaItem label="날짜" value={meeting.date} />
-            <Divider />
-
-            <MetaItem label="시간" value={meeting.time} />
-          </div>
-        </div>
-
-        {/* 하단 액션 및 데스크톱 하트 버튼 영역 */}
-        <div className="flex items-center gap-4 mt-6 sm:mt-auto justify-end">
-          {/* 데스크톱 하트 버튼 - 모바일에서는 숨김 (이미지 쪽에 있음) */}
-          <div className="hidden sm:block absolute top-6 right-6">
-            <UtilityButton
-              onClick={handleSaveClick}
-              isActive={meeting.isSaved}
-            />
+            {/* 제목 */}
+            <h3 className="text-xl font-semibold text-black tracking-[-0.4px]">
+              {meeting.title}
+            </h3>
           </div>
 
-          {/* 액션 버튼 */}
-          {actionStatus === 'reserved' && (
-            <Button
-              onClick={handleActionClick}
-              variant="tertiary"
-              className="w-full sm:w-auto px-6 h-12 font-semibold text-brand-600 border-brand-600 border"
-            >
-              예약 취소하기
-            </Button>
-          )}
-          {actionStatus === 'completed' && (
-            <Button
-              onClick={handleActionClick}
-              variant="primary"
-              className="w-full sm:w-auto px-6 h-12 font-semibold"
-            >
-              리뷰 작성하기
-            </Button>
-          )}
+          <div className="flex justify-between">
+            {/* 상세 메타 정보 (참가자수, 위치, 날짜, 시간) */}
+            <div className="flex flex-wrap items-end gap-x-2 gap-y-1 text-sm font-medium mt-1">
+              <div className="flex items-center gap-1 text-slate-600">
+                <IconPerson className="size-4" />
+                <span>
+                  {meeting.participantCount}/{meeting.maxParticipant}
+                </span>
+              </div>
+
+              <MetaItem label="위치" value={meeting.location} ml />
+              <Divider />
+
+              <MetaItem label="날짜" value={meeting.date} />
+              <Divider />
+
+              <MetaItem label="시간" value={meeting.time} />
+            </div>
+            <div className="flex items-center gap-4 mt-6 sm:mt-auto justify-end">
+              {/* 데스크톱 하트 버튼 - 모바일에서는 숨김 (이미지 쪽에 있음) */}
+              <div className="hidden sm:block absolute top-6 right-6">
+                <UtilityButton
+                  onClick={handleSaveClick}
+                  isActive={meeting.isSaved}
+                />
+              </div>
+
+              {/* 액션 버튼 */}
+              {actionStatus === 'reserved' && (
+                <Button
+                  onClick={handleActionClick}
+                  variant="secondary"
+                  className="w-full sm:w-auto px-6 h-12 font-semibold"
+                >
+                  예약 취소하기
+                </Button>
+              )}
+              {actionStatus === 'completed' && (
+                <Button
+                  onClick={handleActionClick}
+                  variant="primary"
+                  className="w-full sm:w-auto px-6 h-12 font-semibold"
+                >
+                  리뷰 작성하기
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -4,7 +4,8 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Tag } from '@/components/ui/tag';
 import { Button, UtilityButton } from '@/components/ui/button';
-import { IconCrown, IconMeatballs } from '@/components/icons';
+import { IconAlarm, IconCrown, IconMeatballs } from '@/components/icons';
+import AlarmTag from '@/components/ui/tag/alarm-tag';
 
 export interface InformationCardProps {
   meeting: {
@@ -62,15 +63,9 @@ export function InformationCard({
       <div className="flex flex-col flex-1 w-full sm:h-full gap-4 sm:gap-6">
         {/* 태그 영역 */}
         <div className="flex flex-wrap items-center gap-2">
-          {meeting.deadlineTag && (
-            <Tag size="sm" className="sm:scale-110 origin-left">
-              <span className="text-blue-500 font-semibold">
-                {meeting.deadlineTag}
-              </span>
-            </Tag>
-          )}
-          <InfoTag>{meeting.date}</InfoTag>
-          <InfoTag>{meeting.time}</InfoTag>
+          {meeting.deadlineTag && <AlarmTag>{meeting.deadlineTag}</AlarmTag>}
+          <Tag>{meeting.date}</Tag>
+          <Tag>{meeting.time}</Tag>
         </div>
 
         {/* 제목 및 방장 표시 */}
