@@ -98,7 +98,7 @@ function FileInput({
 
       {!previewUrl && (
         <div className="flex flex-col items-center justify-center gap-2">
-          <IconImagePlus />
+          <IconImagePlus className="text-slate-500" />
           <span
             className={cn(
               'font-medium text-neutral-400',

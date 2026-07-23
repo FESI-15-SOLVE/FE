@@ -28,12 +28,14 @@ export interface InputProps
     Omit<React.ComponentProps<typeof InputPrimitive>, 'size'>,
     VariantProps<typeof inputVariants> {
   ref?: React.Ref<HTMLInputElement>;
+  leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
 }
 
 function Input({
   className,
   type = 'text',
+  leftIcon,
   rightIcon,
   inputSize,
   destructive,
@@ -46,22 +48,30 @@ function Input({
       ref={ref}
       className={cn(
         inputVariants({ inputSize, destructive, className }),
+        leftIcon && 'pl-10',
         rightIcon && 'pr-10',
       )}
       {...props}
     />
   );
 
-  if (!rightIcon) {
+  if (!leftIcon && !rightIcon) {
     return input;
   }
 
   return (
     <div className="relative w-full flex items-center">
+      {leftIcon && (
+        <div className="absolute left-3 flex items-center justify-center text-neutral-400">
+          {leftIcon}
+        </div>
+      )}
       {input}
-      <div className="absolute right-3 flex items-center justify-center text-neutral-400">
-        {rightIcon}
-      </div>
+      {rightIcon && (
+        <div className="absolute right-3 flex items-center justify-center text-neutral-400">
+          {rightIcon}
+        </div>
+      )}
     </div>
   );
 }

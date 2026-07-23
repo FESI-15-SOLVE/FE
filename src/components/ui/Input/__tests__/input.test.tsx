@@ -36,21 +36,33 @@ describe('Input 컴포넌트', () => {
 });
 
 describe('InputField 컴포넌트', () => {
-  it('label과 required prop이 주어지면 별표(*)와 함께 라벨이 렌더링되며 input과 연결된다', () => {
-    render(<InputField label="Username" required />);
+  it('label과 required props가 전달되면 렌더링되어야 한다.', () => {
+    render(
+      <InputField label="Username" required>
+        <Input />
+      </InputField>
+    );
     expect(screen.getByText('Username')).toBeInTheDocument();
     expect(screen.getByText('*')).toBeInTheDocument();
     expect(screen.getByLabelText('Username', { exact: false })).toBeInTheDocument();
   });
 
-  it('helperText가 렌더링되고 기본적으로 neutral 색상이 적용된다', () => {
-    render(<InputField helperText="Enter your email" />);
+  it('헬퍼 텍스트(helperText)가 전달되면, 해당 텍스트가 렌더링되어야 한다.', () => {
+    render(
+      <InputField error="Enter your email">
+        <Input />
+      </InputField>
+    );
     const helper = screen.getByText('Enter your email');
     expect(helper).toHaveClass('text-neutral-400');
   });
 
-  it('destructive가 true일 때 helperText에 error 색상이 적용된다', () => {
-    render(<InputField helperText="Invalid email" destructive />);
+  it('에러 텍스트가 전달되면, 해당 에러 메시지와 올바른 색상(destructive)이 렌더링되어야 한다.', () => {
+    render(
+      <InputField error="Invalid email">
+        <Input />
+      </InputField>
+    );
     const helper = screen.getByText('Invalid email');
     expect(helper).toHaveClass('text-error-500');
   });

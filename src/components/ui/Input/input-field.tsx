@@ -1,67 +1,31 @@
 import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Input, type InputProps } from './input';
-import { Label } from './label';
+import { Field, FieldLabel, FieldContent, FieldError } from '@/components/ui/field';
 
-export interface InputFieldProps extends InputProps {
-  label?: string;
+export interface InputFieldProps {
+  label?: React.ReactNode;
   required?: boolean;
-  helperText?: string;
+  error?: string;
+  children: React.ReactNode;
+  className?: string;
 }
 
 function InputField({
   label,
   required,
-  helperText,
-  destructive,
-  inputSize,
+  error,
+  children,
   className,
-  id,
-  ...props
 }: InputFieldProps) {
-  const generatedId = React.useId();
-  const inputId = id || generatedId;
-
   return (
-    <div className="flex flex-col gap-1.5 w-full">
+    <Field data-invalid={!!error} className={className}>
       {label && (
-        <Label htmlFor={inputId} className="flex items-center gap-0.5 pl-1">
-          <span className="text-sm font-medium text-neutral-800 leading-5">
-            {label}
-          </span>
-          {required && (
-            <span
-              className="text-sm font-medium text-brand-500 leading-5"
-              aria-hidden="true"
-            >
-              *
-            </span>
-          )}
-        </Label>
+        <FieldLabel className="flex items-center gap-0.5 font-medium text-neutral-800">
+          {label} {required && <span className="text-brand-500">*</span>}
+        </FieldLabel>
       )}
-
-      <Input
-        id={inputId}
-        destructive={destructive}
-        inputSize={inputSize}
-        className={className}
-        {...props}
-      />
-
-      {helperText && (
-        <div className="pl-1">
-          <p
-            className={cn(
-              'font-medium',
-              inputSize === 'sm' ? 'text-xs leading-4' : 'text-sm leading-5',
-              destructive ? 'text-error-500' : 'text-neutral-400',
-            )}
-          >
-            {helperText}
-          </p>
-        </div>
-      )}
-    </div>
+      <FieldContent>{children}</FieldContent>
+      {error && <FieldError errors={[{ message: error }]} />}
+    </Field>
   );
 }
 
