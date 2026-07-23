@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
-import { IconDelete } from "@/components/icons";
-import { Button } from "./button";
+import { cn } from '@/lib/utils';
+import { IconDelete } from '@/components/icons';
+import { Button } from './button';
 
 export type DeleteButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
 
@@ -9,10 +9,11 @@ export function DeleteButton({ className, ...props }: DeleteButtonProps) {
     <Button
       variant="destructive"
       className={cn(
-        "size-4.5 rounded-full p-0 bg-black/80 text-white hover:bg-black",
-        className
+        'size-4.5 rounded-full p-0 bg-black/80 text-white hover:bg-black',
+        className,
       )}
       {...props}
+      aria-label="삭제"
     >
       <IconDelete className="size-2.5" />
     </Button>
