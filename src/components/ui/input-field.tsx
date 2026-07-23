@@ -37,7 +37,11 @@ export function InputField({
     <Field>
       <FieldLabel className="ml-1 gap-0" htmlFor={inputId}>
         {label}
-        {required && <span className="text-green-500">*</span>}
+        {required && (
+          <span aria-hidden="true" className="text-green-500">
+            *
+          </span>
+        )}
       </FieldLabel>
       <Input
         id={inputId}
