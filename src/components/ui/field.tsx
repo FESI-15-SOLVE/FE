@@ -131,7 +131,7 @@ function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
     <p
       data-slot="field-description"
       className={cn(
-        "aria-invalid:text-error-500 text-left text-sm leading-normal font-medium text-slate-500 group-has-data-horizontal/field:text-balance [[data-variant=legend]+&]:-mt-1.5",
+        "aria-invalid:text-error-500 text-left text-sm leading-normal font-medium text-slate-500 group-data-horizontal/field:text-balance [[data-variant=legend]+&]:-mt-1.5",
         "last:mt-0 nth-last-2:-mt-1",
         "[&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4",
         className,
@@ -184,24 +184,25 @@ function FieldError({
       return children;
     }
 
-    if (!errors?.length) {
+    const messages = errors
+      ?.map((error) => error?.message)
+      .filter((message): message is string => Boolean(message));
+
+    if (!messages?.length) {
       return null;
     }
 
-    const uniqueErrors = [
-      ...new Map(errors.map((error) => [error?.message, error])).values(),
-    ];
+    const uniqueMessages = [...new Set(messages)];
 
-    if (uniqueErrors?.length == 1) {
-      return uniqueErrors[0]?.message;
+    if (uniqueMessages.length === 1) {
+      return uniqueMessages[0];
     }
 
     return (
       <ul className="ml-4 flex list-disc flex-col gap-1">
-        {uniqueErrors.map(
-          (error, index) =>
-            error?.message && <li key={index}>{error.message}</li>,
-        )}
+        {uniqueMessages.map((message, index) => (
+          <li key={index}>{message}</li>
+        ))}
       </ul>
     );
   }, [children, errors]);
