@@ -20,7 +20,19 @@ const nextConfig: NextConfig = {
         loaders: [
           {
             loader: "@svgr/webpack",
-            options: { icon: true, typescript: true, ext: "tsx" },
+            options: {
+              svgoConfig: {
+                plugins: [
+                  {
+                    name: "preset-default",
+                    params: { overrides: { removeViewBox: false } },
+                  },
+                ],
+              },
+              icon: true,
+              typescript: true,
+              ext: "tsx",
+            },
           },
         ],
         as: "*.js",

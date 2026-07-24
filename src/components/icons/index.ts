@@ -28,3 +28,5 @@ export { default as IconPlus } from "@/assets/icons/plus.svg";
 export { default as IconThumbsUp } from "@/assets/icons/thumbs-up.svg";
 export { default as IconVisibilityOff } from "@/assets/icons/visibility_off.svg";
 export { default as IconVisibilityOn } from "@/assets/icons/visibility_on.svg";
+export { default as IconHeartEmpty } from "@/assets/icons/heart-empty.svg";
+export { default as IconHeartFull } from "@/assets/icons/heart-full.svg";
