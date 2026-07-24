@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { GlobalNavigationBar } from '@/components/layout/gnb';
+import { QueryProvider } from '@/providers/query-provider';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -32,7 +34,9 @@ export default function RootLayout({
         <GlobalNavigationBar isLoggedIn={true} />
 
         <main className="flex-1 flex flex-col sm:max-w-7xl sm:mx-auto">
-          {children}
+          <NuqsAdapter>
+            <QueryProvider>{children}</QueryProvider>
+          </NuqsAdapter>
         </main>
       </body>
     </html>
