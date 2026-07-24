@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 
 const wishButtonVariants = cva(
-  "bg-white rounded-full [&_svg]:shrink-0 [&_svg]:transition-transform active:[&_svg]:scale-75 aria-pressed:[&_svg]:scale-110",
+  "bg-white rounded-full border-1 border-slate-200 [&_svg]:shrink-0 [&_svg]:transition-transform active:[&_svg]:scale-75 aria-pressed:[&_svg]:scale-110",
   {
     variants: {
       size: {
