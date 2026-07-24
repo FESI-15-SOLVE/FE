@@ -11,7 +11,7 @@ generateApi({
   modular: true,
   generateResponses: true,
   moduleNameFirstTag: true,
-  httpClientType: 'axios',
+  httpClientType: 'fetch',
   hooks: {
     onFormatRouteName: (routeInfo, templateRouteName) => {
       const method = routeInfo.method.toUpperCase();
