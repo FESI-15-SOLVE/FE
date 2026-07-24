@@ -1,7 +1,5 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -9,7 +7,8 @@ import { z } from 'zod';
 import { InputField } from '@/components/ui/Input/input-field';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/button';
-import { SocialButton } from '@/components/ui/button/social-button';
+import { signupAction } from '@/actions/auth/auth-actions';
+import { useRouter } from 'next/navigation';
 
 const signupSchema = z
   .object({
@@ -29,26 +28,29 @@ export function SignupForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    setError,
+    formState: { errors, isValid, isSubmitting },
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     mode: 'onChange',
   });
 
-  const onSubmit = (data: SignupFormData) => {
-    // 백엔드 연동 전 임시 출력
-    console.log('Form submitted:', data);
+  const router = useRouter();
+
+  const onSubmit = async (data: SignupFormData) => {
+    const { ...requestData } = data;
+    const result = await signupAction(requestData);
+
+    if (result.success) {
+      router.push('/sign-in');
+    } else {
+      setError('root', { type: 'server', message: result.message });
+    }
   };
 
   return (
-    <div className="w-full max-w-142 mx-auto bg-white md:rounded-3xl px-4 py-6 md:px-14 md:py-10 shadow-none md:shadow-sm border-0 md:border border-gray-100">
-      <div className="flex flex-col items-center mb-8">
-        <h1 className="text-xl md:text-2xl font-semibold text-gray-900 tracking-tight">
-          회원가입
-        </h1>
-      </div>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4">
         {/* 이름 입력 */}
         <InputField
           id="name"
@@ -113,41 +115,19 @@ export function SignupForm() {
         </InputField>
 
         {/* 회원가입 버튼 */}
+        {errors.root && (
+          <div className="text-sm font-medium text-red-500 text-center mt-2">
+            {errors.root.message}
+          </div>
+        )}
         <Button
           type="submit"
-          disabled={!isValid}
+          disabled={!isValid || isSubmitting}
           className="w-full h-14 text-base font-semibold mt-2"
         >
           확인
         </Button>
-      </form>
-
-      {/* 구분선 및 소셜 로그인 */}
-      <div className="mt-8">
-        <div className="relative flex items-center mb-6">
-          <div className="grow border-t border-gray-200"></div>
-          <span className="shrink-0 mx-4 text-xs font-medium text-gray-500">
-            SNS 계정으로 회원가입
-          </span>
-          <div className="grow border-t border-gray-200"></div>
-        </div>
-
-        <div className="flex gap-3 w-full">
-          <SocialButton social="kakao" className="" />
-          <SocialButton social="google" className="" />
-        </div>
       </div>
-
-      {/* 로그인 이동 링크 */}
-      <div className="mt-8 flex justify-center items-center text-sm font-medium">
-        <span className="text-gray-500">이미 회원이신가요? </span>
-        <Link
-          href="/login"
-          className="text-green-500 ml-1 underline underline-offset-2"
-        >
-          로그인
-        </Link>
-      </div>
-    </div>
+    </form>
   );
 }

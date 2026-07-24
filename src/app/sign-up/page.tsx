@@ -1,11 +1,9 @@
-import { SignupForm } from '@/features/auth/components/signup/';
+import { SignupContainer } from '@/features/auth/components/signup/';
 
 export default function SignupPage() {
   return (
-    <div className="">
-      <div className="mt-20">
-        <SignupForm />
-      </div>
+    <div className="mt-16 px-4">
+      <SignupContainer />
     </div>
   );
 }

@@ -1,42 +1,66 @@
-import { axiosInstance } from '@/lib/axios';
+import 'server-only';
+
 import { Auth } from './Auth';
-import { Meetings } from './Meetings';
-import { Users } from './Users';
-import { Notifications } from './Notifications';
 import { Favorites } from './Favorites';
-import { Reviews } from './Reviews';
-import { Posts } from './Posts';
 import { Images } from './Images';
 import { MeetingTypes } from './MeetingTypes';
+import { Meetings } from './Meetings';
+import { Notifications } from './Notifications';
 import { Og } from './Og';
+import { Posts } from './Posts';
+import { Reviews } from './Reviews';
+import { Users } from './Users';
+import { ApiConfig } from './http-client';
+import { BACKEND_URL } from '@/constants/api';
+import { cookies } from 'next/headers';
+import { ErrorResponse as ErrorResponseGenerated } from './data-contracts';
 
-export const authApi = new Auth();
-export const meetingsApi = new Meetings();
-export const usersApi = new Users();
-export const notificationsApi = new Notifications();
-export const favoritesApi = new Favorites();
-export const reviewsApi = new Reviews();
-export const postsApi = new Posts();
-export const imagesApi = new Images();
-export const meetingTypesApi = new MeetingTypes();
-export const ogApi = new Og();
+export class ErrorResponse extends Error implements ErrorResponseGenerated {
+  code: string;
 
-// Inject custom axios instance into all generated API instances
-const apis = [
-  authApi,
-  meetingsApi,
-  usersApi,
-  notificationsApi,
-  favoritesApi,
-  reviewsApi,
-  postsApi,
-  imagesApi,
-  meetingTypesApi,
-  ogApi,
-];
+  constructor(message: string, code: string) {
+    super(message);
+    this.code = code;
+  }
+}
+export class Api {
+  public auth: Auth;
+  public favorites: Favorites;
+  public images: Images;
+  public meetingTypes: MeetingTypes;
+  public meetings: Meetings;
+  public notifications: Notifications;
+  public og: Og;
+  public posts: Posts;
+  public reviews: Reviews;
+  public users: Users;
 
-apis.forEach((api) => {
-  api.instance = axiosInstance;
-});
+  constructor() {
+    // 1. 서버 런타임(Server Action, API Route)용 자동 토큰 주입(securityWorker)
+    const config: ApiConfig = {
+      baseUrl: BACKEND_URL,
+      securityWorker: async () => {
+        try {
+          const cookieStore = await cookies();
+          const token = cookieStore.get('accessToken')?.value;
+          return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+        } catch {
+          return {};
+        }
+      },
+    };
 
-export * from './data-contracts';
+    this.auth = new Auth(config);
+    this.favorites = new Favorites(config);
+    this.images = new Images(config);
+    this.meetingTypes = new MeetingTypes(config);
+    this.meetings = new Meetings(config);
+    this.notifications = new Notifications(config);
+    this.og = new Og(config);
+    this.posts = new Posts(config);
+    this.reviews = new Reviews(config);
+    this.users = new Users(config);
+  }
+}
+
+export const ServerApi = new Api();
