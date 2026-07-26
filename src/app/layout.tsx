@@ -33,7 +33,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <GlobalNavigationBar isLoggedIn={true} />
 
-        <main className="flex-1 flex flex-col sm:max-w-7xl sm:mx-auto">
+        <main className="flex-1 flex flex-col sm:max-w-7xl sm:mx-auto w-full">
           <NuqsAdapter>
             <QueryProvider>{children}</QueryProvider>
           </NuqsAdapter>

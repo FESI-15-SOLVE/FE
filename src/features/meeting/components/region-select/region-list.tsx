@@ -21,8 +21,8 @@ export function RegionList({
       <RegionItem
         variant="all"
         label="지역 전체"
-        isSelected={tempSelected === '전체'}
-        onClick={() => onSelectRegion('전체')}
+        isSelected={!tempSelected || tempSelected === '지역 전체'}
+        onClick={() => onSelectRegion('지역 전체')}
       />
 
       <Accordion

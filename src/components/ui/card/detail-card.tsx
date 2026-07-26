@@ -20,7 +20,6 @@ export interface DetailCardProps {
   onBookmarkToggle?: () => void;
   /** 버튼 텍스트 커스텀 */
   actionText?: string;
-  actionVariant?: 'default' | 'secondary' | 'tertiary' | 'ghost';
   actionDisabled?: boolean;
   className?: string;
 }
@@ -67,7 +66,6 @@ export function DetailCard({
   onAction,
   onBookmarkToggle,
   actionText,
-  actionVariant,
   actionDisabled = false,
   className,
 }: DetailCardProps) {
@@ -96,8 +94,7 @@ export function DetailCard({
   // 액션 버튼 텍스트 및 변형(variant)
   const resolvedActionText =
     actionText ?? (isJoined ? '예약 취소하기' : '참여하기');
-  const resolvedActionVariant =
-    actionVariant ?? (isJoined ? 'secondary' : 'default');
+  const resolvedActionVariant = isJoined ? 'secondary' : 'primary';
 
   return (
     <Card

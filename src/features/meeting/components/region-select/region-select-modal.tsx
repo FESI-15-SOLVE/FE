@@ -21,13 +21,13 @@ export function RegionSelectModal({
   selectedRegion,
   onSelect,
 }: RegionSelectModalProps) {
+  const currentRegion = !selectedRegion || selectedRegion === '' ? '지역 전체' : selectedRegion;
+
   const [expandedProvince, setExpandedProvince] = useState<string | null>(null);
-  const [tempSelected, setTempSelected] = useState<string | null>(
-    selectedRegion || null,
-  );
+  const [tempSelected, setTempSelected] = useState<string | null>(currentRegion);
 
   const handleClose = () => {
-    setTempSelected(selectedRegion || null);
+    setTempSelected(currentRegion);
     setExpandedProvince(null);
     onClose();
   };
@@ -45,7 +45,7 @@ export function RegionSelectModal({
 
   const handleSelectRegion = (regionName: string) => {
     setTempSelected(regionName);
-    if (regionName === '전체') {
+    if (regionName === '지역 전체') {
       setExpandedProvince(null);
     }
   };
