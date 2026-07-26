@@ -31,6 +31,7 @@ export async function proxy(request: NextRequest) {
   // 4. 엑세스 토큰 만료 시 (리프레시는 유효) -> 갱신 시도
   if (!isAccessTokenValid) {
     const refreshedResponse = await refreshTokens(request, refreshToken);
+    console.log(refreshedResponse);
     if (refreshedResponse) {
       return refreshedResponse;
     }
@@ -61,18 +62,20 @@ function isTokenValid(token: string) {
   }
 }
 
-import { BACKEND_URL } from '@/constants/api';
+import { BACKEND_URL, TEAM_ID } from '@/constants/api';
 
 /**
  * 백엔드에 리프레시 토큰을 보내 새로운 토큰들을 받아오고 쿠키를 구워줍니다.
  */
 async function refreshTokens(request: NextRequest, refreshToken: string) {
   try {
-    const res = await fetch(`${BACKEND_URL}/auth/refresh`, {
+    const res = await fetch(`${BACKEND_URL}/${TEAM_ID}/auth/refresh`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),
     });
+
+    console.log(res);
 
     if (!res.ok) return null;
 
