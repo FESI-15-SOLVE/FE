@@ -21,9 +21,7 @@ export const meetingSearchParams = {
   sortBy: parseAsStringEnum<SortBy>([...SORT_BY_VALUES]).withDefault(
     'dateTime',
   ),
-  sortOrder: parseAsStringEnum<SortOrder>([...SORT_ORDER_VALUES]).withDefault(
-    'asc',
-  ),
+  sortOrder: parseAsStringEnum<SortOrder>([...SORT_ORDER_VALUES]),
 };
 
 /**

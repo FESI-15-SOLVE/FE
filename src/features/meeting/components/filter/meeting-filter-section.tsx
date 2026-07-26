@@ -1,27 +1,26 @@
 'use client';
 
-import { useQueryStates } from 'nuqs';
+import { useQueryState } from 'nuqs';
 import { meetingSearchParams } from '@/features/meeting/schema';
 import { CategoryTabs } from './category-tabs';
-import { MeetingFilterBar } from './meeting-filter-bar';
+import { RegionFilter } from './region-filter';
+import { DateFilter } from './date-filter';
+import { SortFilter } from './sort-filter';
 
 export function MeetingFilterSection() {
-  const [filters, setFilters] = useQueryStates(meetingSearchParams);
+  const [type, setType] = useQueryState('type', meetingSearchParams.type);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex items-center justify-between py-4">
       <CategoryTabs
-        activeCategory={filters.type}
-        onSelectCategory={(type) => setFilters({ type })}
+        activeCategory={type}
+        onSelectCategory={(selectedType) => setType(selectedType)}
       />
-      <MeetingFilterBar
-        region={filters.region}
-        date={filters.date}
-        sortBy={filters.sortBy}
-        onRegionChange={(region) => setFilters({ region })}
-        onDateChange={(date) => setFilters({ date })}
-        onSortChange={(sortBy) => setFilters({ sortBy })}
-      />
+      <div className="flex items-center justify-end gap-2 shrink-0">
+        <DateFilter />
+        <RegionFilter />
+        <SortFilter />
+      </div>
     </div>
   );
 }
