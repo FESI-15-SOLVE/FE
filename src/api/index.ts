@@ -17,12 +17,36 @@ import { ErrorResponse as ErrorResponseGenerated } from './data-contracts';
 
 export class ErrorResponse extends Error implements ErrorResponseGenerated {
   code: string;
+  status: number;
 
-  constructor(message: string, code: string) {
+  constructor(message: string, code: string, status: number) {
     super(message);
     this.code = code;
+    this.status = status;
   }
 }
+async function errorAwareFetch(
+  input: RequestInfo | URL,
+  init?: RequestInit,
+): Promise<Response> {
+  const response = await fetch(input, init);
+
+  if (!response.ok) {
+    const body = await response
+      .clone()
+      .json()
+      .catch(() => null);
+
+    throw new ErrorResponse(
+      body?.message ?? '알 수 없는 오류가 발생했습니다.',
+      body?.code ?? 'UNKNOWN',
+      response.status,
+    );
+  }
+
+  return response;
+}
+
 export class Api {
   public auth: Auth;
   public favorites: Favorites;
@@ -48,6 +72,7 @@ export class Api {
           return {};
         }
       },
+      customFetch: errorAwareFetch,
     };
 
     this.auth = new Auth(config);
