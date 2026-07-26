@@ -11,7 +11,9 @@ export function CreateMeetingFloatingButton() {
   return (
     <>
       <div className="fixed bottom-8 right-8 z-40">
-        <CreateButton onClick={() => setCreateModalOpen(true)} />
+        <CreateButton onClick={() => setCreateModalOpen(true)}>
+          모임 만들기
+        </CreateButton>
       </div>
 
       {createModalOpen && (

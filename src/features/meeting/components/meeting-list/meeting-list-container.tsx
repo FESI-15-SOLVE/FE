@@ -18,7 +18,6 @@ export function MeetingListContainer() {
           <SuspensefulMeetingList />
         </Suspense>
       </ClientErrorBoundary>
-
       <CreateMeetingFloatingButton />
     </div>
   );
