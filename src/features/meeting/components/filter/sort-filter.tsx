@@ -40,11 +40,13 @@ export function SortFilter() {
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger>
-        <FilterTrigger mode="sort" isSelected={sortStates.sortBy !== 'dateTime'}>
-          {activeOption.label}
-        </FilterTrigger>
-      </PopoverTrigger>
+      <PopoverTrigger
+        render={
+          <FilterTrigger mode="sort" isSelected={sortStates.sortBy !== 'dateTime'}>
+            {activeOption.label}
+          </FilterTrigger>
+        }
+      />
       <PopoverContent className="w-40 p-1" align="end">
         <div className="flex flex-col gap-0.5">
           {SORT_OPTIONS.map((option) => {

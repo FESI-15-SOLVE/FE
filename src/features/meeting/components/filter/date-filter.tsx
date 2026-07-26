@@ -23,11 +23,13 @@ export function DateFilter() {
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger>
-        <FilterTrigger mode="filter" isSelected={!!dateStr}>
-          {displayDate}
-        </FilterTrigger>
-      </PopoverTrigger>
+      <PopoverTrigger
+        render={
+          <FilterTrigger mode="filter" isSelected={!!dateStr}>
+            {displayDate}
+          </FilterTrigger>
+        }
+      />
       <PopoverContent
         className="w-auto p-0 border-none bg-transparent shadow-none"
         align="end"

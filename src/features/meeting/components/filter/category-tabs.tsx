@@ -8,22 +8,33 @@ interface CategoryTabsProps {
   onSelectCategory: (name: string) => void;
 }
 
+const checkIsCategoryActive = (
+  categoryName: string,
+  activeCategory: string,
+) => {
+  if (categoryName === '전체') {
+    return !activeCategory || activeCategory === '전체';
+  }
+  return categoryName === activeCategory;
+};
+
 export function CategoryTabs({
   activeCategory,
   onSelectCategory,
 }: CategoryTabsProps) {
+  const handleCategoryClick = (categoryName: string) => {
+    onSelectCategory(categoryName === '전체' ? '' : categoryName);
+  };
+
   return (
     <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2">
       {CATEGORIES_WITH_ALL.map((cat) => {
-        const isAll = cat.name === '전체';
-        const isActive = isAll
-          ? !activeCategory || activeCategory === '전체'
-          : activeCategory === cat.name;
+        const isActive = checkIsCategoryActive(cat.name, activeCategory);
 
         return (
           <button
             key={cat.id}
-            onClick={() => onSelectCategory(isAll ? '' : cat.name)}
+            onClick={() => handleCategoryClick(cat.name)}
             className={cn(
               'px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer',
               isActive
