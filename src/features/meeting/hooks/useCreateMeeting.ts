@@ -21,6 +21,7 @@ export function useCreateMeeting({
     dateTime: undefined,
     registrationEnd: undefined,
     capacity: '',
+    description: '',
   });
   const [errors, setErrors] = useState<
     Partial<Record<keyof CreateMeetingValues, string>>
@@ -82,6 +83,7 @@ export function useCreateMeeting({
         dateTime: fieldErrors.dateTime?.[0],
         registrationEnd: fieldErrors.registrationEnd?.[0],
         capacity: fieldErrors.capacity?.[0],
+        description: fieldErrors.description?.[0],
       });
       return;
     }

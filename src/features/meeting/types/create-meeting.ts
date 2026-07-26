@@ -9,6 +9,7 @@ export interface CreateMeetingValues {
   dateTime?: Date;
   registrationEnd?: Date;
   capacity: number | '';
+  description?: string;
 }
 
 export interface CreateMeetingModalProps {

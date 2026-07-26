@@ -1,12 +1,12 @@
 import React from 'react';
-import { Input, InputField } from '@/components/ui/Input';
+import { Input, InputField, TextAreaField } from '@/components/ui/Input';
 import { CreateMeetingValues } from '../../types';
 import { DateTimePicker } from './date-time-picker';
 
 export interface Step3ScheduleProps {
   values: Pick<
     CreateMeetingValues,
-    'dateTime' | 'registrationEnd' | 'capacity'
+    'dateTime' | 'registrationEnd' | 'capacity' | 'description'
   >;
   errors?: Partial<Record<keyof CreateMeetingValues, string>>;
   onChange: <K extends keyof CreateMeetingValues>(
@@ -64,6 +64,15 @@ export function Step3Schedule({
           destructive={!!errors?.capacity}
         />
       </InputField>
+      {/* 모임 설명 */}
+      <TextAreaField
+        label="모임 설명"
+        placeholder="모임에 대한 설명을 입력해주세요 (최대 1000자)"
+        value={values.description}
+        onChange={(e) => onChange('description', e.target.value)}
+        destructive={!!errors?.description}
+        helperText={errors?.description}
+      />
     </div>
   );
 }
