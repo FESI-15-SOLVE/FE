@@ -41,29 +41,14 @@ export function Step3Schedule() {
 
       {/* 모임 정원 */}
       <InputField label="모임 정원" required error={errors.capacity?.message}>
-        <Controller
-          control={control}
-          name="capacity"
-          render={({ field }) => (
-            <Input
-              placeholder="숫자만 입력해주세요"
-              type="text"
-              inputMode="numeric"
-              destructive={!!errors.capacity}
-              value={field.value}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val === '') {
-                  field.onChange('');
-                } else {
-                  const parsed = parseInt(val, 10);
-                  if (!isNaN(parsed)) {
-                    field.onChange(parsed);
-                  }
-                }
-              }}
-            />
-          )}
+        <Input
+          placeholder="숫자만 입력해주세요"
+          type="text"
+          inputMode="numeric"
+          destructive={!!errors.capacity}
+          {...register('capacity', {
+            setValueAs: (v) => (v === '' ? '' : parseInt(v, 10)),
+          })}
         />
       </InputField>
       
