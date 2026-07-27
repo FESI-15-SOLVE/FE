@@ -10,15 +10,15 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
-import { Search, MapPin } from 'lucide-react';
+import { Search, MapPin, Navigation } from 'lucide-react';
 
 export interface PlaceResultItem {
   id: string;
   place_name: string;
   road_address_name: string;
   address_name: string;
-  x: string;
-  y: string;
+  x: string; // lng
+  y: string; // lat
 }
 
 export interface PlaceSearchModalProps {
@@ -31,6 +31,9 @@ export interface PlaceSearchModalProps {
     lng: number;
   }) => void;
 }
+
+// 기본 지도 중심 좌표 (N서울타워)
+const DEFAULT_CENTER = { lat: 37.5511699, lng: 126.988227 };
 
 /**
  * 카카오맵 주소(address_name)로부터 시/도 + 구/군 (예: "서울 강남구", "경기 성남시 분당구")을 추출하는 유틸리티
@@ -56,20 +59,20 @@ export function PlaceSearchModal({
   onSelectPlace,
 }: PlaceSearchModalProps) {
   // 카카오 맵 JS SDK 로드 (services 라이브러리 포함)
-  const [loading, error] = useKakaoLoader({
+  const [loading] = useKakaoLoader({
     appkey:
       process.env.NEXT_PUBLIC_KAKAO_MAP_KEY ||
-      '99fbfa9e7b235e2ebfef39c81122a27d', // 환경변수 fallback
+      '99fbfa9e7b235e2ebfef39c81122a27d',
     libraries: ['services'],
   });
 
   const [keyword, setKeyword] = useState('');
   const [places, setPlaces] = useState<PlaceResultItem[]>([]);
-  const [selectedPlace, setSelectedPlace] = useState<PlaceResultItem | null>(
-    null,
-  );
+  const [selectedPlace, setSelectedPlace] = useState<PlaceResultItem | null>(null);
+  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>(DEFAULT_CENTER);
   const [searchError, setSearchError] = useState<string | null>(null);
 
+  // 키워드 장소 검색
   const handleSearch = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!keyword.trim()) return;
@@ -80,9 +83,7 @@ export function PlaceSearchModal({
       !window.kakao.maps ||
       !window.kakao.maps.services
     ) {
-      setSearchError(
-        '카카오 맵 서비스를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.',
-      );
+      setSearchError('카카오 맵 서비스를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
       return;
     }
 
@@ -91,29 +92,74 @@ export function PlaceSearchModal({
 
     ps.keywordSearch(keyword, (data, status) => {
       if (status === window.kakao.maps.services.Status.OK) {
-        setPlaces(data as PlaceResultItem[]);
-        setSelectedPlace(data[0] as PlaceResultItem); // 첫 번째 결과 기본 선택
+        const resultList = data as PlaceResultItem[];
+        setPlaces(resultList);
+        const first = resultList[0];
+        setSelectedPlace(first);
+        setMapCenter({ lat: parseFloat(first.y), lng: parseFloat(first.x) });
       } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
         setPlaces([]);
-        setSelectedPlace(null);
         setSearchError('검색 결과가 존재하지 않습니다.');
       } else {
         setPlaces([]);
-        setSelectedPlace(null);
         setSearchError('검색 중 오류가 발생했습니다.');
       }
     });
   };
 
+  // 지도 직접 클릭으로 핀 찍기 (역지오코딩)
+  const handleMapClick = (_map: kakao.maps.Map, mouseEvent: kakao.maps.event.MouseEvent) => {
+    if (
+      typeof window === 'undefined' ||
+      !window.kakao ||
+      !window.kakao.maps ||
+      !window.kakao.maps.services
+    ) {
+      return;
+    }
+
+    const lat = mouseEvent.latLng.getLat();
+    const lng = mouseEvent.latLng.getLng();
+
+    const geocoder = new window.kakao.maps.services.Geocoder();
+    geocoder.coord2Address(lng, lat, (result, status) => {
+      if (status === window.kakao.maps.services.Status.OK && result[0]) {
+        const addressObj = result[0];
+        const roadAddress = addressObj.road_address?.address_name || '';
+        const jibunAddress = addressObj.address?.address_name || '';
+        const mainAddr = roadAddress || jibunAddress || '지정한 위치';
+        const placeName = addressObj.road_address?.building_name || '지정한 위치';
+
+        const customPlace: PlaceResultItem = {
+          id: `pin-${Date.now()}`,
+          place_name: placeName,
+          road_address_name: roadAddress,
+          address_name: jibunAddress || mainAddr,
+          x: String(lng),
+          y: String(lat),
+        };
+
+        setSelectedPlace(customPlace);
+        setMapCenter({ lat, lng });
+      }
+    });
+  };
+
+  const handleSelectPlaceItem = (place: PlaceResultItem) => {
+    setSelectedPlace(place);
+    setMapCenter({ lat: parseFloat(place.y), lng: parseFloat(place.x) });
+  };
+
   const handleConfirm = () => {
     if (!selectedPlace) return;
 
-    const baseAddress =
-      selectedPlace.address_name || selectedPlace.road_address_name;
+    const baseAddress = selectedPlace.address_name || selectedPlace.road_address_name;
     const extractedRegion = extractRegion(baseAddress);
-    const mainAddress =
-      selectedPlace.road_address_name || selectedPlace.address_name;
-    const placeAddress = `${selectedPlace.place_name}, ${mainAddress}`;
+    const mainAddress = selectedPlace.road_address_name || selectedPlace.address_name;
+    const placeAddress = selectedPlace.place_name === '지정한 위치' 
+      ? mainAddress 
+      : `${selectedPlace.place_name}, ${mainAddress}`;
+    
     const lat = parseFloat(selectedPlace.y);
     const lng = parseFloat(selectedPlace.x);
 
@@ -128,118 +174,156 @@ export function PlaceSearchModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-85.75 sm:max-w-160 p-6 pt-8 pb-6 sm:p-10 rounded-[24px] sm:rounded-[32px] gap-6 border-none bg-white max-h-[90vh] flex flex-col">
-        <DialogHeader className="flex flex-row items-center justify-between space-y-0">
-          <DialogTitle className="text-lg sm:text-2xl font-semibold text-neutral-900">
+      <DialogContent className="max-w-95 sm:max-w-220 w-full p-6 pt-7 pb-6 rounded-[24px] sm:rounded-[32px] border-none bg-white h-[640px] flex flex-col gap-5">
+        <DialogHeader className="flex flex-row items-center justify-between space-y-0 shrink-0">
+          <DialogTitle className="text-lg sm:text-2xl font-semibold text-neutral-900 flex items-center gap-2">
+            <Navigation className="size-6 text-brand-500" />
             카카오 맵 장소 검색
           </DialogTitle>
         </DialogHeader>
 
-        {/* 검색창 */}
-        <form onSubmit={handleSearch} className="flex gap-2">
+        {/* 상단 검색창 */}
+        <form onSubmit={handleSearch} className="flex gap-2 shrink-0">
           <Input
             placeholder="장소명 또는 도로명 주소를 입력하세요 (예: 스타벅스 강남역점)"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             className="flex-1"
           />
-          <Button
-            type="submit"
-            variant="primary"
-            size="md"
-            className="px-5 shrink-0"
-          >
+          <Button type="submit" variant="primary" size="md" className="px-5 shrink-0">
             <Search className="size-5" />
           </Button>
         </form>
 
-        {/* 메인 콘텐츠 영역 (검색 결과 리스트 + 지도) */}
-        <div className="flex flex-col sm:flex-row gap-4 flex-1 min-h-0 overflow-hidden">
-          {/* 장소 리스트 */}
-          <div className="flex-1 overflow-y-auto max-h-60 sm:max-h-80 space-y-2 pr-1">
-            {searchError && (
-              <div className="text-sm text-neutral-500 text-center py-8">
-                {searchError}
-              </div>
-            )}
+        {/* 대형 Split View 콘텐츠 영역 (좌: 리스트, 우: 대형 지도) */}
+        <div className="flex flex-col sm:flex-row gap-4 flex-1 min-h-0">
+          {/* 좌측 패널 (검색 결과 목록) - 가로 40% */}
+          <div className="w-full sm:w-[38%] flex flex-col h-full bg-gray-50 p-3 rounded-2xl border border-neutral-200 min-h-0">
+            <div className="text-xs font-semibold text-neutral-500 mb-2 px-1">
+              {places.length > 0 ? `검색 결과 (${places.length}건)` : '장소 안내'}
+            </div>
 
-            {places.map((place) => {
-              const isSelected = selectedPlace?.id === place.id;
-              return (
-                <div
-                  key={place.id}
-                  onClick={() => setSelectedPlace(place)}
-                  className={`p-3 rounded-xl border cursor-pointer transition-colors ${
-                    isSelected
-                      ? 'border-brand-500 bg-brand-50'
-                      : 'border-neutral-200 hover:border-neutral-300 bg-white'
-                  }`}
-                >
-                  <div className="flex items-start gap-2">
-                    <MapPin
-                      className={`size-4 mt-0.5 shrink-0 ${isSelected ? 'text-brand-500' : 'text-neutral-400'}`}
-                    />
-                    <div className="space-y-1 text-left">
-                      <p className="font-semibold text-sm text-neutral-900">
-                        {place.place_name}
-                      </p>
-                      <p className="text-xs text-neutral-600">
-                        {place.road_address_name || place.address_name}
-                      </p>
+            <div className="flex-1 overflow-y-auto space-y-2 pr-1">
+              {searchError && (
+                <div className="text-sm text-neutral-500 text-center py-10">
+                  {searchError}
+                </div>
+              )}
+
+              {places.length === 0 && !searchError && (
+                <div className="flex flex-col items-center justify-center h-full text-center text-neutral-400 p-4 space-y-2">
+                  <MapPin className="size-8 text-neutral-300 animate-bounce" />
+                  <p className="text-xs sm:text-sm">
+                    검색어를 입력하시거나, 우측 지도에서 원하는 위치를 <strong>직접 클릭</strong>하여 핀을 찍으세요!
+                  </p>
+                </div>
+              )}
+
+              {places.map((place) => {
+                const isSelected = selectedPlace?.id === place.id;
+                return (
+                  <div
+                    key={place.id}
+                    onClick={() => handleSelectPlaceItem(place)}
+                    className={`p-3 rounded-xl border cursor-pointer transition-all ${
+                      isSelected
+                        ? 'border-brand-500 bg-white shadow-sm ring-1 ring-brand-500'
+                        : 'border-neutral-200 hover:border-neutral-300 bg-white'
+                    }`}
+                  >
+                    <div className="flex items-start gap-2">
+                      <MapPin
+                        className={`size-4 mt-0.5 shrink-0 ${
+                          isSelected ? 'text-brand-500' : 'text-neutral-400'
+                        }`}
+                      />
+                      <div className="space-y-1 text-left">
+                        <p className="font-semibold text-sm text-neutral-900">
+                          {place.place_name}
+                        </p>
+                        <p className="text-xs text-neutral-600">
+                          {place.road_address_name || place.address_name}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
 
-          {/* 카카오 지도 미리보기 */}
-          <div className="w-full sm:w-64 h-48 sm:h-auto rounded-2xl overflow-hidden border border-neutral-200 shrink-0 relative bg-neutral-100">
-            {!loading && selectedPlace ? (
+          {/* 우측 대형 카카오 지도 - 가로 60% */}
+          <div className="w-full sm:w-[62%] h-full rounded-2xl overflow-hidden border border-neutral-200 relative bg-neutral-100">
+            {!loading ? (
               <Map
-                center={{
-                  lat: parseFloat(selectedPlace.y),
-                  lng: parseFloat(selectedPlace.x),
-                }}
+                center={mapCenter}
                 style={{ width: '100%', height: '100%' }}
-                level={3}
+                level={4}
+                onClick={handleMapClick}
               >
-                <MapMarker
-                  position={{
-                    lat: parseFloat(selectedPlace.y),
-                    lng: parseFloat(selectedPlace.x),
-                  }}
-                />
+                {/* 검색 목록 마커들 */}
+                {places.map((place) => (
+                  <MapMarker
+                    key={place.id}
+                    position={{
+                      lat: parseFloat(place.y),
+                      lng: parseFloat(place.x),
+                    }}
+                    onClick={() => handleSelectPlaceItem(place)}
+                  />
+                ))}
+
+                {/* 현재 선택된 위치 커스텀/단일 마커 */}
+                {selectedPlace && (
+                  <MapMarker
+                    position={{
+                      lat: parseFloat(selectedPlace.y),
+                      lng: parseFloat(selectedPlace.x),
+                    }}
+                  />
+                )}
               </Map>
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-xs text-neutral-400">
-                {loading ? '지도를 불러오는 중...' : '장소를 선택해주세요'}
+              <div className="w-full h-full flex items-center justify-center text-sm text-neutral-400">
+                카카오 지도를 로딩 중입니다...
               </div>
             )}
           </div>
         </div>
 
-        {/* 하단 액션 버튼 */}
-        <div className="flex items-center gap-3 w-full pt-2">
-          <Button
-            type="button"
-            variant="tertiary"
-            size="md"
-            className="flex-1 rounded-xl"
-            onClick={onClose}
-          >
-            취소
-          </Button>
-          <Button
-            type="button"
-            variant="primary"
-            size="md"
-            className="flex-1 rounded-xl"
-            disabled={!selectedPlace}
-            onClick={handleConfirm}
-          >
-            선택 완료
-          </Button>
+        {/* 선택된 위치 요약 & 하단 액션 버튼 */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0 pt-1 border-t border-neutral-100">
+          <div className="text-xs sm:text-sm text-neutral-700 truncate w-full sm:w-auto text-left">
+            {selectedPlace ? (
+              <span>
+                선택된 장소: <strong className="text-brand-600 font-semibold">{selectedPlace.place_name}</strong> ({selectedPlace.road_address_name || selectedPlace.address_name})
+              </span>
+            ) : (
+              <span className="text-neutral-400">선택된 장소가 없습니다.</span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+            <Button
+              type="button"
+              variant="tertiary"
+              size="md"
+              className="flex-1 sm:w-24 rounded-xl"
+              onClick={onClose}
+            >
+              취소
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
+              size="md"
+              className="flex-1 sm:w-28 rounded-xl"
+              disabled={!selectedPlace}
+              onClick={handleConfirm}
+            >
+              선택 완료
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
