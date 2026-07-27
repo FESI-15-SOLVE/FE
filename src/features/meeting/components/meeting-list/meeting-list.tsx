@@ -8,6 +8,10 @@ import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 import { useMeetingList } from '@/features/meeting/hooks/use-meeting-list';
 import { useRouter } from 'next/navigation';
 import { useToggleFavorite } from '../../hooks/use-toggle-favorite';
+import {
+  isMeetingConfirmed,
+  isMeetingClosed,
+} from '../../utils/meeting-status';
 
 interface MeetingListUIProps {
   meetings: MeetingWithHost[];
@@ -59,6 +63,8 @@ export function MeetingListUI({
           <GroupCard
             key={item.id}
             meeting={mapMeetingToGroupCard(item)}
+            isConfirmed={isMeetingConfirmed(item)}
+            isClosed={isMeetingClosed(item)}
             onClick={() => handleClickCard(item.id)}
             onSaveClick={() => handleSaveClick(item.id, item.isFavorited)}
           />

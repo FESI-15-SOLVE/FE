@@ -1,4 +1,4 @@
-import { MeetingWithHost, CreateMeeting } from '@/api/data-contracts';
+import { MeetingWithHost, JoinedMeeting, CreateMeeting } from '@/api/data-contracts';
 import { CreateMeetingPayload } from '../schema/create-shcema';
 import { CATEGORIES_DATA } from '@/constants/categories';
 import {
@@ -6,6 +6,14 @@ import {
   formatMeetingTime,
   formatDeadlineTag,
 } from './date-formatter';
+import {
+  getMeetingBadgeStatuses,
+  getMeetingActionStatus,
+} from './meeting-status';
+import { DetailCardProps } from '../components/cards/detail-card';
+
+const FALLBACK_IMAGE =
+  'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846';
 
 /**
  * 백엔드 API 응답 (MeetingWithHost) 객체를 GroupCard 컴포넌트용 Props 포맷으로 변환하는 유틸리티 함수
@@ -14,9 +22,7 @@ export function mapMeetingToGroupCard(meeting: MeetingWithHost) {
   return {
     id: String(meeting.id),
     title: meeting.name,
-    imageUrl:
-      meeting.image ??
-      'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846',
+    imageUrl: meeting.image ?? FALLBACK_IMAGE,
     location: meeting.region,
     category: meeting.type,
     date: formatMeetingDate(meeting.dateTime),
@@ -26,6 +32,29 @@ export function mapMeetingToGroupCard(meeting: MeetingWithHost) {
     maxParticipant: meeting.capacity,
     isFavorited: Boolean(meeting.isFavorited),
     isJoined: Boolean(meeting.isJoined),
+  };
+}
+
+/**
+ * 백엔드 API 응답 (MeetingWithHost / JoinedMeeting) 객체를 DetailCard 컴포넌트용 Props 포맷으로 변환하는 유틸리티 함수
+ */
+export function mapMeetingToDetailCard(
+  meeting: JoinedMeeting | MeetingWithHost,
+): DetailCardProps {
+  return {
+    meeting: {
+      id: String(meeting.id),
+      title: meeting.name,
+      imageUrl: meeting.image ?? FALLBACK_IMAGE,
+      location: meeting.address || meeting.region,
+      date: formatMeetingDate(meeting.dateTime),
+      time: formatMeetingTime(meeting.dateTime),
+      participantCount: meeting.participantCount,
+      maxParticipant: meeting.capacity,
+      isSaved: Boolean(meeting.isFavorited),
+    },
+    badgeStatuses: getMeetingBadgeStatuses(meeting),
+    actionStatus: getMeetingActionStatus(meeting),
   };
 }
 

@@ -12,6 +12,7 @@ import {
   formatMeetingTime,
   formatDeadlineTag,
 } from '../../utils/date-formatter';
+import { isMeetingConfirmed } from '../../utils/meeting-status';
 
 export interface MeetingDetailHeaderProps {
   meeting: MeetingWithHost;
@@ -92,7 +93,7 @@ export function MeetingDetailHeader({
           minParticipant={5}
           maxParticipant={meeting.capacity}
           participantImages={participantImages}
-          isConfirmed={Boolean(meeting.confirmedAt)}
+          isConfirmed={isMeetingConfirmed(meeting)}
         />
       </div>
     </div>
