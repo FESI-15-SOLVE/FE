@@ -7,7 +7,7 @@ import {
 } from 'react-hook-form';
 import { Input } from '@/components/ui/Input';
 import { InputField, FileInput } from '@/components/ui/Input';
-import { PlaceSearchModal } from '@/features/meeting/components/place-search';
+import { PlaceSearchModal } from '@/features/meeting/components/place-search/place-search-modal';
 import { CreateMeetingValues } from '../../types';
 import { IconLocation } from '@/components/icons';
 

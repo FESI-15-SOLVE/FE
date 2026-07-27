@@ -1,6 +1,7 @@
 import React from 'react';
 import { MapMarker } from 'react-kakao-maps-sdk';
-import { KakaoMapContainer, toLatLng } from '@/features/map';
+import { KakaoMapContainer } from '@/features/map/components/kakao-map-container';
+import { toLatLng } from '@/features/map/utils/to-lat-lng';
 import { PlaceResultItem, LatLng } from './types';
 
 export interface PlaceSearchMapProps {
