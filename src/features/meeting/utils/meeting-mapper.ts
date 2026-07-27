@@ -47,6 +47,8 @@ export function mapCreatePayloadToServerData(
     type: type,
     region: payload.location, // 현재 폼의 location 필드를 임시로 region에 매핑
     address: payload.detailAddress,
+    latitude: payload.latitude,
+    longitude: payload.longitude,
     dateTime: payload.dateTime?.toISOString() ?? null,
     registrationEnd: payload.registrationEnd?.toISOString() ?? null,
     capacity: payload.capacity,

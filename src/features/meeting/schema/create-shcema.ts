@@ -6,6 +6,8 @@ export const createMeetingBaseSchema = z.object({
   name: z.string().trim().min(1, '모임 이름을 입력해주세요.'),
   location: z.string().trim().min(1, '장소를 입력해주세요.'),
   detailAddress: z.string(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
   file: z
     .instanceof(File, { message: '이미지를 첨부해주세요.' })
     .nullable()

@@ -3,14 +3,17 @@ import { useFormContext, Controller, useFormState } from 'react-hook-form';
 import { Input } from '@/components/ui/Input';
 import { InputField, FileInput } from '@/components/ui/Input';
 import { RegionSelectModal } from '@/features/meeting/components/region-select';
+import { PlaceSearchModal } from '@/features/meeting/components/place-search/place-search-modal';
 import { CreateMeetingValues } from '../../types';
+import { IconLocation } from '@/components/icons';
 
 export function Step2BasicInfo() {
   const generatedId = useId();
   const locationId = `location-${generatedId}`;
   const [isRegionModalOpen, setIsRegionModalOpen] = useState(false);
+  const [isPlaceModalOpen, setIsPlaceModalOpen] = useState(false);
 
-  const { register, control } = useFormContext<CreateMeetingValues>();
+  const { register, control, setValue } = useFormContext<CreateMeetingValues>();
   const { errors } = useFormState({ control });
 
   return (
@@ -51,9 +54,29 @@ export function Step2BasicInfo() {
 
       <InputField label="상세주소" error={errors.detailAddress?.message}>
         <Input
-          placeholder="상세주소를 입력해주세요"
+          placeholder="예: 스타벅스 강남역점, 서울 강남구 강남대로 390, 3층"
           destructive={!!errors.detailAddress}
+          rightIcon={
+            <IconLocation
+              className="size-5 cursor-pointer text-neutral-400 hover:text-brand-500 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsPlaceModalOpen(true);
+              }}
+            />
+          }
+          onClick={() => setIsPlaceModalOpen(true)}
+          className="cursor-pointer"
           {...register('detailAddress')}
+        />
+        <PlaceSearchModal
+          isOpen={isPlaceModalOpen}
+          onClose={() => setIsPlaceModalOpen(false)}
+          onSelectPlace={({ formattedAddress, lat, lng }) => {
+            setValue('detailAddress', formattedAddress, { shouldValidate: true });
+            setValue('latitude', lat);
+            setValue('longitude', lng);
+          }}
         />
       </InputField>
 

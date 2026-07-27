@@ -5,6 +5,8 @@ export interface CreateMeetingValues {
   name: string;
   location: string;
   detailAddress: string;
+  latitude?: number;
+  longitude?: number;
   file: File | null;
   dateTime?: Date;
   registrationEnd?: Date;
