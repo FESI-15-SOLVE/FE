@@ -1,5 +1,6 @@
 import { useId } from 'react';
-import { useFormContext, Controller } from 'react-hook-form';
+
+import { useFormContext, Controller, useFormState } from 'react-hook-form';
 import { Input } from '@/components/ui/Input';
 import { InputField, FileInput } from '@/components/ui/Input';
 import { MapPin } from 'lucide-react';
@@ -8,8 +9,9 @@ import { CreateMeetingValues } from '../../types';
 export function Step2BasicInfo() {
   const generatedId = useId();
   const locationId = `location-${generatedId}`;
-  
-  const { register, control, formState: { errors } } = useFormContext<CreateMeetingValues>();
+
+  const { register, control } = useFormContext<CreateMeetingValues>();
+  const { errors } = useFormState({ control });
 
   return (
     <div className="w-full space-y-5">
@@ -39,7 +41,11 @@ export function Step2BasicInfo() {
         />
       </InputField>
 
-      <InputField label="이미지" required error={errors.file?.message as string}>
+      <InputField
+        label="이미지"
+        required
+        error={errors.file?.message as string}
+      >
         <Controller
           control={control}
           name="file"

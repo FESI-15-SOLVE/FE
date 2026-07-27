@@ -1,11 +1,12 @@
 import React from 'react';
-import { useFormContext, Controller } from 'react-hook-form';
+import { useFormContext, Controller, useFormState } from 'react-hook-form';
 import { Input, InputField, TextAreaField } from '@/components/ui/Input';
 import { CreateMeetingValues } from '../../types';
 import { DateTimePicker } from './date-time-picker';
 
 export function Step3Schedule() {
-  const { register, control, formState: { errors } } = useFormContext<CreateMeetingValues>();
+  const { register, control } = useFormContext<CreateMeetingValues>();
+  const { errors } = useFormState({ control });
 
   return (
     <div className="w-full space-y-5">
@@ -25,7 +26,11 @@ export function Step3Schedule() {
       </InputField>
 
       {/* 모집 마감 날짜 */}
-      <InputField label="모집 마감 날짜" required error={errors.registrationEnd?.message}>
+      <InputField
+        label="모집 마감 날짜"
+        required
+        error={errors.registrationEnd?.message}
+      >
         <Controller
           control={control}
           name="registrationEnd"
@@ -51,7 +56,7 @@ export function Step3Schedule() {
           })}
         />
       </InputField>
-      
+
       {/* 모임 설명 */}
       <TextAreaField
         label="모임 설명"

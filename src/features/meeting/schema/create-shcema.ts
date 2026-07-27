@@ -2,7 +2,7 @@
 import { z } from 'zod';
 
 export const createMeetingBaseSchema = z.object({
-  categoryId: z.number({ error: '모임 종류를 선택해주세요.' }),
+  categoryId: z.number().min(1, '모임 종류를 선택해주세요.'),
   name: z.string().trim().min(1, '모임 이름을 입력해주세요.'),
   location: z.string().trim().min(1, '장소를 입력해주세요.'),
   detailAddress: z.string(),
