@@ -4,10 +4,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   CreateMeetingPayload,
   createMeetingSchema,
+  stepSchemas,
 } from '../schema/create-shcema';
 import { CreateMeetingValues } from '../types';
 import { useCreateMeetingMutation } from './useCreateMeetingMutation';
-import { ErrorResponse } from '@/api';
 
 interface UseCreateMeetingProps {
   initialStep?: number;
@@ -44,15 +44,15 @@ export function useCreateMeeting({
 
   const handleStepChange = async (nextStep: number) => {
     if (nextStep > currentStep) {
-      let isValid = false;
+      const currentSchema = stepSchemas[currentStep as keyof typeof stepSchemas];
 
-      if (currentStep === 1) {
-        isValid = await trigger(['categoryId']);
-      } else if (currentStep === 2) {
-        isValid = await trigger(['name', 'location', 'detailAddress', 'file']);
+      if (currentSchema) {
+        const stepFields = currentSchema.keyof().options as Array<
+          keyof CreateMeetingValues
+        >;
+        const isValid = await trigger(stepFields);
+        if (!isValid) return;
       }
-
-      if (!isValid) return;
     }
 
     setCurrentStep(nextStep);
@@ -66,7 +66,7 @@ export function useCreateMeeting({
       // 상위 모달 닫기
       onSubmit(data);
     } catch (error) {
-      if (error instanceof ErrorResponse) {
+      if (error instanceof Error) {
         throw new Error(error.message);
       }
     }
