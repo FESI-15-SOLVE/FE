@@ -1,7 +1,7 @@
 import { MeetingCategory } from '@/constants/categories';
 
 export interface CreateMeetingValues {
-  categoryId?: string;
+  categoryId: number;
   name: string;
   location: string;
   detailAddress: string;
@@ -15,7 +15,7 @@ export interface CreateMeetingValues {
 export interface CreateMeetingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialStep?: number; // 숏컷용 초기 단계 설정 (기본값: 1)
-  onSubmit: (values: CreateMeetingValues) => void; // 최종 모임 개설 데이터 콜백
+  initialStep?: number;
+  onSubmit: (values: CreateMeetingValues) => void;
   categories: MeetingCategory[];
 }
