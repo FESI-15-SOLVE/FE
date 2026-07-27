@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useKakaoLoader, Map, MapMarker } from 'react-kakao-maps-sdk';
 import {
   Dialog,
@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
-import { Search, MapPin, Navigation } from 'lucide-react';
+import { Search, MapPin, Navigation, AlertCircle } from 'lucide-react';
 
 export interface PlaceResultItem {
   id: string;
@@ -19,6 +19,7 @@ export interface PlaceResultItem {
   address_name: string;
   x: string; // lng
   y: string; // lat
+  isCustomPin?: boolean; // 수동 클릭 핀 구분을 위한 명시적 플래그
 }
 
 export interface PlaceSearchModalProps {
@@ -58,11 +59,9 @@ export function PlaceSearchModal({
   onClose,
   onSelectPlace,
 }: PlaceSearchModalProps) {
-  // 카카오 맵 JS SDK 로드 (services 라이브러리 포함)
-  const [loading] = useKakaoLoader({
-    appkey:
-      process.env.NEXT_PUBLIC_KAKAO_MAP_KEY ||
-      '99fbfa9e7b235e2ebfef39c81122a27d',
+  // 카카오 맵 JS SDK 로드 (하드코딩 키 제거 및 로딩/에러 수신)
+  const [loading, error] = useKakaoLoader({
+    appkey: process.env.NEXT_PUBLIC_KAKAO_MAP_KEY || '',
     libraries: ['services'],
   });
 
@@ -71,6 +70,19 @@ export function PlaceSearchModal({
   const [selectedPlace, setSelectedPlace] = useState<PlaceResultItem | null>(null);
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>(DEFAULT_CENTER);
   const [searchError, setSearchError] = useState<string | null>(null);
+
+  // 비동기 검색 Race Condition 방지를 위한 실행 ID
+  const lastSearchIdRef = useRef(0);
+
+  // 모달 닫기 시 상태 완전 초기화
+  const handleClose = () => {
+    setKeyword('');
+    setPlaces([]);
+    setSelectedPlace(null);
+    setSearchError(null);
+    setMapCenter(DEFAULT_CENTER);
+    onClose();
+  };
 
   // 키워드 장소 검색
   const handleSearch = (e?: React.FormEvent) => {
@@ -87,10 +99,14 @@ export function PlaceSearchModal({
       return;
     }
 
+    const currentSearchId = ++lastSearchIdRef.current;
     setSearchError(null);
     const ps = new window.kakao.maps.services.Places();
 
     ps.keywordSearch(keyword, (data, status) => {
+      // 최신 검색 요청이 아니면 콜백 무시 (Race condition 방지)
+      if (currentSearchId !== lastSearchIdRef.current) return;
+
       if (status === window.kakao.maps.services.Status.OK) {
         const resultList = data as PlaceResultItem[];
         setPlaces(resultList);
@@ -137,6 +153,7 @@ export function PlaceSearchModal({
           address_name: jibunAddress || mainAddr,
           x: String(lng),
           y: String(lat),
+          isCustomPin: true, // 명시적 커스텀 핀 플래그
         };
 
         setSelectedPlace(customPlace);
@@ -156,7 +173,9 @@ export function PlaceSearchModal({
     const baseAddress = selectedPlace.address_name || selectedPlace.road_address_name;
     const extractedRegion = extractRegion(baseAddress);
     const mainAddress = selectedPlace.road_address_name || selectedPlace.address_name;
-    const placeAddress = selectedPlace.place_name === '지정한 위치' 
+    
+    // isCustomPin 여부로 안전하게 주소 포맷 판단
+    const placeAddress = selectedPlace.isCustomPin || selectedPlace.place_name === '지정한 위치'
       ? mainAddress 
       : `${selectedPlace.place_name}, ${mainAddress}`;
     
@@ -169,11 +188,11 @@ export function PlaceSearchModal({
       lat,
       lng,
     });
-    onClose();
+    handleClose();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="max-w-95 sm:max-w-220 w-full p-6 pt-7 pb-6 rounded-[24px] sm:rounded-[32px] border-none bg-white h-[640px] flex flex-col gap-5">
         <DialogHeader className="flex flex-row items-center justify-between space-y-0 shrink-0">
           <DialogTitle className="text-lg sm:text-2xl font-semibold text-neutral-900 flex items-center gap-2">
@@ -197,7 +216,7 @@ export function PlaceSearchModal({
 
         {/* 대형 Split View 콘텐츠 영역 (좌: 리스트, 우: 대형 지도) */}
         <div className="flex flex-col sm:flex-row gap-4 flex-1 min-h-0">
-          {/* 좌측 패널 (검색 결과 목록) - 가로 40% */}
+          {/* 좌측 패널 (검색 결과 목록) - 가로 38% */}
           <div className="w-full sm:w-[38%] flex flex-col h-full bg-gray-50 p-3 rounded-2xl border border-neutral-200 min-h-0">
             <div className="text-xs font-semibold text-neutral-500 mb-2 px-1">
               {places.length > 0 ? `검색 결과 (${places.length}건)` : '장소 안내'}
@@ -252,9 +271,15 @@ export function PlaceSearchModal({
             </div>
           </div>
 
-          {/* 우측 대형 카카오 지도 - 가로 60% */}
+          {/* 우측 대형 카카오 지도 - 가로 62% */}
           <div className="w-full sm:w-[62%] h-full rounded-2xl overflow-hidden border border-neutral-200 relative bg-neutral-100">
-            {!loading ? (
+            {error ? (
+              <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center text-neutral-500 space-y-2">
+                <AlertCircle className="size-8 text-red-400" />
+                <p className="text-sm font-semibold text-neutral-700">지도를 불러오지 못했습니다.</p>
+                <p className="text-xs text-neutral-400">카카오 API 키(.env.local)를 확인해 주세요.</p>
+              </div>
+            ) : !loading ? (
               <Map
                 center={mapCenter}
                 style={{ width: '100%', height: '100%' }}
@@ -309,7 +334,7 @@ export function PlaceSearchModal({
               variant="tertiary"
               size="md"
               className="flex-1 sm:w-24 rounded-xl"
-              onClick={onClose}
+              onClick={handleClose}
             >
               취소
             </Button>
