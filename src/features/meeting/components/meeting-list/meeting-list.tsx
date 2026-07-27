@@ -7,6 +7,7 @@ import { mapMeetingToGroupCard } from '@/features/meeting/utils/meeting-mapper';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 import { useMeetingList } from '@/features/meeting/hooks/use-meeting-list';
 import { useRouter } from 'next/navigation';
+import { useToggleFavorite } from '../../hooks/use-toggle-favorite';
 
 interface MeetingListUIProps {
   meetings: MeetingWithHost[];
@@ -21,14 +22,23 @@ export function MeetingListUI({
   isFetchingNextPage,
   onFetchNextPage,
 }: MeetingListUIProps) {
+  const router = useRouter();
+  const toggleFavoriteMutation = useToggleFavorite();
+
   const observerRef = useIntersectionObserver<HTMLDivElement>({
     onIntersect: onFetchNextPage,
     enabled: Boolean(hasNextPage && !isFetchingNextPage),
   });
 
-  const router = useRouter();
   const handleClickCard = (id: number) => {
     router.push(`/meetings/${id}`);
+  };
+
+  const handleSaveClick = (meetingId: number, isFavorited?: boolean) => {
+    toggleFavoriteMutation.mutate({
+      meetingId,
+      isSaved: Boolean(isFavorited),
+    });
   };
 
   if (meetings.length === 0) {
@@ -50,6 +60,7 @@ export function MeetingListUI({
             key={item.id}
             meeting={mapMeetingToGroupCard(item)}
             onClick={() => handleClickCard(item.id)}
+            onSaveClick={() => handleSaveClick(item.id, item.isFavorited)}
           />
         ))}
       </div>
