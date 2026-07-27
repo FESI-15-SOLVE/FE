@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    optimizePackageImports: ['@/components/icons'], // 로컬 alias도 지정 가능
+  },
   turbopack: {
     rules: {
       '*.svg': {
