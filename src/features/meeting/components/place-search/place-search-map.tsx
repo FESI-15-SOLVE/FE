@@ -5,7 +5,7 @@ import { PlaceResultItem, LatLng } from './types';
 
 export interface PlaceSearchMapProps {
   loading: boolean;
-  error: Error | undefined;
+  error: ErrorEvent | Error | undefined;
   center: LatLng;
   places: PlaceResultItem[];
   selectedPlace: PlaceResultItem | null;
