@@ -1,6 +1,5 @@
 'use client';
 
-import { useKakaoLoader } from 'react-kakao-maps-sdk';
 import {
   Dialog,
   DialogContent,
@@ -26,12 +25,6 @@ export function PlaceSearchModal({
   onClose,
   onSelectPlace,
 }: PlaceSearchModalProps) {
-  // 카카오 맵 JS SDK 로드
-  const [loading, error] = useKakaoLoader({
-    appkey: process.env.NEXT_PUBLIC_KAKAO_MAP_KEY || '',
-    libraries: ['services'],
-  });
-
   const search = useKakaoPlaceSearch();
   const selection = usePlaceSelection(DEFAULT_CENTER);
   const { reverseGeocode } = useReverseGeocode();
@@ -84,8 +77,6 @@ export function PlaceSearchModal({
             onSelect={selection.selectPlace}
           />
           <PlaceSearchMap
-            loading={loading}
-            error={error}
             center={selection.mapCenter}
             places={search.places}
             selectedPlace={selection.selectedPlace}
