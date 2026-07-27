@@ -4,7 +4,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Tag } from '@/components/ui/tag';
 import { Button, UtilityButton } from '@/components/ui/button';
-import { IconAlarm, IconCrown, IconMeatballs } from '@/components/icons';
+import { IconCrown, IconMeatballs } from '@/components/icons';
 import AlarmTag from '@/components/ui/tag/alarm-tag';
 
 export interface InformationCardProps {
@@ -108,16 +108,6 @@ export function InformationCard({
           참여하기
         </Button>
       </div>
-    </div>
-  );
-}
-
-function InfoTag({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-center justify-center px-2 py-0.5 bg-white border border-slate-200 rounded-md sm:rounded-lg">
-      <span className="text-xs sm:text-sm font-medium text-neutral-500">
-        {children}
-      </span>
     </div>
   );
 }

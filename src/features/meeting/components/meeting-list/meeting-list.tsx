@@ -6,6 +6,7 @@ import { MeetingWithHost } from '@/api/data-contracts';
 import { mapMeetingToGroupCard } from '@/features/meeting/utils/meeting-mapper';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 import { useMeetingList } from '@/features/meeting/hooks/use-meeting-list';
+import { useRouter } from 'next/navigation';
 
 interface MeetingListUIProps {
   meetings: MeetingWithHost[];
@@ -25,6 +26,11 @@ export function MeetingListUI({
     enabled: Boolean(hasNextPage && !isFetchingNextPage),
   });
 
+  const router = useRouter();
+  const handleClickCard = (id: number) => {
+    router.push(`/meetings/${id}`);
+  };
+
   if (meetings.length === 0) {
     return (
       <div className="py-16">
@@ -40,7 +46,11 @@ export function MeetingListUI({
     <div className="flex flex-col gap-6 w-full">
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-6 w-full">
         {meetings.map((item: MeetingWithHost) => (
-          <GroupCard key={item.id} meeting={mapMeetingToGroupCard(item)} />
+          <GroupCard
+            key={item.id}
+            meeting={mapMeetingToGroupCard(item)}
+            onClick={() => handleClickCard(item.id)}
+          />
         ))}
       </div>
 
