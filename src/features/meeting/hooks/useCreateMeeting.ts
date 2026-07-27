@@ -1,6 +1,13 @@
 import { useState } from 'react';
-import { step1Schema, step2Schema, step3Schema } from '../schema';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  CreateMeetingPayload,
+  createMeetingSchema,
+} from '../schema/create-shcema';
 import { CreateMeetingValues } from '../types';
+import { useCreateMeetingMutation } from './useCreateMeetingMutation';
+import { ErrorResponse } from '@/api';
 
 interface UseCreateMeetingProps {
   initialStep?: number;
@@ -12,92 +19,64 @@ export function useCreateMeeting({
   onSubmit,
 }: UseCreateMeetingProps) {
   const [currentStep, setCurrentStep] = useState(initialStep);
-  const [values, setValues] = useState<CreateMeetingValues>({
-    categoryId: '',
-    name: '',
-    location: '',
-    detailAddress: '',
-    file: null,
-    dateTime: undefined,
-    registrationEnd: undefined,
-    capacity: '',
-    description: '',
+
+  // React Hook Form 초기화
+  const methods = useForm<CreateMeetingValues, unknown, CreateMeetingPayload>({
+    resolver: zodResolver(createMeetingSchema),
+    defaultValues: {
+      categoryId: -1,
+      name: '',
+      location: '',
+      detailAddress: '',
+      file: null,
+      dateTime: undefined,
+      registrationEnd: undefined,
+      capacity: '',
+      description: '',
+    },
+    mode: 'onChange',
   });
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof CreateMeetingValues, string>>
-  >({});
 
-  // 입력값 변경 시 상태 반영 및 해당 필드 에러 제거
-  const handleChange = <K extends keyof CreateMeetingValues>(
-    field: K,
-    value: CreateMeetingValues[K],
-  ) => {
-    setValues((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => {
-        const next = { ...prev };
-        delete next[field];
-        return next;
-      });
-    }
-  };
+  const { trigger, handleSubmit } = methods;
 
-  // Zod의 분리된 스텝 스키마를 이용한 스텝 전이 검증 수행
-  const handleStepChange = (nextStep: number) => {
+  const { mutateAsync: createMeetingAsync, isPending: isSubmitting } =
+    useCreateMeetingMutation();
+
+  const handleStepChange = async (nextStep: number) => {
     if (nextStep > currentStep) {
+      let isValid = false;
+
       if (currentStep === 1) {
-        const result = step1Schema.safeParse(values);
-
-        if (!result.success) {
-          const fieldErrors = result.error.flatten().fieldErrors;
-          setErrors({
-            categoryId: fieldErrors.categoryId?.[0],
-          });
-          return;
-        }
+        isValid = await trigger(['categoryId']);
       } else if (currentStep === 2) {
-        const result = step2Schema.safeParse(values);
-
-        if (!result.success) {
-          const fieldErrors = result.error.flatten().fieldErrors;
-          setErrors({
-            name: fieldErrors.name?.[0],
-            location: fieldErrors.location?.[0],
-            file: fieldErrors.file?.[0],
-          });
-          return;
-        }
+        isValid = await trigger(['name', 'location', 'detailAddress', 'file']);
       }
+
+      if (!isValid) return;
     }
-    setErrors({});
+
     setCurrentStep(nextStep);
   };
 
-  // 최종 3단계 유효성 검사 및 최종 데이터 제출
-  const handleSubmit = () => {
-    const result = step3Schema.safeParse(values);
+  // 폼 최종 제출
+  const submitForm = handleSubmit(async (data) => {
+    try {
+      await createMeetingAsync(data);
 
-    if (!result.success) {
-      const fieldErrors = result.error.flatten().fieldErrors;
-      setErrors({
-        dateTime: fieldErrors.dateTime?.[0],
-        registrationEnd: fieldErrors.registrationEnd?.[0],
-        capacity: fieldErrors.capacity?.[0],
-        description: fieldErrors.description?.[0],
-      });
-      return;
+      // 상위 모달 닫기
+      onSubmit(data);
+    } catch (error) {
+      if (error instanceof ErrorResponse) {
+        throw new Error(error.message);
+      }
     }
-
-    setErrors({});
-    onSubmit(values);
-  };
+  });
 
   return {
+    methods,
     currentStep,
-    values,
-    errors,
-    handleChange,
+    isSubmitting,
     handleStepChange,
-    handleSubmit,
+    submitForm,
   };
 }

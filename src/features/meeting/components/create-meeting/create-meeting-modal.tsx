@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { FormProvider } from 'react-hook-form';
 import { CreateMeetingModalProps } from '../../types';
 import { Step1Category } from './step1-category';
 import { Step2BasicInfo } from './step2-basic-info';
@@ -21,16 +22,15 @@ function CreateMeetingForm({
   onClose,
 }: Omit<CreateMeetingModalProps, 'isOpen'>) {
   const {
+    methods,
     currentStep,
-    values,
-    errors,
-    handleChange,
+    isSubmitting,
     handleStepChange,
-    handleSubmit,
+    submitForm,
   } = useCreateMeeting({ initialStep, onSubmit });
 
   return (
-    <>
+    <FormProvider {...methods}>
       {/* 상단 고정 헤더 */}
       <DialogHeader className="space-y-0 flex flex-row items-center justify-between pr-8">
         <div className="flex items-center gap-3">
@@ -46,28 +46,15 @@ function CreateMeetingForm({
       {/* 동적 마운트 영역 - 현재 활성 단계만 마운트 */}
       <div className="w-full">
         {currentStep === 1 && (
-          <Step1Category
-            categories={categories}
-            selectedCategoryId={values.categoryId}
-            onSelectCategory={(id) => handleChange('categoryId', id)}
-            errors={errors}
-          />
+          <Step1Category categories={categories} />
         )}
 
         {currentStep === 2 && (
-          <Step2BasicInfo
-            values={values}
-            errors={errors}
-            onChange={handleChange}
-          />
+          <Step2BasicInfo />
         )}
 
         {currentStep === 3 && (
-          <Step3Schedule
-            values={values}
-            errors={errors}
-            onChange={handleChange}
-          />
+          <Step3Schedule />
         )}
       </div>
 
@@ -79,6 +66,7 @@ function CreateMeetingForm({
           size="md"
           className="flex-1 sm:h-15 sm:text-xl sm:rounded-2xl"
           onClick={currentStep === 1 ? onClose : () => handleStepChange(currentStep - 1)}
+          disabled={isSubmitting}
         >
           {currentStep === 1 ? '취소' : '이전'}
         </Button>
@@ -87,12 +75,13 @@ function CreateMeetingForm({
           variant="primary"
           size="md"
           className="flex-1 sm:h-15 sm:text-xl sm:rounded-2xl"
-          onClick={currentStep === 3 ? handleSubmit : () => handleStepChange(currentStep + 1)}
+          onClick={currentStep === 3 ? submitForm : () => handleStepChange(currentStep + 1)}
+          disabled={isSubmitting}
         >
-          {currentStep === 3 ? '모임 만들기' : '다음'}
+          {currentStep === 3 ? (isSubmitting ? '생성 중...' : '모임 만들기') : '다음'}
         </Button>
       </div>
-    </>
+    </FormProvider>
   );
 }
 
@@ -108,13 +97,14 @@ export function CreateMeetingModal({
       {/* 컨테이너 너비 조절: 모바일 최대 343px, 데스크톱 최대 544px */}
       <DialogContent className="max-w-85.75 sm:max-w-136 p-6 sm:p-12 rounded-3xl gap-8 border-none bg-white">
         {/* isOpen이 참일 때만 알맹이 컴포넌트를 마운트하여 상태 자연 초기화 실현 */}
-
-        <CreateMeetingForm
-          initialStep={initialStep}
-          onSubmit={onSubmit}
-          categories={categories}
-          onClose={onClose}
-        />
+        {isOpen && (
+          <CreateMeetingForm
+            initialStep={initialStep}
+            onSubmit={onSubmit}
+            categories={categories}
+            onClose={onClose}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );
