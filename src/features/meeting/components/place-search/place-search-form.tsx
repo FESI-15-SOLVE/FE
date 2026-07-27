@@ -6,7 +6,7 @@ import { Search } from 'lucide-react';
 export interface PlaceSearchFormProps {
   keyword: string;
   onKeywordChange: (value: string) => void;
-  onSearch: (e?: React.FormEvent) => void;
+  onSearch: (e?: React.SubmitEvent) => void;
 }
 
 export function PlaceSearchForm({
@@ -14,7 +14,7 @@ export function PlaceSearchForm({
   onKeywordChange,
   onSearch,
 }: PlaceSearchFormProps) {
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
     onSearch(e);
   };
@@ -27,7 +27,12 @@ export function PlaceSearchForm({
         onChange={(e) => onKeywordChange(e.target.value)}
         className="flex-1"
       />
-      <Button type="submit" variant="primary" size="md" className="px-5 shrink-0">
+      <Button
+        type="submit"
+        variant="primary"
+        size="md"
+        className="px-5 shrink-0"
+      >
         <Search className="size-5" />
       </Button>
     </form>
