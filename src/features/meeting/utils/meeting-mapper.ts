@@ -1,6 +1,11 @@
 import { MeetingWithHost, CreateMeeting } from '@/api/data-contracts';
 import { CreateMeetingPayload } from '../schema/create-shcema';
 import { CATEGORIES_DATA } from '@/constants/categories';
+import {
+  formatMeetingDate,
+  formatMeetingTime,
+  formatDeadlineTag,
+} from './date-formatter';
 
 /**
  * 백엔드 API 응답 (MeetingWithHost) 객체를 GroupCard 컴포넌트용 Props 포맷으로 변환하는 유틸리티 함수
@@ -14,16 +19,9 @@ export function mapMeetingToGroupCard(meeting: MeetingWithHost) {
       'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846',
     location: meeting.region,
     category: meeting.type,
-    date: meeting.dateTime
-      ? new Date(meeting.dateTime).toLocaleDateString('ko-KR')
-      : '날짜 미정',
-    time: meeting.dateTime
-      ? new Date(meeting.dateTime).toLocaleTimeString('ko-KR', {
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-      : '시간 미정',
-    deadlineTag: '마감 임박',
+    date: formatMeetingDate(meeting.dateTime),
+    time: formatMeetingTime(meeting.dateTime),
+    deadlineTag: formatDeadlineTag(meeting.registrationEnd),
     participantCount: meeting.participantCount,
     maxParticipant: meeting.capacity,
     isFavorited: Boolean(meeting.isFavorited),
@@ -44,14 +42,16 @@ export function mapCreatePayloadToServerData(
 
   const baseAddress = payload.placeAddress || '';
   const fullAddress = payload.detailAddress
-    ? (baseAddress ? `${baseAddress}, ${payload.detailAddress}` : payload.detailAddress)
+    ? baseAddress
+      ? `${baseAddress}, ${payload.detailAddress}`
+      : payload.detailAddress
     : baseAddress;
 
   return {
     name: payload.name,
     type: type,
-    region: payload.location, // 카카오 주소에서 추출된 시/도 + 구/군 (예: "서울 강남구")
-    address: fullAddress, // 장소명 + 도로명주소 + 수동 상세주소 (예: "스타벅스 강남역점, 서울 강남구 강남대로 390, 3층 301호")
+    region: payload.location,
+    address: fullAddress,
     latitude: payload.latitude,
     longitude: payload.longitude,
     dateTime: payload.dateTime?.toISOString() ?? null,
