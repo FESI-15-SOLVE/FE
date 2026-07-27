@@ -37,7 +37,10 @@ export function PlaceSearchModal({
   };
 
   // 지도 클릭 핸들러 (역지오코딩)
-  const handleMapClick = (_map: kakao.maps.Map, e: kakao.maps.event.MouseEvent) => {
+  const handleMapClick = (
+    _map: kakao.maps.Map,
+    e: kakao.maps.event.MouseEvent,
+  ) => {
     const lat = e.latLng.getLat();
     const lng = e.latLng.getLng();
     reverseGeocode(lng, lat, selection.selectPlace);
@@ -53,7 +56,7 @@ export function PlaceSearchModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="max-w-95 sm:max-w-220 w-full p-6 pt-7 pb-6 rounded-[24px] sm:rounded-[32px] border-none bg-white h-[640px] flex flex-col gap-5">
+      <DialogContent className="max-w-95 sm:max-w-220 w-full p-6 pt-7 pb-6 rounded-[24px] sm:rounded-[32px] border-none bg-white h-160 flex flex-col gap-5">
         <DialogHeader className="flex flex-row items-center justify-between space-y-0 shrink-0">
           <DialogTitle className="text-lg sm:text-2xl font-semibold text-neutral-900 flex items-center gap-2">
             <Navigation className="size-6 text-brand-500" />

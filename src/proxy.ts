@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { jwtDecode } from 'jwt-decode';
 
 // 로그인이 필수로 요구되는 경로들
-const REQUIRED_AUTH_PATHS = ['/mypage', '/meetings'];
+const REQUIRED_AUTH_PATHS = ['/mypage'];
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
