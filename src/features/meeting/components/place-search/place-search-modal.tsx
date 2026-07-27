@@ -17,18 +17,37 @@ export interface PlaceResultItem {
   place_name: string;
   road_address_name: string;
   address_name: string;
-  x: string; // lng
-  y: string; // lat
+  x: string;
+  y: string;
 }
 
 export interface PlaceSearchModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelectPlace: (placeInfo: {
-    formattedAddress: string;
+    extractedRegion: string;
+    placeAddress: string;
     lat: number;
     lng: number;
   }) => void;
+}
+
+/**
+ * 카카오맵 주소(address_name)로부터 시/도 + 구/군 (예: "서울 강남구", "경기 성남시 분당구")을 추출하는 유틸리티
+ */
+export function extractRegion(address: string): string {
+  if (!address) return '기타';
+  const parts = address.trim().split(/\s+/);
+  if (parts.length < 2) return address;
+
+  const first = parts[0];
+  const second = parts[1];
+
+  if (parts.length >= 3 && second.endsWith('시') && parts[2].endsWith('구')) {
+    return `${first} ${second} ${parts[2]}`;
+  }
+
+  return `${first} ${second}`;
 }
 
 export function PlaceSearchModal({
@@ -38,21 +57,32 @@ export function PlaceSearchModal({
 }: PlaceSearchModalProps) {
   // 카카오 맵 JS SDK 로드 (services 라이브러리 포함)
   const [loading, error] = useKakaoLoader({
-    appkey: process.env.NEXT_PUBLIC_KAKAO_MAP_KEY || '99fbfa9e7b235e2ebfef39c81122a27d', // 환경변수 fallback
+    appkey:
+      process.env.NEXT_PUBLIC_KAKAO_MAP_KEY ||
+      '99fbfa9e7b235e2ebfef39c81122a27d', // 환경변수 fallback
     libraries: ['services'],
   });
 
   const [keyword, setKeyword] = useState('');
   const [places, setPlaces] = useState<PlaceResultItem[]>([]);
-  const [selectedPlace, setSelectedPlace] = useState<PlaceResultItem | null>(null);
+  const [selectedPlace, setSelectedPlace] = useState<PlaceResultItem | null>(
+    null,
+  );
   const [searchError, setSearchError] = useState<string | null>(null);
 
   const handleSearch = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!keyword.trim()) return;
 
-    if (typeof window === 'undefined' || !window.kakao || !window.kakao.maps || !window.kakao.maps.services) {
-      setSearchError('카카오 맵 서비스를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
+    if (
+      typeof window === 'undefined' ||
+      !window.kakao ||
+      !window.kakao.maps ||
+      !window.kakao.maps.services
+    ) {
+      setSearchError(
+        '카카오 맵 서비스를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.',
+      );
       return;
     }
 
@@ -78,13 +108,18 @@ export function PlaceSearchModal({
   const handleConfirm = () => {
     if (!selectedPlace) return;
 
-    const mainAddress = selectedPlace.road_address_name || selectedPlace.address_name;
-    const formattedAddress = `${selectedPlace.place_name}, ${mainAddress}`;
+    const baseAddress =
+      selectedPlace.address_name || selectedPlace.road_address_name;
+    const extractedRegion = extractRegion(baseAddress);
+    const mainAddress =
+      selectedPlace.road_address_name || selectedPlace.address_name;
+    const placeAddress = `${selectedPlace.place_name}, ${mainAddress}`;
     const lat = parseFloat(selectedPlace.y);
     const lng = parseFloat(selectedPlace.x);
 
     onSelectPlace({
-      formattedAddress,
+      extractedRegion,
+      placeAddress,
       lat,
       lng,
     });
@@ -108,7 +143,12 @@ export function PlaceSearchModal({
             onChange={(e) => setKeyword(e.target.value)}
             className="flex-1"
           />
-          <Button type="submit" variant="primary" size="md" className="px-5 shrink-0">
+          <Button
+            type="submit"
+            variant="primary"
+            size="md"
+            className="px-5 shrink-0"
+          >
             <Search className="size-5" />
           </Button>
         </form>
@@ -136,7 +176,9 @@ export function PlaceSearchModal({
                   }`}
                 >
                   <div className="flex items-start gap-2">
-                    <MapPin className={`size-4 mt-0.5 shrink-0 ${isSelected ? 'text-brand-500' : 'text-neutral-400'}`} />
+                    <MapPin
+                      className={`size-4 mt-0.5 shrink-0 ${isSelected ? 'text-brand-500' : 'text-neutral-400'}`}
+                    />
                     <div className="space-y-1 text-left">
                       <p className="font-semibold text-sm text-neutral-900">
                         {place.place_name}
@@ -155,12 +197,18 @@ export function PlaceSearchModal({
           <div className="w-full sm:w-64 h-48 sm:h-auto rounded-2xl overflow-hidden border border-neutral-200 shrink-0 relative bg-neutral-100">
             {!loading && selectedPlace ? (
               <Map
-                center={{ lat: parseFloat(selectedPlace.y), lng: parseFloat(selectedPlace.x) }}
+                center={{
+                  lat: parseFloat(selectedPlace.y),
+                  lng: parseFloat(selectedPlace.x),
+                }}
                 style={{ width: '100%', height: '100%' }}
                 level={3}
               >
                 <MapMarker
-                  position={{ lat: parseFloat(selectedPlace.y), lng: parseFloat(selectedPlace.x) }}
+                  position={{
+                    lat: parseFloat(selectedPlace.y),
+                    lng: parseFloat(selectedPlace.x),
+                  }}
                 />
               </Map>
             ) : (

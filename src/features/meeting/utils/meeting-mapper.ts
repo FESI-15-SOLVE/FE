@@ -42,11 +42,16 @@ export function mapCreatePayloadToServerData(
   const category = CATEGORIES_DATA.find((c) => c.id === payload.categoryId);
   const type = category ? category.name : '기타';
 
+  const baseAddress = payload.placeAddress || '';
+  const fullAddress = payload.detailAddress
+    ? (baseAddress ? `${baseAddress}, ${payload.detailAddress}` : payload.detailAddress)
+    : baseAddress;
+
   return {
     name: payload.name,
     type: type,
-    region: payload.location, // 현재 폼의 location 필드를 임시로 region에 매핑
-    address: payload.detailAddress,
+    region: payload.location, // 카카오 주소에서 추출된 시/도 + 구/군 (예: "서울 강남구")
+    address: fullAddress, // 장소명 + 도로명주소 + 수동 상세주소 (예: "스타벅스 강남역점, 서울 강남구 강남대로 390, 3층 301호")
     latitude: payload.latitude,
     longitude: payload.longitude,
     dateTime: payload.dateTime?.toISOString() ?? null,

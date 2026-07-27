@@ -5,6 +5,7 @@ export const createMeetingBaseSchema = z.object({
   categoryId: z.number().min(1, '모임 종류를 선택해주세요.'),
   name: z.string().trim().min(1, '모임 이름을 입력해주세요.'),
   location: z.string().trim().min(1, '장소를 입력해주세요.'),
+  placeAddress: z.string().optional(),
   detailAddress: z.string(),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
@@ -74,7 +75,10 @@ export const step1Schema = createMeetingBaseSchema.pick({
 export const step2Schema = createMeetingBaseSchema.pick({
   name: true,
   location: true,
+  placeAddress: true,
   detailAddress: true,
+  latitude: true,
+  longitude: true,
   file: true,
 });
 

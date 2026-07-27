@@ -4,6 +4,7 @@ export interface CreateMeetingValues {
   categoryId: number;
   name: string;
   location: string;
+  placeAddress?: string;
   detailAddress: string;
   latitude?: number;
   longitude?: number;
