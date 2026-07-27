@@ -1,14 +1,14 @@
-import { useId } from 'react';
-
+import { useState, useId } from 'react';
 import { useFormContext, Controller, useFormState } from 'react-hook-form';
 import { Input } from '@/components/ui/Input';
 import { InputField, FileInput } from '@/components/ui/Input';
-import { MapPin } from 'lucide-react';
+import { RegionSelectModal } from '@/features/meeting/components/region-select';
 import { CreateMeetingValues } from '../../types';
 
 export function Step2BasicInfo() {
   const generatedId = useId();
   const locationId = `location-${generatedId}`;
+  const [isRegionModalOpen, setIsRegionModalOpen] = useState(false);
 
   const { register, control } = useFormContext<CreateMeetingValues>();
   const { errors } = useFormState({ control });
@@ -24,12 +24,28 @@ export function Step2BasicInfo() {
       </InputField>
 
       <InputField label="장소" required error={errors.location?.message}>
-        <Input
-          id={locationId}
-          placeholder="건물, 지번 또는 도로명 검색"
-          destructive={!!errors.location}
-          rightIcon={<MapPin className="size-5" />}
-          {...register('location')}
+        <Controller
+          control={control}
+          name="location"
+          render={({ field }) => (
+            <>
+              <Input
+                id={locationId}
+                placeholder="지역을 선택해주세요"
+                destructive={!!errors.location}
+                value={field.value || ''}
+                readOnly
+                onClick={() => setIsRegionModalOpen(true)}
+                className="cursor-pointer"
+              />
+              <RegionSelectModal
+                isOpen={isRegionModalOpen}
+                onClose={() => setIsRegionModalOpen(false)}
+                selectedRegion={field.value}
+                onSelect={(region) => field.onChange(region)}
+              />
+            </>
+          )}
         />
       </InputField>
 
