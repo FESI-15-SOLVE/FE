@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import Image from "next/image";
+import { useMediaQuery } from "@/hooks/ui/use-media-query";
 import notiImg from "@/assets/svg/noti_img.svg";
 import profileImg from "@/assets/svg/img_profile.svg";
 import checkCircle from "@/assets/svg/check-circle.svg";
@@ -69,11 +70,10 @@ export function NotificationPanel({
   onMarkAllRead,
 }: NotificationPanelProps) {
   const panelRef = useRef<HTMLDivElement | null>(null);
+  const isMobile = useMediaQuery("(max-width: 744px)");
 
   useLayoutEffect(() => {
     if (!panelRef.current) return;
-
-    const isMobile = window.matchMedia("(max-width: 744px)").matches;
 
     if (isOpen) {
       if (isMobile) {
@@ -131,7 +131,7 @@ export function NotificationPanel({
         });
       }
     }
-  }, [isOpen]);
+  }, [isOpen, isMobile]);
 
   return (
     <div
