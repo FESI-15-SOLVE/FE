@@ -2,7 +2,9 @@ import { useState, useCallback } from 'react';
 import { PlaceResultItem, LatLng } from '../types';
 
 export function usePlaceSelection(defaultCenter: LatLng) {
-  const [selectedPlace, setSelectedPlace] = useState<PlaceResultItem | null>(null);
+  const [selectedPlace, setSelectedPlace] = useState<PlaceResultItem | null>(
+    null,
+  );
   const [mapCenter, setMapCenter] = useState<LatLng>(defaultCenter);
 
   const selectPlace = useCallback((place: PlaceResultItem) => {
