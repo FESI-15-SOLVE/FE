@@ -661,7 +661,7 @@ export default function Home() {
                   deadlineTag: '오늘 21시 마감',
                   participantCount: 12,
                   maxParticipant: 20,
-                  isSaved: false,
+                  isFavorited: false,
                 }}
                 isConfirmed={true}
                 isClosed={false}
@@ -679,7 +679,7 @@ export default function Home() {
                   time: '17:30',
                   participantCount: 20,
                   maxParticipant: 20,
-                  isSaved: true,
+                  isFavorited: true,
                 }}
                 isClosed={true}
               />

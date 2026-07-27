@@ -22,7 +22,7 @@ export interface GroupCardProps {
     deadlineTag?: string;
     participantCount: number;
     maxParticipant: number;
-    isSaved: boolean;
+    isFavorited: boolean;
   };
   isConfirmed?: boolean;
   isClosed?: boolean;
@@ -85,7 +85,7 @@ export function GroupCard({
           ) : (
             <UtilityButton
               onClick={handleSaveClick}
-              isActive={meeting.isSaved}
+              isActive={meeting.isFavorited}
             />
           )}
         </div>
@@ -134,7 +134,7 @@ export function GroupCard({
             ) : (
               <UtilityButton
                 onClick={handleSaveClick}
-                isActive={meeting.isSaved}
+                isActive={meeting.isFavorited}
               />
             )}
           </div>
