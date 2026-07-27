@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Bell, Menu, User, X } from "lucide-react";
 import { NotificationPanel, initialNotifications, type NotificationItem } from "@/components/ui/notification";
+import { useMediaQuery } from "@/hooks/ui/use-media-query";
+import LogoPc from "@/assets/imgs/img_logo_lg.svg";
+import LogoMo from "@/assets/imgs/img_logo_sm.svg";
 
 interface GnbProps {
   isLoggedIn?: boolean;
@@ -18,25 +21,15 @@ const menuItems = [
 ] as const;
 
 export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
   const [shouldRenderNotificationPanel, setShouldRenderNotificationPanel] = useState(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>(initialNotifications);
   const panelContainerRef = useRef<HTMLDivElement | null>(null);
 
   const unreadNotificationCount = notifications.filter((notification) => !notification.isRead).length;
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(min-width: 745px)");
-    const handleMediaChange = (event: MediaQueryListEvent) => {
-      if (event.matches) {
-        setIsMobileMenuOpen(false);
-      }
-    };
-
-    mediaQuery.addEventListener("change", handleMediaChange);
-    return () => mediaQuery.removeEventListener("change", handleMediaChange);
-  }, []);
+  const isDesktop = useMediaQuery("(min-width: 745px)");
+  const isMobileMenuOpen = isMobileMenuToggled && !isDesktop;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -59,10 +52,10 @@ export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
     }
 
     if (!isNotificationPanelOpen && shouldRenderNotificationPanel) {
-      const timeoutId = window.setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         setShouldRenderNotificationPanel(false);
       }, 220);
-      return () => window.clearTimeout(timeoutId);
+      return () => clearTimeout(timeoutId);
     }
   }, [isNotificationPanelOpen, shouldRenderNotificationPanel]);
 
@@ -87,10 +80,8 @@ export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
     <header className="border-b border-zinc-200 bg-white/95 backdrop-blur-md w-full">
       <div className="mx-auto flex h-16 max-w-[1280px] items-center px-4 sm:px-6 lg:px-8">
         <Link href="/" className="inline-flex items-center mr-6">
-          <picture>
-            <source media="(min-width: 745px)" srcSet="/src/assets/svg/logo_pc.svg" />
-            <img src="/src/assets/svg/logo_mo.svg" alt="같이달램 로고" className="h-10 w-auto" />
-          </picture>
+            <LogoPc className="hidden min-[745px]:block h-auto w-25" />
+            <LogoMo className="block min-[745px]:hidden h-auto w-20" />
         </Link>
 
         <div className="hidden min-[745px]:flex items-center gap-6 text-sm font-medium text-zinc-700">
@@ -143,7 +134,7 @@ export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
                 aria-label={isNotificationPanelOpen ? "알림 닫기" : "알림 열기"}
                 aria-expanded={isNotificationPanelOpen}
                 onClick={() => {
-                  setIsMobileMenuOpen(false);
+                  setIsMobileMenuToggled(false);
                   if (isNotificationPanelOpen) {
                     setIsNotificationPanelOpen(false);
                   } else {
@@ -201,7 +192,7 @@ export function Gnb({ isLoggedIn = false, notificationCounts = {} }: GnbProps) {
             aria-label={isMobileMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
             onClick={() => {
               setIsNotificationPanelOpen(false);
-              setIsMobileMenuOpen((current) => !current);
+              setIsMobileMenuToggled((current) => !current);
             }}
           >
             {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
