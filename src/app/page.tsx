@@ -662,9 +662,12 @@ export default function Home() {
                   participantCount: 12,
                   maxParticipant: 20,
                   isFavorited: false,
+                  isJoined: false,
+                  isCanceled: false,
+                  isFull: false,
+                  isRegistrationClosed: false,
                 }}
                 isConfirmed={true}
-                isClosed={false}
                 onJoinClick={() => console.log('Join clicked')}
                 onSaveClick={() => console.log('Save clicked')}
               />
@@ -680,8 +683,11 @@ export default function Home() {
                   participantCount: 20,
                   maxParticipant: 20,
                   isFavorited: true,
+                  isJoined: false,
+                  isCanceled: false,
+                  isFull: true,
+                  isRegistrationClosed: true,
                 }}
-                isClosed={true}
               />
             </div>
           </section>

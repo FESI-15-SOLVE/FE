@@ -9,6 +9,7 @@ import {
 import {
   getMeetingBadgeStatuses,
   getMeetingActionStatus,
+  getMeetingDerivedState,
 } from './meeting-status';
 import { DetailCardProps } from '../components/cards/detail-card';
 
@@ -20,6 +21,9 @@ export const FALLBACK_MEETING_IMAGE =
  * 백엔드 API 응답 (MeetingWithHost) 객체를 GroupCard 컴포넌트용 Props 포맷으로 변환하는 유틸리티 함수
  */
 export function mapMeetingToGroupCard(meeting: MeetingWithHost) {
+  // 리스트 조회 시 방장 여부는 굳이 중요하지 않을 수 있으나 일관성을 위해 상태 유틸을 사용합니다.
+  const state = getMeetingDerivedState(meeting);
+  
   return {
     id: String(meeting.id),
     title: meeting.name,
@@ -29,10 +33,13 @@ export function mapMeetingToGroupCard(meeting: MeetingWithHost) {
     date: formatMeetingDate(meeting.dateTime),
     time: formatMeetingTime(meeting.dateTime),
     deadlineTag: formatDeadlineTag(meeting.registrationEnd),
-    participantCount: meeting.participantCount,
-    maxParticipant: meeting.capacity,
-    isFavorited: Boolean(meeting.isFavorited),
-    isJoined: Boolean(meeting.isJoined),
+    participantCount: state.participantCount,
+    maxParticipant: state.capacity,
+    isFavorited: state.isSaved,
+    isJoined: state.isJoined,
+    isCanceled: state.isCanceled,
+    isFull: state.isFull,
+    isRegistrationClosed: state.isRegistrationClosed,
   };
 }
 
@@ -42,6 +49,9 @@ export function mapMeetingToGroupCard(meeting: MeetingWithHost) {
 export function mapMeetingToDetailCard(
   meeting: JoinedMeeting | MeetingWithHost,
 ): DetailCardProps {
+  // JoinedMeeting은 MeetingWithHost의 하위집합이지만 필요한 필드가 다 있다면 타입캐스팅 가능
+  const state = getMeetingDerivedState(meeting as MeetingWithHost);
+  
   return {
     meeting: {
       id: String(meeting.id),
@@ -50,9 +60,9 @@ export function mapMeetingToDetailCard(
       location: meeting.address || meeting.region,
       date: formatMeetingDate(meeting.dateTime),
       time: formatMeetingTime(meeting.dateTime),
-      participantCount: meeting.participantCount,
-      maxParticipant: meeting.capacity,
-      isSaved: Boolean(meeting.isFavorited),
+      participantCount: state.participantCount,
+      maxParticipant: state.capacity,
+      isSaved: state.isSaved,
     },
     badgeStatuses: getMeetingBadgeStatuses(meeting),
     actionStatus: getMeetingActionStatus(meeting),

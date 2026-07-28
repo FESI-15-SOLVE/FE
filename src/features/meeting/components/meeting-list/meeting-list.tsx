@@ -64,7 +64,6 @@ export function MeetingListUI({
             key={item.id}
             meeting={mapMeetingToGroupCard(item)}
             isConfirmed={isMeetingConfirmed(item)}
-            isClosed={isMeetingClosed(item)}
             onClick={() => handleClickCard(item.id)}
             onSaveClick={() => handleSaveClick(item.id, item.isFavorited)}
           />

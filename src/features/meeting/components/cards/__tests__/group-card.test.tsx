@@ -13,13 +13,17 @@ const mockMeeting = {
   deadlineTag: '오늘 21시 마감',
   participantCount: 12,
   maxParticipant: 20,
-  isSaved: false,
+  isFavorited: false,
+  isJoined: false,
+  isCanceled: false,
+  isFull: false,
+  isRegistrationClosed: false,
 };
 
 describe('GroupCard 컴포넌트', () => {
   it('모임의 세부 정보를 올바르게 렌더링해야 합니다.', () => {
     render(
-      <GroupCard meeting={mockMeeting} isClosed={false} isConfirmed={true} />,
+      <GroupCard meeting={mockMeeting} isConfirmed={true} />,
     );
     expect(screen.getByText('달램핏 오피스 스트레칭')).toBeInTheDocument();
     expect(screen.getByText(/을지로 3가/)).toBeInTheDocument();
@@ -30,7 +34,7 @@ describe('GroupCard 컴포넌트', () => {
   });
 
   it('마감 상태일 경우 모집 마감 오버레이가 렌더링되어야 합니다.', () => {
-    render(<GroupCard meeting={mockMeeting} isClosed={true} />);
+    render(<GroupCard meeting={{ ...mockMeeting, isRegistrationClosed: true }} />);
     expect(screen.getByText('모집 마감')).toBeInTheDocument();
   });
 
@@ -39,7 +43,6 @@ describe('GroupCard 컴포넌트', () => {
     render(
       <GroupCard
         meeting={mockMeeting}
-        isClosed={false}
         onJoinClick={handleJoin}
       />,
     );

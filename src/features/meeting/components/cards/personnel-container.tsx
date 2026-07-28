@@ -1,27 +1,39 @@
 'use client';
 
+import React from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { StatusLabel } from '@/components/ui/label';
 import { ProgressBar } from '@/components/ui/progress';
+import { useQuery } from '@tanstack/react-query';
+import { meetingQueries } from '../../queries/meeting-query';
 
 export interface PersonnelContainerProps {
+  meetingId: string;
   currentParticipant: number;
   minParticipant: number;
   maxParticipant: number;
-  participantImages?: string[];
   isConfirmed?: boolean;
   className?: string;
 }
 
 export function PersonnelContainer({
+  meetingId,
   currentParticipant,
   minParticipant,
   maxParticipant,
-  participantImages = [],
   isConfirmed = false,
   className,
 }: PersonnelContainerProps) {
+  const { data: participantsData } = useQuery(
+    meetingQueries.participantsQuery(meetingId),
+  );
+
+  const participantImages =
+    participantsData?.data
+      ?.map((p: any) => p.user?.image)
+      .filter((img): img is string => Boolean(img)) || [];
+
   const displayAvatars = participantImages.slice(0, 4);
   const remainingCount = currentParticipant > 4 ? currentParticipant - 4 : 0;
 

@@ -6,6 +6,7 @@ import { Tag } from '@/components/ui/tag';
 import { Button, UtilityButton } from '@/components/ui/button';
 import { IconCrown, IconMeatballs } from '@/components/icons';
 import AlarmTag from '@/components/ui/tag/alarm-tag';
+import { MeetingJoinButton } from '../detail/meeting-join-button';
 
 export interface InformationCardProps {
   meeting: {
@@ -19,6 +20,11 @@ export interface InformationCardProps {
     isSaved: boolean;
   };
   isHost?: boolean;
+  isJoined?: boolean;
+  isFull?: boolean;
+  isRegistrationClosed?: boolean;
+  isCanceled?: boolean;
+  isPending?: boolean;
   onClick?: () => void;
   onSaveClick?: (e: React.MouseEvent) => void;
   onJoinClick?: (e: React.MouseEvent) => void;
@@ -28,6 +34,11 @@ export interface InformationCardProps {
 export function InformationCard({
   meeting,
   isHost = false,
+  isJoined = false,
+  isFull = false,
+  isRegistrationClosed = false,
+  isCanceled = false,
+  isPending = false,
   onClick,
   onSaveClick,
   onJoinClick,
@@ -99,14 +110,18 @@ export function InformationCard({
       )}
       {/* 액션 버튼 (찜하기, 참여하기) */}
       <div className="flex items-center gap-2.5 sm:gap-4 w-full sm:h-15 mt-auto">
-        <UtilityButton onClick={handleSaveClick} />
-        <Button
-          onClick={handleJoinClick}
-          size="lg"
-          className="flex-1 h-10 sm:h-15 font-semibold text-sm sm:text-xl"
-        >
-          참여하기
-        </Button>
+        <UtilityButton onClick={handleSaveClick} isActive={meeting.isSaved} />
+        {!isHost && (
+          <MeetingJoinButton
+            isCanceled={isCanceled}
+            isJoined={isJoined}
+            isFull={isFull}
+            isRegistrationClosed={isRegistrationClosed}
+            isPending={isPending}
+            onClick={handleJoinClick}
+            className="flex-1 h-10 sm:h-15 text-sm sm:text-xl"
+          />
+        )}
       </div>
     </div>
   );

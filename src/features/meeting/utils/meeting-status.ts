@@ -1,6 +1,7 @@
 import { MeetingWithHost, JoinedMeeting } from '@/api/data-contracts';
 
-export type MeetingBadgeStatus = 'confirmed' | 'pending' | 'completed' | 'upcoming';
+export type MeetingBadgeStatus =
+  'confirmed' | 'pending' | 'completed' | 'upcoming';
 export type MeetingActionStatus = 'reserved' | 'completed' | 'canceled';
 
 /**
@@ -59,7 +60,8 @@ export function getMeetingBadgeStatuses(
  * - reserved: 예약됨 (예약 취소 대상)
  */
 export function getMeetingActionStatus(
-  meeting: Partial<JoinedMeeting> & Pick<MeetingWithHost, 'canceledAt' | 'isCompleted'>,
+  meeting: Partial<JoinedMeeting> &
+    Pick<MeetingWithHost, 'canceledAt' | 'isCompleted'>,
 ): MeetingActionStatus {
   if (meeting.canceledAt) {
     return 'canceled';
@@ -68,4 +70,52 @@ export function getMeetingActionStatus(
     return 'completed';
   }
   return 'reserved';
+}
+
+/**
+ * 6. 모임의 파생 상태(마감, 정원 초과, 취소, 방장 여부 등)를 모두 계산하여 반환하는 순수 함수
+ * 컴포넌트나 매퍼 함수에서 공통으로 재사용됩니다.
+ */
+export function getMeetingDerivedState(
+  meeting: MeetingWithHost,
+  currentUserId?: number | string | null,
+) {
+  const isHost = Boolean(
+    currentUserId &&
+    (meeting.hostId === Number(currentUserId) ||
+      meeting.createdBy === Number(currentUserId)),
+  );
+
+  const isJoined = Boolean(meeting.isJoined);
+  const isSaved = Boolean(meeting.isFavorited);
+  const isCanceled = Boolean(meeting.canceledAt);
+  const isCompleted = Boolean(meeting.isCompleted);
+  const isConfirmed = isMeetingConfirmed(meeting);
+
+  const participantCount = meeting.participantCount || 0;
+  const capacity = meeting.capacity || 1;
+  const isFull = participantCount >= capacity;
+
+  // 마감일이 지났는지 여부
+  const isDeadlinePassed = meeting.registrationEnd
+    ? new Date(meeting.registrationEnd) < new Date()
+    : false; // 마감일이 아예 null로 설정된 경우 무기한(false)으로 간주
+
+  // 모임 모집 마감 여부 (취소됨 || 정원초과 || 종료됨 || 마감기한 지남)
+  const isRegistrationClosed =
+    isCanceled || isFull || isCompleted || isDeadlinePassed;
+
+  return {
+    isHost,
+    isJoined,
+    isSaved,
+    isCanceled,
+    isCompleted,
+    isConfirmed,
+    isFull,
+    isDeadlinePassed,
+    isRegistrationClosed,
+    participantCount,
+    capacity,
+  };
 }
