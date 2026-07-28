@@ -23,8 +23,13 @@ export function MeetingDetailView({ meetingId }: MeetingDetailViewProps) {
 
       {/* 2. 메인 상세 정보 영역 (모임 설명, 장소 지도, 리뷰) */}
       <div className="space-y-8 w-full">
-        <MeetingDescription meeting={meeting} />
-        <MeetingLocationMap meeting={meeting} />
+        <MeetingDescription description={meeting.description} />
+        <MeetingLocationMap
+          latitude={meeting.latitude}
+          longitude={meeting.longitude}
+          address={meeting.address}
+          region={meeting.region}
+        />
         <MeetingReviews />
       </div>
     </div>

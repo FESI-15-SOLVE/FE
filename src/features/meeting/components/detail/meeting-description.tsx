@@ -1,11 +1,10 @@
 import { FileText } from 'lucide-react';
-import { MeetingWithHost } from '@/api/data-contracts';
 
 export interface MeetingDescriptionProps {
-  meeting: MeetingWithHost;
+  description?: string | null;
 }
 
-export function MeetingDescription({ meeting }: MeetingDescriptionProps) {
+export function MeetingDescription({ description }: MeetingDescriptionProps) {
   return (
     <div className="w-full bg-white p-6 sm:p-8 rounded-3xl border border-neutral-200 shadow-sm space-y-4">
       <div className="flex items-center gap-2 text-lg sm:text-xl font-bold text-neutral-900 border-b border-neutral-100 pb-4">
@@ -14,7 +13,7 @@ export function MeetingDescription({ meeting }: MeetingDescriptionProps) {
       </div>
 
       <div className="text-sm sm:text-base text-neutral-700 leading-relaxed whitespace-pre-line min-h-[80px]">
-        {meeting.description || '작성된 모임 상세 설명이 없습니다.'}
+        {description || '작성된 모임 상세 설명이 없습니다.'}
       </div>
     </div>
   );

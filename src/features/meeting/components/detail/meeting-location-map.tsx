@@ -4,20 +4,27 @@ import { MapPin, Copy, Check } from 'lucide-react';
 import { useState } from 'react';
 import { MapMarker } from 'react-kakao-maps-sdk';
 import { KakaoMapContainer } from '@/features/map/components/kakao-map-container';
-import { MeetingWithHost } from '@/api/data-contracts';
 import { toast } from 'sonner';
 
 export interface MeetingLocationMapProps {
-  meeting: MeetingWithHost;
+  latitude?: number | null;
+  longitude?: number | null;
+  address?: string | null;
+  region?: string;
 }
 
-export function MeetingLocationMap({ meeting }: MeetingLocationMapProps) {
+export function MeetingLocationMap({
+  latitude,
+  longitude,
+  address,
+  region,
+}: MeetingLocationMapProps) {
   const [copied, setCopied] = useState(false);
 
   // 기본 위치 좌표 (없을 경우 N서울타워)
-  const lat = meeting.latitude || 37.5511699;
-  const lng = meeting.longitude || 126.988227;
-  const fullAddress = meeting.address || meeting.region || '주소 정보 없음';
+  const lat = latitude || 37.5511699;
+  const lng = longitude || 126.988227;
+  const fullAddress = address || region || '주소 정보 없음';
 
   const handleCopy = async () => {
     try {
