@@ -11,30 +11,12 @@ export {
   NOTIFICATION_MODAL_WIDTH_PX,
   NOTIFICATION_TAB_HEIGHT_PX,
 } from "./notification-dimensions";
-export { NotificationModal } from "./NotificationModal/notification-modal";
+export { NotificationModal } from "./modal/notification-modal";
 export type {
   NotificationModalListSize,
   NotificationModalProps,
-} from "./NotificationModal/notification-modal.types";
-export { NotificationCenter } from "./notification-center";
-export { NotificationTabs } from "./NotificationTabs/notification-tabs";
-export { notificationTabsVariants } from "./NotificationTabs/notification-tabs.variants";
-export type { NotificationTabsProps } from "./NotificationTabs/notification-tabs.types";
-export { formatRelativeTime } from "./format-relative-time";
-export { mapNotificationItemToViewModel } from "./notification-item-mapper";
-export {
-  createAuthorizationHeaders,
-  createNotificationRequestParams,
-} from "./notification-request";
-export { notificationQueryKeys } from "./notification-query-keys";
-export { useNotificationListQuery } from "./use-notification-list-query";
-export { useReadAllNotificationMutation } from "./use-read-all-notification-mutation";
-export { useReadNotificationMutation } from "./use-read-notification-mutation";
-export { useUnreadNotificationCountQuery } from "./use-unread-notification-count-query";
-export type {
-  NotificationItem,
-  NotificationListQueryOptions,
-  NotificationMutationOptions,
-  NotificationTabsItemViewModel,
-  NotificationType,
-} from "./notification.types";
+} from "./modal/notification-modal.types";
+export { NotificationTabs } from "./tabs/notification-tabs";
+export { notificationTabsVariants } from "./tabs/notification-tabs.variants";
+export type { NotificationTabsProps } from "./tabs/notification-tabs.types";
+export type { NotificationType } from "./notification.types";

@@ -1,5 +1,5 @@
 import Image, { type StaticImageData } from "next/image";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 
 import icGoogle from "@/assets/svg/ic-google.svg";

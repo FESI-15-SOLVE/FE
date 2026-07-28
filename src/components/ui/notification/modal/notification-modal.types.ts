@@ -14,14 +14,3 @@ export interface NotificationModalProps extends HTMLAttributes<HTMLDivElement> {
   listSize?: NotificationModalListSize;
   children?: ReactNode;
 }
-
-export interface NotificationModalHeaderProps {
-  title: string;
-  readAllLabel: string;
-  onReadAll?: () => void;
-  isReadAllDisabled: boolean;
-}
-
-export interface NotificationModalEmptyProps {
-  emptyMessage: string;
-}

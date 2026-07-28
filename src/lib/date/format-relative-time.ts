@@ -2,6 +2,10 @@ const MINUTE_IN_MS = 60 * 1000;
 const HOUR_IN_MS = 60 * MINUTE_IN_MS;
 const DAY_IN_MS = 24 * HOUR_IN_MS;
 
+/**
+ * ISO 날짜를 "방금 전", "n분 전", "n시간 전", "n일 전"으로 변환합니다.
+ * 알림·댓글·모임 목록 등에서 공통으로 사용할 수 있습니다.
+ */
 export function formatRelativeTime(
   createdAt: string | null | undefined,
   now: Date = new Date(),

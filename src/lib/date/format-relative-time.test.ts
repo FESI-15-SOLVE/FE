@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { formatRelativeTime } from "@/components/ui/notification/format-relative-time";
+import { formatRelativeTime } from "./format-relative-time";
 
 describe("formatRelativeTime", () => {
   const now = new Date("2026-07-21T15:00:00.000Z");

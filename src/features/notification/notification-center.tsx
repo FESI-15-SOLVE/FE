@@ -1,24 +1,33 @@
 "use client";
 
-import { NotificationModal } from "./NotificationModal/notification-modal";
-import { NotificationTabs } from "./NotificationTabs/notification-tabs";
-import { DEFAULT_EMPTY_MESSAGE } from "./notification.constants";
-import type { NotificationModalListSize } from "./NotificationModal/notification-modal.types";
-import { mapNotificationItemToViewModel } from "./notification-item-mapper";
-import { createAuthorizationHeaders } from "./notification-request";
-import type { NotificationItem } from "./notification.types";
-import { useNotificationListQuery } from "./use-notification-list-query";
-import { useReadAllNotificationMutation } from "./use-read-all-notification-mutation";
-import { useReadNotificationMutation } from "./use-read-notification-mutation";
+import {
+  DEFAULT_EMPTY_MESSAGE,
+  NotificationModal,
+  NotificationTabs,
+  type NotificationModalListSize,
+} from "@/components/ui/notification";
+import { createAuthorizationHeaders } from "@/lib/api/request-headers";
+
+import {
+  mapNotificationItemToViewModel,
+  type NotificationItem,
+} from "./notification.types";
+import {
+  useNotificationListQuery,
+  useReadAllNotificationMutation,
+  useReadNotificationMutation,
+} from "./use-notification-api";
 
 interface NotificationCenterProps {
   teamId: string;
   accessToken?: string;
   listSize?: NotificationModalListSize;
   emptyMessage?: string;
+  /** 알림 클릭 후 이동 등 상위 동작을 연결할 때 사용 */
   onNotificationClick?: (notificationItem: NotificationItem) => void;
 }
 
+/** 토큰/로딩/에러 상태에 맞는 empty 문구를 고릅니다. */
 function getNotificationCenterMessage({
   hasToken,
   isLoading,
@@ -45,6 +54,13 @@ function getNotificationCenterMessage({
   return emptyMessage ?? DEFAULT_EMPTY_MESSAGE;
 }
 
+/**
+ * 알림 기능 컨테이너.
+ * - API 조회/읽음 처리 훅을 호출하고
+ * - 결과를 NotificationModal + NotificationTabs(UI)에 연결합니다.
+ *
+ * 헤더 벨 아이콘 등에서 이 컴포넌트만 꽂으면 됩니다.
+ */
 export function NotificationCenter({
   teamId,
   accessToken,

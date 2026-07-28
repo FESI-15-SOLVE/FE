@@ -1,7 +1,6 @@
 import { IconPerson } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
-import { getNotificationThumbnailShapeClassName } from "./get-notification-thumbnail-shape-class-name";
 import type { NotificationType } from "../notification.types";
 
 export interface NotificationThumbnailProps {
@@ -10,13 +9,16 @@ export interface NotificationThumbnailProps {
   title: string;
 }
 
+function getThumbnailShapeClassName(notificationType: NotificationType) {
+  return notificationType === "COMMENT" ? "rounded-full" : "rounded-lg";
+}
+
 export function NotificationThumbnail({
   notificationType,
   imageSrc,
   title,
 }: NotificationThumbnailProps) {
-  const shapeClassName =
-    getNotificationThumbnailShapeClassName(notificationType);
+  const shapeClassName = getThumbnailShapeClassName(notificationType);
 
   if (imageSrc) {
     return (

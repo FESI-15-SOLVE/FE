@@ -1,5 +1,6 @@
 "use client";
 
+import { useFormattedRelativeTime } from "@/hooks/use-formatted-relative-time";
 import { cn } from "@/lib/utils";
 
 import { NOTIFICATION_TITLE_MAP } from "../notification.constants";
@@ -7,7 +8,6 @@ import { NotificationThumbnail } from "./notification-thumbnail";
 import { NotificationTitle } from "./notification-title";
 import { notificationTabsVariants } from "./notification-tabs.variants";
 import type { NotificationTabsProps } from "./notification-tabs.types";
-import { useFormattedRelativeTime } from "./use-formatted-relative-time";
 
 export function NotificationTabs({
   className,

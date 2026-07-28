@@ -2,6 +2,7 @@
 
 import { Children } from "react";
 
+import { Button } from "@/components/ui/button/button";
 import { cn } from "@/lib/utils";
 
 import {
@@ -13,8 +14,6 @@ import {
   getNotificationModalHeightClassName,
   NOTIFICATION_MODAL_WIDTH_CLASS,
 } from "../notification-dimensions";
-import { NotificationModalEmpty } from "./notification-modal-empty";
-import { NotificationModalHeader } from "./notification-modal-header";
 import type { NotificationModalProps } from "./notification-modal.types";
 
 export function NotificationModal({
@@ -47,15 +46,24 @@ export function NotificationModal({
       )}
       {...props}
     >
-      <NotificationModalHeader
-        title={title}
-        readAllLabel={readAllLabel}
-        onReadAll={onReadAll}
-        isReadAllDisabled={isReadAllButtonDisabled}
-      />
+      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-100 px-4 py-3">
+        <h2 className="text-base font-semibold text-slate-800">{title}</h2>
+        <Button
+          type="button"
+          variant="ghost"
+          size="custom"
+          className="h-auto px-0 py-0 text-sm font-medium text-slate-500 hover:bg-transparent hover:text-slate-700 disabled:text-slate-300"
+          onClick={onReadAll}
+          disabled={isReadAllButtonDisabled}
+        >
+          {readAllLabel}
+        </Button>
+      </header>
 
       {shouldShowEmpty ? (
-        <NotificationModalEmpty emptyMessage={emptyMessage} />
+        <div className="flex min-h-0 flex-1 items-center justify-center px-4">
+          <p className="text-sm font-medium text-slate-400">{emptyMessage}</p>
+        </div>
       ) : (
         <div className="min-h-0 flex-1 overflow-y-auto p-2">{children}</div>
       )}
