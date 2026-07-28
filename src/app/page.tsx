@@ -738,7 +738,6 @@ export default function Home() {
         </div>
       </main>
 
-      <Toaster />
       <FileInput />
     </div>
   );

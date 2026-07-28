@@ -4,6 +4,7 @@ import './globals.css';
 import { GlobalNavigationBar } from '@/components/layout/gnb';
 import { QueryProvider } from '@/providers/query-provider';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
+import { Toaster } from '@/components/ui/toast';
 
 import { LoginAlertModal } from '@/components/ui/login-alert-modal';
 
@@ -51,6 +52,7 @@ export default async function RootLayout({
             <LoginAlertModal />
           </AuthProvider>
         </QueryProvider>
+        <Toaster />
       </body>
     </html>
   );
