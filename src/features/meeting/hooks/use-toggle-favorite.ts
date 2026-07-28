@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addFavoriteApi, removeFavoriteApi } from '../api/toggle-favorite';
 import { meetingQueries } from '../queries/meeting-query';
+import { favoriteQueries } from '../queries/favorite-query';
 import { MeetingWithHost, MeetingList } from '@/api/data-contracts';
 import { toast } from 'sonner';
 
@@ -33,12 +34,14 @@ export function useToggleFavorite() {
         queryClient.cancelQueries({ queryKey: listKeys }),
       ]);
 
-      // 스냅샷 저장 (상세 스냅샷 & 목록 스냅샷)
+      // 스냅샷 저장 (상세 스냅샷, 목록 스냅샷, 카운트 스냅샷)
       const previousDetail =
         queryClient.getQueryData<MeetingWithHost>(detailKey);
       const previousLists = queryClient.getQueriesData<{ pages?: MeetingList[] }>({
         queryKey: listKeys,
       });
+      const countKey = favoriteQueries.countKey();
+      const previousCount = queryClient.getQueryData<{ count: number }>(countKey);
 
       // 상세 캐시 즉시 업데이트 (0ms)
       if (previousDetail) {
@@ -67,7 +70,14 @@ export function useToggleFavorite() {
         },
       );
 
-      return { previousDetail, previousLists };
+      // 찜 개수 즉시 업데이트 (0ms)
+      if (previousCount !== undefined) {
+        queryClient.setQueryData(countKey, {
+          count: Math.max(0, previousCount.count + (isSaved ? -1 : 1)),
+        });
+      }
+
+      return { previousDetail, previousLists, previousCount };
     },
 
     // 2. onError: 실패 시 스냅샷으로 정밀 롤백
@@ -82,6 +92,9 @@ export function useToggleFavorite() {
         context.previousLists.forEach(([key, data]) => {
           queryClient.setQueryData(key, data);
         });
+      }
+      if (context?.previousCount !== undefined) {
+        queryClient.setQueryData(favoriteQueries.countKey(), context.previousCount);
       }
       toast.error(
         '찜 처리 중 오류가 발생했습니다. (로그인이 필요할 수 있습니다)',

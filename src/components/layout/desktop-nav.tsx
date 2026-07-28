@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { CountBadge } from '@/components/ui/badge';
 import { MobileMenuLinkProps } from './mobile-menu-nav';
+import { useFavoriteCount } from '@/features/meeting/hooks/use-favorite-count';
 
 interface DesktopNavProps {
   links: MobileMenuLinkProps[];
@@ -13,6 +14,7 @@ interface DesktopNavProps {
 
 export function DesktopNav({ links, isLoggedIn }: DesktopNavProps) {
   const pathname = usePathname();
+  const { data: favoriteData } = useFavoriteCount(isLoggedIn);
 
   return (
     <nav className="hidden sm:flex items-center gap-2">
@@ -30,7 +32,7 @@ export function DesktopNav({ links, isLoggedIn }: DesktopNavProps) {
             )}
           >
             {link.label}
-            {link.hasBadge && isLoggedIn && <CountBadge count={1} />}
+            {link.hasBadge && isLoggedIn && <CountBadge count={favoriteData?.count ?? 0} />}
           </Link>
         );
       })}

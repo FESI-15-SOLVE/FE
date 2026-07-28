@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { IconChevronRight } from '@/components/icons';
 import { CountBadge } from '@/components/ui/badge';
+import { useFavoriteCount } from '@/features/meeting/hooks/use-favorite-count';
 
 export interface MobileMenuLinkProps {
   href: string;
@@ -20,6 +21,7 @@ interface MobileMenuNavProps {
 
 export function MobileMenuNav({ links, isLoggedIn, onLinkClick }: MobileMenuNavProps) {
   const pathname = usePathname();
+  const { data: favoriteData } = useFavoriteCount(isLoggedIn);
 
   return (
     <nav className="flex flex-col flex-1">
@@ -45,7 +47,7 @@ export function MobileMenuNav({ links, isLoggedIn, onLinkClick }: MobileMenuNavP
               </span>
               {link.hasBadge && isLoggedIn && (
                 <div className="ml-1">
-                  <CountBadge count={1} />
+                  <CountBadge count={favoriteData?.count ?? 0} />
                 </div>
               )}
             </div>
