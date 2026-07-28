@@ -1,0 +1,7 @@
+<svg width="140" height="40" viewBox="0 0 140 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="같이달램 로고">
+  <rect width="140" height="40" rx="8" fill="#ffffff"/>
+  <circle cx="24" cy="20" r="10" fill="#00BB86"/>
+  <path d="M19 20h10" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M24 15v10" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+  <text x="44" y="25" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">같이달램</text>
+</svg>

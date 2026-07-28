@@ -1,6 +1,7 @@
 import "./globals.css";
 
 import { QueryProvider } from "@/providers/query-provider";
+import { LenisProvider } from "@/providers/lenis-provider";
 
 export default function RootLayout({
   children,
@@ -10,7 +11,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body suppressHydrationWarning>
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <LenisProvider>{children}</LenisProvider>
+        </QueryProvider>
       </body>
     </html>
   );
