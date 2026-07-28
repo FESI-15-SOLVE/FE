@@ -83,20 +83,25 @@ export function MeetingListUI({
   return (
     <div className="flex flex-col gap-6 w-full">
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-6 w-full">
-        {meetings.map((item: MeetingWithHost) => (
-          <GroupCard
-            key={item.id}
-            meeting={mapMeetingToGroupCard(item, user?.id)}
-            isConfirmed={isMeetingConfirmed(item)}
-            isPending={
-              joinMeetingMutation.isPending &&
-              joinMeetingMutation.variables?.meetingId === item.id
-            }
-            onClick={() => handleClickCard(item.id)}
-            onSaveClick={() => handleSaveClick(item.id, item.isFavorited)}
-            onJoinClick={() => handleJoinClick(item.id, item.isJoined)}
-          />
-        ))}
+        {meetings.map((item: MeetingWithHost) => {
+          const cardProps = mapMeetingToGroupCard(item, user?.id);
+          return (
+            <GroupCard
+              key={item.id}
+              meeting={cardProps}
+              isConfirmed={isMeetingConfirmed(item)}
+              isPending={
+                joinMeetingMutation.isPending &&
+                joinMeetingMutation.variables?.meetingId === item.id
+              }
+              onClick={() => handleClickCard(item.id)}
+              onSaveClick={() => handleSaveClick(item.id, cardProps.isFavorited)}
+              onJoinClick={() =>
+                handleJoinClick(item.id, cardProps.isJoined, cardProps.isHost)
+              }
+            />
+          );
+        })}
       </div>
 
       <div
