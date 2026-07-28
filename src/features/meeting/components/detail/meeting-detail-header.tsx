@@ -13,6 +13,7 @@ import {
   formatDeadlineTag,
 } from '../../utils/date-formatter';
 import { isMeetingConfirmed } from '../../utils/meeting-status';
+import { FALLBACK_MEETING_IMAGE } from '../../utils/meeting-mapper';
 
 export interface MeetingDetailHeaderProps {
   meeting: MeetingWithHost;
@@ -53,15 +54,13 @@ export function MeetingDetailHeader({
     });
   };
 
-  const fallbackImage =
-    'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846';
 
   return (
     <div className="flex flex-col lg:flex-row items-stretch gap-6 w-full">
       {/* 1. 좌측 메인 모임 배너 이미지 */}
       <div className="w-full lg:w-1/2 min-h-75 lg:min-h-0 relative rounded-3xl overflow-hidden border border-gray-100 bg-neutral-100 shrink-0">
         <ImageNext
-          src={meeting.image || fallbackImage}
+          src={meeting.image || FALLBACK_MEETING_IMAGE}
           alt={meeting.name || '모임 대표 이미지'}
           fill
           className="object-cover"

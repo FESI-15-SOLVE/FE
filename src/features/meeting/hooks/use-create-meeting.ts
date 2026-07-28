@@ -7,7 +7,7 @@ import {
   stepSchemas,
 } from '../schema/create-shcema';
 import { CreateMeetingValues } from '../types';
-import { useCreateMeetingMutation } from './useCreateMeetingMutation';
+import { useCreateMeetingMutation } from './use-create-meeting-mutation';
 
 interface UseCreateMeetingProps {
   initialStep?: number;
@@ -60,16 +60,8 @@ export function useCreateMeeting({
 
   // 폼 최종 제출
   const submitForm = handleSubmit(async (data) => {
-    try {
-      await createMeetingAsync(data);
-
-      // 상위 모달 닫기
-      onSubmit(data);
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
-    }
+    await createMeetingAsync(data);
+    onSubmit(data);
   });
 
   return {

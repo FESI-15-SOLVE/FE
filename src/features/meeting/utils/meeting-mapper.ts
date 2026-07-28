@@ -12,8 +12,9 @@ import {
 } from './meeting-status';
 import { DetailCardProps } from '../components/cards/detail-card';
 
-const FALLBACK_IMAGE =
+export const FALLBACK_MEETING_IMAGE =
   'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846';
+
 
 /**
  * 백엔드 API 응답 (MeetingWithHost) 객체를 GroupCard 컴포넌트용 Props 포맷으로 변환하는 유틸리티 함수
@@ -22,7 +23,7 @@ export function mapMeetingToGroupCard(meeting: MeetingWithHost) {
   return {
     id: String(meeting.id),
     title: meeting.name,
-    imageUrl: meeting.image ?? FALLBACK_IMAGE,
+    imageUrl: meeting.image ?? FALLBACK_MEETING_IMAGE,
     location: meeting.region,
     category: meeting.type,
     date: formatMeetingDate(meeting.dateTime),
@@ -45,7 +46,7 @@ export function mapMeetingToDetailCard(
     meeting: {
       id: String(meeting.id),
       title: meeting.name,
-      imageUrl: meeting.image ?? FALLBACK_IMAGE,
+      imageUrl: meeting.image ?? FALLBACK_MEETING_IMAGE,
       location: meeting.address || meeting.region,
       date: formatMeetingDate(meeting.dateTime),
       time: formatMeetingTime(meeting.dateTime),

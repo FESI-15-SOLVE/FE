@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ErrorResponse, ServerApi } from '@/api';
+import { ServerApi } from '@/api';
 import { TEAM_ID } from '@/constants/api';
 import { withErrorHandler } from '@/lib/api-handler';
+import { ErrorResponse } from '@/lib/error-response';
 
 export const GET = withErrorHandler(
   async (
@@ -24,4 +25,3 @@ export const GET = withErrorHandler(
     return NextResponse.json(res.data, { status: res.status });
   },
 );
-
