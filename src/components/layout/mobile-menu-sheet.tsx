@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { IconMenu, IconDelete } from '@/components/icons';
 import {
@@ -12,16 +13,14 @@ import { NAV_LINKS } from '@/constants/navigation';
 import { MobileMenuNav } from './mobile-menu-nav';
 
 interface MobileMenuSheetProps {
-  isOpen: boolean;
-  setIsOpen: (v: boolean) => void;
   isLoggedIn: boolean;
 }
 
 export function MobileMenuSheet({
-  isOpen,
-  setIsOpen,
   isLoggedIn,
 }: MobileMenuSheetProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
   // 로그인 상태에 따라 '마이페이지' 링크 추가
   const links = isLoggedIn
     ? [...NAV_LINKS, { href: '/mypage', label: '마이페이지' }]

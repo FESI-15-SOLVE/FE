@@ -40,17 +40,17 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <AuthProvider initialUser={initialUser}>
-          <GlobalNavigationBar />
+        <QueryProvider>
+          <AuthProvider initialUser={initialUser}>
+            <GlobalNavigationBar initialUser={initialUser} />
 
-          <main className="flex-1 flex flex-col sm:max-w-7xl sm:mx-auto w-full">
-            <NuqsAdapter>
-              <QueryProvider>{children}</QueryProvider>
-            </NuqsAdapter>
-          </main>
-          
-          <LoginAlertModal />
-        </AuthProvider>
+            <main className="flex-1 flex flex-col sm:max-w-7xl sm:mx-auto w-full">
+              <NuqsAdapter>{children}</NuqsAdapter>
+            </main>
+
+            <LoginAlertModal />
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );
