@@ -1,4 +1,5 @@
 import { getPresignedUrlAction } from '@/actions/image/image-actions';
+import { unwrapAction } from './safe-action';
 
 export async function uploadImage(
   file: File,
@@ -17,11 +18,7 @@ export async function uploadImage(
     folder,
   });
 
-  if (response?.serverError || !response?.data) {
-    throw new Error(response?.serverError?.message || '이미지 업로드 URL 발급에 실패했습니다.');
-  }
-
-  const { presignedUrl, publicUrl } = response.data;
+  const { presignedUrl, publicUrl } = unwrapAction(response);
 
   // 2. 발급받은 URL로 S3 다이렉트 업로드 (Client -> S3)
   const uploadResponse = await fetch(presignedUrl, {

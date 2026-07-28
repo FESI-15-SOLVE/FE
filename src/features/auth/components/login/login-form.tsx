@@ -7,6 +7,7 @@ import { InputField } from '@/components/ui/Input/input-field';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/button';
 import { loginAction } from '@/actions/auth/auth-actions';
+import { unwrapAction } from '@/lib/safe-action';
 import { useRouter } from 'next/navigation';
 
 const loginSchema = z.object({
@@ -29,11 +30,13 @@ export function LoginForm() {
   const router = useRouter();
 
   const onSubmit = async (data: LoginValues) => {
-    const result = await loginAction(data);
-    if (result?.serverError) {
-      setError('root', { type: 'server', message: result.serverError.message });
-    } else {
+    try {
+      unwrapAction(await loginAction(data));
       router.push('/');
+    } catch (error) {
+      if (error instanceof Error) {
+        setError('root', { type: 'server', message: error.message });
+      }
     }
   };
 

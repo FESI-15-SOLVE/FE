@@ -8,6 +8,7 @@ import { InputField } from '@/components/ui/Input/input-field';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/button';
 import { signupAction } from '@/actions/auth/auth-actions';
+import { unwrapAction } from '@/lib/safe-action';
 import { useRouter } from 'next/navigation';
 
 const signupSchema = z
@@ -39,12 +40,13 @@ export function SignupForm() {
 
   const onSubmit = async (data: SignupFormData) => {
     const { passwordConfirm, ...requestData } = data;
-    const result = await signupAction(requestData);
-
-    if (result?.serverError) {
-      setError('root', { type: 'server', message: result.serverError.message });
-    } else {
+    try {
+      unwrapAction(await signupAction(requestData));
       router.push('/sign-in');
+    } catch (error) {
+      if (error instanceof Error) {
+        setError('root', { type: 'server', message: error.message });
+      }
     }
   };
 

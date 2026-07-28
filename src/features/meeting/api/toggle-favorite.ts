@@ -2,17 +2,12 @@ import {
   addFavoriteAction,
   removeFavoriteAction,
 } from '@/actions/meeting/favorite-actions';
+import { unwrapAction } from '@/lib/safe-action';
 
 export async function addFavoriteApi(meetingId: string | number): Promise<void> {
-  const result = await addFavoriteAction({ meetingId: Number(meetingId) });
-  if (result?.serverError) {
-    throw new Error(result.serverError.message);
-  }
+  unwrapAction(await addFavoriteAction({ meetingId: Number(meetingId) }));
 }
 
 export async function removeFavoriteApi(meetingId: string | number): Promise<void> {
-  const result = await removeFavoriteAction({ meetingId: Number(meetingId) });
-  if (result?.serverError) {
-    throw new Error(result.serverError.message);
-  }
+  unwrapAction(await removeFavoriteAction({ meetingId: Number(meetingId) }));
 }
