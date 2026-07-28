@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ErrorResponse, ServerApi } from '@/api';
+import { ServerApi } from '@/api';
 import { TEAM_ID } from '@/constants/api';
+import { withErrorHandler } from '@/lib/api-handler';
 
-export async function POST(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
-  try {
+export const POST = withErrorHandler(
+  async (
+    _request: NextRequest,
+    { params }: { params: Promise<{ id: string }> },
+  ) => {
     const { id } = await params;
     const meetingId = Number(id);
 
@@ -23,25 +24,14 @@ export async function POST(
     });
 
     return NextResponse.json(res.data, { status: res.status });
-  } catch (error: unknown) {
-    if (error instanceof ErrorResponse) {
-      return NextResponse.json(
-        { message: error.message, code: error.code },
-        { status: error.status || 400 },
-      );
-    }
-    return NextResponse.json(
-      { message: 'Internal Server Error' },
-      { status: 500 },
-    );
-  }
-}
+  },
+);
 
-export async function DELETE(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
-  try {
+export const DELETE = withErrorHandler(
+  async (
+    _request: NextRequest,
+    { params }: { params: Promise<{ id: string }> },
+  ) => {
     const { id } = await params;
     const meetingId = Number(id);
 
@@ -58,16 +48,6 @@ export async function DELETE(
     });
 
     return NextResponse.json(res.data, { status: res.status });
-  } catch (error: unknown) {
-    if (error instanceof ErrorResponse) {
-      return NextResponse.json(
-        { message: error.message, code: error.code },
-        { status: error.status || 400 },
-      );
-    }
-    return NextResponse.json(
-      { message: 'Internal Server Error' },
-      { status: 500 },
-    );
-  }
-}
+  },
+);
+

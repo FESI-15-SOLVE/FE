@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ErrorResponse, ServerApi } from '@/api';
 import { TEAM_ID } from '@/constants/api';
+import { withErrorHandler } from '@/lib/api-handler';
 
-export async function GET(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
-  try {
+export const GET = withErrorHandler(
+  async (
+    _request: NextRequest,
+    { params }: { params: Promise<{ id: string }> },
+  ) => {
     const { id } = await params;
     const teamId = TEAM_ID;
 
@@ -21,16 +22,6 @@ export async function GET(
     });
 
     return NextResponse.json(res.data, { status: res.status });
-  } catch (error: unknown) {
-    if (error instanceof ErrorResponse) {
-      return NextResponse.json(
-        { message: error.message, code: error.code },
-        { status: 400 },
-      );
-    }
-    return NextResponse.json(
-      { message: 'Internal Server Error' },
-      { status: 500 },
-    );
-  }
-}
+  },
+);
+
