@@ -7,6 +7,8 @@ import { InformationCard } from '../cards/information-card';
 import { PersonnelContainer } from '../cards/personnel-container';
 import { meetingQueries } from '../../queries/meeting-query';
 import { useToggleFavorite } from '../../hooks/use-toggle-favorite';
+import { useJoinMeeting } from '../../hooks/use-join-meeting';
+import { useLoginAlert } from '@/hooks/use-login-alert';
 import {
   formatMeetingDate,
   formatMeetingTime,
@@ -15,45 +17,56 @@ import {
 import { isMeetingConfirmed } from '../../utils/meeting-status';
 import { FALLBACK_MEETING_IMAGE } from '../../utils/meeting-mapper';
 
+import { useAuthStore } from '@/providers/auth-provider';
+
+import { useAuthAction } from '@/hooks/use-auth-action';
+
+import { getMeetingDerivedState } from '../../utils/meeting-status';
+
 export interface MeetingDetailHeaderProps {
   meeting: MeetingWithHost;
-  currentUserId?: number;
 }
 
-export function MeetingDetailHeader({
-  meeting,
-  currentUserId,
-}: MeetingDetailHeaderProps) {
+export function MeetingDetailHeader({ meeting }: MeetingDetailHeaderProps) {
+  const user = useAuthStore((s) => s.user);
   const toggleFavoriteMutation = useToggleFavorite();
-
-  // 참가자 목록 조회 API
-  const { data: participantsData } = useQuery(
-    meetingQueries.participantsQuery(String(meeting.id)),
-  );
-
-  const participantImages =
-    participantsData?.data
-      ?.map((p) => p.user?.image)
-      .filter((img): img is string => Boolean(img)) || [];
+  const joinMeetingMutation = useJoinMeeting();
+  const withAuth = useAuthAction();
 
   const formattedDate = formatMeetingDate(meeting.dateTime);
   const formattedTime = formatMeetingTime(meeting.dateTime);
   const deadlineTag = formatDeadlineTag(meeting.registrationEnd);
 
-  const isHost = Boolean(
-    currentUserId &&
-      (meeting.hostId === currentUserId || meeting.createdBy === currentUserId),
-  );
-
-  const isSaved = Boolean(meeting.isFavorited);
+  // 공통 상태 유틸리티를 사용하여 모임의 모든 파생 상태를 한 번에 계산
+  const {
+    isHost,
+    isSaved,
+    isJoined,
+    isFull,
+    isCanceled,
+    isConfirmed,
+    isRegistrationClosed,
+    participantCount,
+    capacity,
+  } = getMeetingDerivedState(meeting, user?.id);
 
   const handleSaveToggle = () => {
-    toggleFavoriteMutation.mutate({
-      meetingId: meeting.id,
-      isSaved,
-    });
+    withAuth(() => {
+      toggleFavoriteMutation.mutate({
+        meetingId: meeting.id,
+        isSaved,
+      });
+    })();
   };
 
+  const handleJoinToggle = () => {
+    withAuth(() => {
+      joinMeetingMutation.mutate({
+        meetingId: meeting.id,
+        isJoined,
+      });
+    })();
+  };
 
   return (
     <div className="flex flex-col lg:flex-row items-stretch gap-6 w-full">
@@ -83,16 +96,22 @@ export function MeetingDetailHeader({
             isSaved: isSaved,
           }}
           isHost={isHost}
+          isJoined={isJoined}
+          isFull={isFull}
+          isRegistrationClosed={isRegistrationClosed}
+          isCanceled={isCanceled}
+          isPending={joinMeetingMutation.isPending}
           onSaveClick={handleSaveToggle}
+          onJoinClick={handleJoinToggle}
         />
 
         {/* 모집 현황 및 개설확정 뱃지 카드 (PersonnelContainer) */}
         <PersonnelContainer
-          currentParticipant={meeting.participantCount}
+          meetingId={String(meeting.id)}
+          currentParticipant={participantCount}
           minParticipant={5}
-          maxParticipant={meeting.capacity}
-          participantImages={participantImages}
-          isConfirmed={isMeetingConfirmed(meeting)}
+          maxParticipant={capacity}
+          isConfirmed={isConfirmed}
         />
       </div>
     </div>

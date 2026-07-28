@@ -15,3 +15,23 @@ export const createMeetingAction = actionClient
     );
     return response.data;
   });
+
+export const joinMeetingAction = actionClient
+  .inputSchema(z.object({ meetingId: z.number() }))
+  .action(async ({ parsedInput: { meetingId } }) => {
+    const response = await ServerApi.meetings.joinMeeting({
+      teamId: TEAM_ID,
+      meetingId,
+    });
+    return response.data;
+  });
+
+export const leaveMeetingAction = actionClient
+  .inputSchema(z.object({ meetingId: z.number() }))
+  .action(async ({ parsedInput: { meetingId } }) => {
+    const response = await ServerApi.meetings.leaveMeeting({
+      teamId: TEAM_ID,
+      meetingId,
+    });
+    return response.data;
+  });

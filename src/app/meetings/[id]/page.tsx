@@ -52,15 +52,26 @@ export default async function MeetingDetailPage({
 
   try {
     // 서버 컴포넌트 사전 페칭 (ServerApi 직접 연동)
-    await queryClient.prefetchQuery(
-      meetingQueries.detailQuery(id, async () => {
-        const res = await ServerApi.meetings.getMeetingDetail({
-          teamId: TEAM_ID,
-          meetingId: Number(id),
-        });
-        return res.data;
-      }),
-    );
+    await Promise.all([
+      queryClient.prefetchQuery(
+        meetingQueries.detailQuery(id, async () => {
+          const res = await ServerApi.meetings.getMeetingDetail({
+            teamId: TEAM_ID,
+            meetingId: Number(id),
+          });
+          return res.data;
+        }),
+      ),
+      queryClient.prefetchQuery(
+        meetingQueries.participantsQuery(id, async () => {
+          const res = await ServerApi.meetings.getParticipants({
+            teamId: TEAM_ID,
+            meetingId: Number(id),
+          });
+          return res.data;
+        }),
+      ),
+    ]);
   } catch {
     notFound();
   }
