@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/providers/auth-provider';
 import { useToggleFavorite } from '../../hooks/use-toggle-favorite';
 import { useJoinMeeting } from '../../hooks/use-join-meeting';
+import { useShareMeeting } from '../../hooks/use-share-meeting';
 import { useAuthAction } from '@/hooks/use-auth-action';
 import { isMeetingConfirmed } from '../../utils/meeting-status';
 
@@ -29,6 +30,7 @@ export function MeetingListUI({
   const router = useRouter();
   const toggleFavoriteMutation = useToggleFavorite();
   const joinMeetingMutation = useJoinMeeting();
+  const { shareMeeting } = useShareMeeting();
   const withAuth = useAuthAction();
   const user = useAuthStore((s) => s.user);
 
@@ -50,7 +52,15 @@ export function MeetingListUI({
     })();
   };
 
-  const handleJoinClick = (meetingId: number, isJoined?: boolean) => {
+  const handleJoinClick = (
+    meetingId: number,
+    isJoined?: boolean,
+    isHost?: boolean,
+  ) => {
+    if (isHost) {
+      shareMeeting(meetingId);
+      return;
+    }
     withAuth(() => {
       joinMeetingMutation.mutate({
         meetingId,

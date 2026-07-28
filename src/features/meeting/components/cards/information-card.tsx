@@ -3,7 +3,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Tag } from '@/components/ui/tag';
-import { Button, UtilityButton } from '@/components/ui/button';
+import { UtilityButton } from '@/components/ui/button';
 import { IconCrown, IconMeatballs } from '@/components/icons';
 import AlarmTag from '@/components/ui/tag/alarm-tag';
 import { MeetingJoinButton } from '../detail/meeting-join-button';
@@ -112,6 +112,7 @@ export function InformationCard({
       <div className="flex items-center gap-2.5 sm:gap-4 w-full sm:h-15 mt-auto">
         <UtilityButton onClick={handleSaveClick} isActive={meeting.isSaved} />
         <MeetingJoinButton
+          meetingId={meeting.id}
           isCanceled={isCanceled}
           isHost={isHost}
           isJoined={isJoined}

@@ -1,27 +1,21 @@
 'use client';
 
 import ImageNext from 'next/image';
-import { useQuery } from '@tanstack/react-query';
 import { MeetingWithHost } from '@/api/data-contracts';
 import { InformationCard } from '../cards/information-card';
 import { PersonnelContainer } from '../cards/personnel-container';
-import { meetingQueries } from '../../queries/meeting-query';
 import { useToggleFavorite } from '../../hooks/use-toggle-favorite';
 import { useJoinMeeting } from '../../hooks/use-join-meeting';
-import { useLoginAlert } from '@/hooks/use-login-alert';
 import {
   formatMeetingDate,
   formatMeetingTime,
   formatDeadlineTag,
 } from '../../utils/date-formatter';
-import { isMeetingConfirmed } from '../../utils/meeting-status';
 import { FALLBACK_MEETING_IMAGE } from '../../utils/meeting-mapper';
-
 import { useAuthStore } from '@/providers/auth-provider';
-
 import { useAuthAction } from '@/hooks/use-auth-action';
-
 import { getMeetingDerivedState } from '../../utils/meeting-status';
+import { useShareMeeting } from '../../hooks/use-share-meeting';
 
 export interface MeetingDetailHeaderProps {
   meeting: MeetingWithHost;
@@ -31,6 +25,7 @@ export function MeetingDetailHeader({ meeting }: MeetingDetailHeaderProps) {
   const user = useAuthStore((s) => s.user);
   const toggleFavoriteMutation = useToggleFavorite();
   const joinMeetingMutation = useJoinMeeting();
+  const { shareMeeting } = useShareMeeting();
   const withAuth = useAuthAction();
 
   const formattedDate = formatMeetingDate(meeting.dateTime);
@@ -60,6 +55,10 @@ export function MeetingDetailHeader({ meeting }: MeetingDetailHeaderProps) {
   };
 
   const handleJoinToggle = () => {
+    if (isHost) {
+      shareMeeting(meeting.id);
+      return;
+    }
     withAuth(() => {
       joinMeetingMutation.mutate({
         meetingId: meeting.id,

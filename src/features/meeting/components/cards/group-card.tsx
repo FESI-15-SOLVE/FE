@@ -147,7 +147,7 @@ export function GroupCard({
             )}
           </div>
 
-          <div className="w-full sm:flex-1 sm:max-w-[256px] sm:min-w-[120px]">
+          <div className="w-full sm:flex-1 sm:max-w-[256px] sm:min-w-30">
             <ProgressBar
               current={meeting.participantCount}
               total={meeting.maxParticipant}

@@ -38,11 +38,10 @@ const STATUS_CONFIG: Record<
     interactive: false,
   },
   hosted: {
-    label: '내가 만든 모임',
-    shortLabel: '내가 만든 모임',
-    variant: 'secondary',
-    interactive: false,
-    extraClassName: 'text-green-600 bg-green-50 border-green-200 opacity-100',
+    label: '공유하기',
+    shortLabel: '공유하기',
+    variant: 'primary',
+    interactive: true,
   },
   joined: {
     label: '참여 취소하기',
