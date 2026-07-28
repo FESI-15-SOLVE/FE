@@ -1,8 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
 import { IconMenu, IconDelete } from '@/components/icons';
 import {
   Sheet,
@@ -24,8 +22,6 @@ export function MobileMenuSheet({
   setIsOpen,
   isLoggedIn,
 }: MobileMenuSheetProps) {
-  const pathname = usePathname();
-
   // 로그인 상태에 따라 '마이페이지' 링크 추가
   const links = isLoggedIn
     ? [...NAV_LINKS, { href: '/mypage', label: '마이페이지' }]
@@ -50,17 +46,17 @@ export function MobileMenuSheet({
           </div>
 
           {/* 네비게이션 링크 목록 */}
-          <MobileMenuNav 
-            links={links} 
-            isLoggedIn={isLoggedIn} 
-            onLinkClick={() => setIsOpen(false)} 
+          <MobileMenuNav
+            links={links}
+            isLoggedIn={isLoggedIn}
+            onLinkClick={() => setIsOpen(false)}
           />
 
           {/* 비로그인 시 하단 로그인 버튼 */}
           {!isLoggedIn && (
             <div className="flex justify-end px-4 mt-auto">
               <Link
-                href="/login"
+                href="/sign-in"
                 onClick={() => setIsOpen(false)}
                 className="p-4 text-base font-medium text-neutral-400 hover:text-neutral-900 tracking-[-0.32px] transition-colors"
               >

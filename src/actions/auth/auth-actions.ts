@@ -38,3 +38,33 @@ export const signupAction = actionClient
     const response = await ServerApi.auth.signup({ teamId: TEAM_ID }, data);
     return response.data;
   });
+
+export const getMyProfileAction = actionClient.action(async () => {
+  try {
+    const response = await ServerApi.users.getMyProfile({ teamId: TEAM_ID });
+    return response.data;
+  } catch {
+    // 401 Unauthorized 등 에러 발생 시 예외를 삼키고 null 반환
+    return null;
+  }
+});
+
+export const logoutAction = actionClient.action(async () => {
+  try {
+    const cookieStore = await cookies();
+    const refreshToken = cookieStore.get('refreshToken')?.value;
+
+    if (refreshToken) {
+      // 백엔드에 로그아웃 요청 (세션 종료)
+      await ServerApi.auth.logout({ teamId: TEAM_ID }, { refreshToken });
+    }
+  } catch {
+    // 로그아웃 API 실패(이미 만료됨 등)해도 클라이언트 쿠키는 지워야 함
+  } finally {
+    const cookieStore = await cookies();
+    cookieStore.delete('accessToken');
+    cookieStore.delete('refreshToken');
+  }
+
+  return { success: true };
+});

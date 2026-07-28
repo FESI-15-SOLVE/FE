@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { loginAction } from '@/actions/auth/auth-actions';
 import { unwrapAction } from '@/lib/safe-action';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/providers/auth-provider';
 
 const loginSchema = z.object({
   email: z.string().email('이메일 형식으로 작성해 주세요.'),
@@ -28,10 +29,14 @@ export function LoginForm() {
     mode: 'onTouched',
   });
   const router = useRouter();
+  const setAuth = useAuthStore((s) => s.setAuth);
 
   const onSubmit = async (data: LoginValues) => {
     try {
-      unwrapAction(await loginAction(data));
+      const response = unwrapAction(await loginAction(data));
+      if (response?.user) {
+        setAuth(response.user);
+      }
       router.push('/');
     } catch (error) {
       if (error instanceof Error) {
