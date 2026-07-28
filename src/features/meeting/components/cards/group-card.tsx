@@ -28,6 +28,7 @@ export interface GroupCardProps {
     isCanceled: boolean;
     isFull: boolean;
     isRegistrationClosed: boolean;
+    isHost?: boolean;
   };
   isConfirmed?: boolean;
   isPending?: boolean;
@@ -157,6 +158,7 @@ export function GroupCard({
 
           <MeetingJoinButton
             isCanceled={meeting.isCanceled}
+            isHost={meeting.isHost}
             isJoined={meeting.isJoined}
             isFull={meeting.isFull}
             isRegistrationClosed={meeting.isRegistrationClosed}

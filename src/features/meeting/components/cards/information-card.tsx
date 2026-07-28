@@ -111,17 +111,16 @@ export function InformationCard({
       {/* 액션 버튼 (찜하기, 참여하기) */}
       <div className="flex items-center gap-2.5 sm:gap-4 w-full sm:h-15 mt-auto">
         <UtilityButton onClick={handleSaveClick} isActive={meeting.isSaved} />
-        {!isHost && (
-          <MeetingJoinButton
-            isCanceled={isCanceled}
-            isJoined={isJoined}
-            isFull={isFull}
-            isRegistrationClosed={isRegistrationClosed}
-            isPending={isPending}
-            onClick={handleJoinClick}
-            className="flex-1 h-10 sm:h-15 text-sm sm:text-xl"
-          />
-        )}
+        <MeetingJoinButton
+          isCanceled={isCanceled}
+          isHost={isHost}
+          isJoined={isJoined}
+          isFull={isFull}
+          isRegistrationClosed={isRegistrationClosed}
+          isPending={isPending}
+          onClick={handleJoinClick}
+          className="flex-1 h-10 sm:h-15 text-sm sm:text-xl"
+        />
       </div>
     </div>
   );

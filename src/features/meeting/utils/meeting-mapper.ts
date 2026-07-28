@@ -20,9 +20,11 @@ export const FALLBACK_MEETING_IMAGE =
 /**
  * 백엔드 API 응답 (MeetingWithHost) 객체를 GroupCard 컴포넌트용 Props 포맷으로 변환하는 유틸리티 함수
  */
-export function mapMeetingToGroupCard(meeting: MeetingWithHost) {
-  // 리스트 조회 시 방장 여부는 굳이 중요하지 않을 수 있으나 일관성을 위해 상태 유틸을 사용합니다.
-  const state = getMeetingDerivedState(meeting);
+export function mapMeetingToGroupCard(
+  meeting: MeetingWithHost,
+  currentUserId?: number,
+) {
+  const state = getMeetingDerivedState(meeting, currentUserId);
   
   return {
     id: String(meeting.id),
@@ -40,6 +42,7 @@ export function mapMeetingToGroupCard(meeting: MeetingWithHost) {
     isCanceled: state.isCanceled,
     isFull: state.isFull,
     isRegistrationClosed: state.isRegistrationClosed,
+    isHost: state.isHost,
   };
 }
 

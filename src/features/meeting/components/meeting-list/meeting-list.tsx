@@ -7,11 +7,11 @@ import { mapMeetingToGroupCard } from '@/features/meeting/utils/meeting-mapper';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 import { useMeetingList } from '@/features/meeting/hooks/use-meeting-list';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/providers/auth-provider';
 import { useToggleFavorite } from '../../hooks/use-toggle-favorite';
-import {
-  isMeetingConfirmed,
-  isMeetingClosed,
-} from '../../utils/meeting-status';
+import { useJoinMeeting } from '../../hooks/use-join-meeting';
+import { useAuthAction } from '@/hooks/use-auth-action';
+import { isMeetingConfirmed } from '../../utils/meeting-status';
 
 interface MeetingListUIProps {
   meetings: MeetingWithHost[];
@@ -28,6 +28,9 @@ export function MeetingListUI({
 }: MeetingListUIProps) {
   const router = useRouter();
   const toggleFavoriteMutation = useToggleFavorite();
+  const joinMeetingMutation = useJoinMeeting();
+  const withAuth = useAuthAction();
+  const user = useAuthStore((s) => s.user);
 
   const observerRef = useIntersectionObserver<HTMLDivElement>({
     onIntersect: onFetchNextPage,
@@ -39,10 +42,21 @@ export function MeetingListUI({
   };
 
   const handleSaveClick = (meetingId: number, isFavorited?: boolean) => {
-    toggleFavoriteMutation.mutate({
-      meetingId,
-      isSaved: Boolean(isFavorited),
-    });
+    withAuth(() => {
+      toggleFavoriteMutation.mutate({
+        meetingId,
+        isSaved: Boolean(isFavorited),
+      });
+    })();
+  };
+
+  const handleJoinClick = (meetingId: number, isJoined?: boolean) => {
+    withAuth(() => {
+      joinMeetingMutation.mutate({
+        meetingId,
+        isJoined: Boolean(isJoined),
+      });
+    })();
   };
 
   if (meetings.length === 0) {
@@ -62,10 +76,15 @@ export function MeetingListUI({
         {meetings.map((item: MeetingWithHost) => (
           <GroupCard
             key={item.id}
-            meeting={mapMeetingToGroupCard(item)}
+            meeting={mapMeetingToGroupCard(item, user?.id)}
             isConfirmed={isMeetingConfirmed(item)}
+            isPending={
+              joinMeetingMutation.isPending &&
+              joinMeetingMutation.variables?.meetingId === item.id
+            }
             onClick={() => handleClickCard(item.id)}
             onSaveClick={() => handleSaveClick(item.id, item.isFavorited)}
+            onJoinClick={() => handleJoinClick(item.id, item.isJoined)}
           />
         ))}
       </div>

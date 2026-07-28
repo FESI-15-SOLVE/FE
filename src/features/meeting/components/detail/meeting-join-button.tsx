@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 
 export interface MeetingJoinButtonProps {
   isCanceled: boolean;
+  isHost?: boolean;
   isJoined: boolean;
   isFull: boolean;
   isRegistrationClosed: boolean;
@@ -17,7 +18,8 @@ export interface MeetingJoinButtonProps {
   mode?: 'detail' | 'list';
 }
 
-type ButtonStatus = 'canceled' | 'joined' | 'full' | 'closed' | 'joinable';
+type ButtonStatus =
+  'canceled' | 'hosted' | 'joined' | 'full' | 'closed' | 'joinable';
 
 const STATUS_CONFIG: Record<
   ButtonStatus,
@@ -34,6 +36,13 @@ const STATUS_CONFIG: Record<
     shortLabel: '취소됨',
     variant: 'tertiary',
     interactive: false,
+  },
+  hosted: {
+    label: '내가 만든 모임',
+    shortLabel: '내가 만든 모임',
+    variant: 'secondary',
+    interactive: false,
+    extraClassName: 'text-green-600 bg-green-50 border-green-200 opacity-100',
   },
   joined: {
     label: '참여 취소하기',
@@ -54,16 +63,17 @@ const STATUS_CONFIG: Record<
     variant: 'tertiary',
     interactive: false,
   },
-  joinable: { 
-    label: '참여하기', 
+  joinable: {
+    label: '참여하기',
     shortLabel: '참여하기',
-    variant: 'primary', 
-    interactive: true 
+    variant: 'primary',
+    interactive: true,
   },
 };
 
 export function MeetingJoinButton({
   isCanceled,
+  isHost = false,
   isJoined,
   isFull,
   isRegistrationClosed,
@@ -75,6 +85,7 @@ export function MeetingJoinButton({
 }: MeetingJoinButtonProps) {
   let status: ButtonStatus = 'joinable';
   if (isCanceled) status = 'canceled';
+  else if (isHost) status = 'hosted';
   else if (isJoined) status = 'joined';
   else if (isFull) status = 'full';
   else if (isRegistrationClosed) status = 'closed';
