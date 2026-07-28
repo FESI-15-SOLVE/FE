@@ -3,7 +3,7 @@ import {
   createSafeActionClient,
   type InferServerError,
 } from 'next-safe-action';
-import { ErrorResponse } from '@/api';
+import { ErrorResponse } from '@/lib/error-response';
 
 export const actionClient = createSafeActionClient({
   handleServerError(e) {

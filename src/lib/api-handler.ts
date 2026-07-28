@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ErrorResponse } from '@/api';
+import { ErrorResponse } from '@/lib/error-response';
 
 export type RouteContext<P extends Record<string, string> = Record<string, string>> = {
   params?: Promise<P>;

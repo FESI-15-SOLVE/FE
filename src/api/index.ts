@@ -13,18 +13,8 @@ import { Users } from './Users';
 import { ApiConfig } from './http-client';
 import { BACKEND_URL } from '@/constants/api';
 import { cookies } from 'next/headers';
-import { ErrorResponse as ErrorResponseGenerated } from './data-contracts';
+import { ErrorResponse } from '@/lib/error-response';
 
-export class ErrorResponse extends Error implements ErrorResponseGenerated {
-  code: string;
-  status: number;
-
-  constructor(message: string, code: string, status: number) {
-    super(message);
-    this.code = code;
-    this.status = status;
-  }
-}
 async function errorAwareFetch(
   input: RequestInfo | URL,
   init?: RequestInit,
