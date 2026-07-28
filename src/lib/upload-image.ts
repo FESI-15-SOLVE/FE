@@ -17,8 +17,8 @@ export async function uploadImage(
     folder,
   });
 
-  if (!response.success || !response.data) {
-    throw new Error(response.message || '이미지 업로드 URL 발급에 실패했습니다.');
+  if (response?.serverError || !response?.data) {
+    throw new Error(response?.serverError?.message || '이미지 업로드 URL 발급에 실패했습니다.');
   }
 
   const { presignedUrl, publicUrl } = response.data;

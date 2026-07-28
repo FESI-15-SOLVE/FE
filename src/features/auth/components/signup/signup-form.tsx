@@ -38,13 +38,13 @@ export function SignupForm() {
   const router = useRouter();
 
   const onSubmit = async (data: SignupFormData) => {
-    const { ...requestData } = data;
+    const { passwordConfirm, ...requestData } = data;
     const result = await signupAction(requestData);
 
-    if (result.success) {
-      router.push('/sign-in');
+    if (result?.serverError) {
+      setError('root', { type: 'server', message: result.serverError.message });
     } else {
-      setError('root', { type: 'server', message: result.message });
+      router.push('/sign-in');
     }
   };
 

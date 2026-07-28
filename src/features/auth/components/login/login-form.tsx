@@ -30,10 +30,10 @@ export function LoginForm() {
 
   const onSubmit = async (data: LoginValues) => {
     const result = await loginAction(data);
-    if (result.success) {
-      router.push('/');
+    if (result?.serverError) {
+      setError('root', { type: 'server', message: result.serverError.message });
     } else {
-      setError('root', { type: 'server', message: result.message });
+      router.push('/');
     }
   };
 

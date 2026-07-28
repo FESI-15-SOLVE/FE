@@ -1,17 +1,19 @@
 'use server';
 
-import { ErrorResponse, ServerApi } from '@/api';
+import { z } from 'zod';
+import { ServerApi } from '@/api';
 import { TEAM_ID } from '@/constants/api';
 import { cookies } from 'next/headers';
 import { LoginRequest, SignupRequest } from '@/api/data-contracts';
+import { actionClient } from '@/lib/safe-action';
 
-export async function loginAction(data: LoginRequest) {
-  try {
+export const loginAction = actionClient
+  .inputSchema(z.custom<LoginRequest>())
+  .action(async ({ parsedInput: data }) => {
     const response = await ServerApi.auth.login({ teamId: TEAM_ID }, data);
     const { accessToken, refreshToken } = response.data;
 
     const cookieStore = await cookies();
-    // 백엔드 응답에서 토큰을 추출해 쿠키에 구움
     cookieStore.set('accessToken', accessToken, {
       httpOnly: true,
       secure: true,
@@ -27,25 +29,12 @@ export async function loginAction(data: LoginRequest) {
       });
     }
 
-    return { success: true };
-  } catch (error: unknown) {
-    if (error instanceof ErrorResponse) {
-      return { success: false, message: error.message };
-    }
+    return response.data;
+  });
 
-    return { success: false, message: '알수 없는 에러' };
-  }
-}
-
-export async function signupAction(data: SignupRequest) {
-  try {
-    await ServerApi.auth.signup({ teamId: TEAM_ID }, data);
-    return { success: true };
-  } catch (error: unknown) {
-    if (error instanceof ErrorResponse) {
-      return { success: false, message: error.message };
-    }
-
-    return { success: false, message: '알수 없는 에러' };
-  }
-}
+export const signupAction = actionClient
+  .inputSchema(z.custom<SignupRequest>())
+  .action(async ({ parsedInput: data }) => {
+    const response = await ServerApi.auth.signup({ teamId: TEAM_ID }, data);
+    return response.data;
+  });

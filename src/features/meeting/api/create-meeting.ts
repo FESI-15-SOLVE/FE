@@ -19,9 +19,9 @@ export async function createMeeting(
   // 3. 매핑된 JSON 데이터를 서버 액션으로 전송하여 최종 생성
   const response = await createMeetingAction(mappedData);
 
-  if (!response.success) {
-    throw new Error(response.message || '모임 생성에 실패했습니다.');
+  if (response?.serverError) {
+    throw new Error(response.serverError.message);
   }
 
-  return response.data;
+  return response?.data;
 }
