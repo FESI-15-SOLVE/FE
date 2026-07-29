@@ -9,7 +9,7 @@ export function handleApiError(error: unknown) {
   if (error instanceof ErrorResponse) {
     return NextResponse.json(
       { message: error.message, code: error.code },
-      { status: error.status || 400 },
+      { status: error.status },
     );
   }
 

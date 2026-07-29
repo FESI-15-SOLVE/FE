@@ -22,10 +22,7 @@ async function errorAwareFetch(
   const response = await fetch(input, init);
 
   if (!response.ok) {
-    const body = await response
-      .clone()
-      .json()
-      .catch(() => null);
+    const body = await response.json().catch(() => null);
 
     throw new ErrorResponse(
       body?.message ?? '알 수 없는 오류가 발생했습니다.',

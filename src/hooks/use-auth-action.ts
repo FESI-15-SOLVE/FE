@@ -13,14 +13,14 @@ export function useAuthAction() {
   const { openAlert } = useLoginAlert();
 
   const withAuth = useCallback(
-    <T extends (...args: any[]) => any>(action: T) => {
-      return ((...args: Parameters<T>): ReturnType<T> | void => {
+    <Args extends unknown[], Return>(action: (...args: Args) => Return) => {
+      return (...args: Args): Return | void => {
         if (!user?.id) {
           openAlert();
           return;
         }
         return action(...args);
-      }) as T;
+      };
     },
     [user?.id, openAlert]
   );

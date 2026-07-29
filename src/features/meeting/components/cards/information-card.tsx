@@ -112,7 +112,6 @@ export function InformationCard({
       <div className="flex items-center gap-2.5 sm:gap-4 w-full sm:h-15 mt-auto">
         <UtilityButton onClick={handleSaveClick} isActive={meeting.isSaved} />
         <MeetingJoinButton
-          meetingId={meeting.id}
           isCanceled={isCanceled}
           isHost={isHost}
           isJoined={isJoined}

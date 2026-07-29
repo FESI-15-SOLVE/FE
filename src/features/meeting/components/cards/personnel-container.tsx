@@ -31,7 +31,7 @@ export function PersonnelContainer({
 
   const participantImages =
     participantsData?.data
-      ?.map((p: any) => p.user?.image)
+      ?.map((p) => p.user?.image)
       .filter((img): img is string => Boolean(img)) || [];
 
   const displayAvatars = participantImages.slice(0, 4);
