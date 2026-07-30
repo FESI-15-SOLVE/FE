@@ -1,4 +1,4 @@
-import { LoginContainer } from '@/features/auth/components/login';
+import { LoginContainer } from '@/features/auth/components/login/login-container';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useQueryState } from 'nuqs';
-import { meetingSearchParams } from '@/features/meeting/schema';
-import { RegionSelectModal } from '@/features/meeting/components/region-select';
+import { meetingSearchParams } from '@/features/meeting/schema/meeting-search-params';
+import { RegionSelectModal } from '@/features/meeting/components/region-select/region-select-modal';
 import { FilterTrigger } from '@/components/ui/filter';
 
 export function RegionFilter() {

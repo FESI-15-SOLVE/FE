@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query';
 import { MeetingListContainer } from '@/features/meeting/components/meeting-list/meeting-list-container';
 import { ServerApi } from '@/api/server-api';
-import { meetingSearchParamsCache } from '@/features/meeting/schema';
+import { meetingSearchParamsCache } from '@/features/meeting/schema/meeting-search-params';
 import { TEAM_ID } from '@/constants/api';
 import { meetingQueries } from '@/features/meeting/queries/meeting-query';
 import { mapFiltersToQueryParams } from '@/features/meeting/utils/filter-mapper';

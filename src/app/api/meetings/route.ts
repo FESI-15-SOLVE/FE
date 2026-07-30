@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ServerApi } from '@/api/server-api';
-import { getMeetingsQuerySchema } from '@/features/meeting/schema';
+import { getMeetingsQuerySchema } from '@/features/meeting/schema/meeting-query-schema';
 import { TEAM_ID } from '@/constants/api';
 import { withErrorHandler } from '@/lib/api-handler';
 import z from 'zod';

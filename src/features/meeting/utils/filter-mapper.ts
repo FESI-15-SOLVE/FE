@@ -1,4 +1,4 @@
-import { SortBy, SortOrder } from '@/features/meeting/schema';
+import { SortBy, SortOrder } from '@/features/meeting/schema/meeting-query-schema';
 
 export interface MeetingFilters {
   type?: string | null;

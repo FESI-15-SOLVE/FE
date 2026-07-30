@@ -1,6 +1,6 @@
 'use client';
 
-import { GroupCard } from '@/features/meeting/components/cards';
+import { GroupCard } from '@/features/meeting/components/cards/group-card';
 import { EmptyState } from '@/components/ui/empty/empty';
 import { MeetingWithHost } from '@/api/data-contracts';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';

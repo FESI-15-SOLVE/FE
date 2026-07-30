@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { CreateButton } from '@/components/ui/button';
-import { CreateMeetingModal } from '@/features/meeting/components/create-meeting';
+import { CreateMeetingModal } from '@/features/meeting/components/create-meeting/create-meeting-modal';
 import { CATEGORIES_DATA } from '@/constants/categories';
 
 export function CreateMeetingFloatingButton() {

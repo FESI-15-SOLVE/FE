@@ -1,7 +1,7 @@
 'use client';
 
 import { useQueryState } from 'nuqs';
-import { meetingSearchParams } from '@/features/meeting/schema';
+import { meetingSearchParams } from '@/features/meeting/schema/meeting-search-params';
 import { CategoryTabs } from './category-tabs';
 import { RegionFilter } from './region-filter';
 import { DateFilter } from './date-filter';

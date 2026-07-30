@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQueryState } from 'nuqs';
 import { format, parseISO } from 'date-fns';
-import { meetingSearchParams } from '@/features/meeting/schema';
+import { meetingSearchParams } from '@/features/meeting/schema/meeting-search-params';
 import { FilterTrigger } from '@/components/ui/filter';
 import {
   Popover,
