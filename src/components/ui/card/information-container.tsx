@@ -4,7 +4,7 @@ import {
   CardTitle,
   CardContent,
   CardFooter,
-} from '@/components/ui/card';
+} from './card';
 import { Button } from '@/components/ui/button';
 import { Tag } from '@/components/ui/tag';
 import { cn } from '@/lib/utils';
