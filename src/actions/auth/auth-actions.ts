@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { ServerApi } from '@/api';
+import { ServerApi } from '@/api/server-api';
 import { TEAM_ID } from '@/constants/api';
 import { cookies } from 'next/headers';
 import { LoginRequest, SignupRequest } from '@/api/data-contracts';

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { ServerApi } from '@/api';
+import { ServerApi } from '@/api/server-api';
 import { TEAM_ID } from '@/constants/api';
 import { withErrorHandler } from '@/lib/api-handler';
 

@@ -8,7 +8,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from '@tanstack/react-query';
-import { ServerApi } from '@/api';
+import { ServerApi } from '@/api/server-api';
 import { TEAM_ID } from '@/constants/api';
 import { favoriteQueries } from '@/features/meeting/queries/favorite-query';
 

@@ -5,7 +5,7 @@ import {
   HydrationBoundary,
   dehydrate,
 } from '@tanstack/react-query';
-import { ServerApi } from '@/api';
+import { ServerApi } from '@/api/server-api';
 import { TEAM_ID } from '@/constants/api';
 import { meetingQueries } from '@/features/meeting/queries/meeting-query';
 import { MeetingDetailView } from '@/features/meeting/components/detail/meeting-detail-view';
