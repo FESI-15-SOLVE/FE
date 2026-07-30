@@ -3,16 +3,8 @@
 import { GroupCard } from '@/features/meeting/components/cards';
 import { EmptyState } from '@/components/ui/empty';
 import { MeetingWithHost } from '@/api/data-contracts';
-import { mapMeetingToGroupCard } from '@/features/meeting/utils/meeting-mapper';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 import { useMeetingList } from '@/features/meeting/hooks/use-meeting-list';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/providers/auth-provider';
-import { useToggleFavorite } from '../../hooks/use-toggle-favorite';
-import { useJoinMeeting } from '../../hooks/use-join-meeting';
-import { useShareMeeting } from '../../hooks/use-share-meeting';
-import { useAuthAction } from '@/hooks/use-auth-action';
-import { isMeetingConfirmed } from '../../utils/meeting-status';
 
 interface MeetingListUIProps {
   meetings: MeetingWithHost[];
@@ -27,47 +19,10 @@ export function MeetingListUI({
   isFetchingNextPage,
   onFetchNextPage,
 }: MeetingListUIProps) {
-  const router = useRouter();
-  const toggleFavoriteMutation = useToggleFavorite();
-  const joinMeetingMutation = useJoinMeeting();
-  const { shareMeeting } = useShareMeeting();
-  const withAuth = useAuthAction();
-  const user = useAuthStore((s) => s.user);
-
   const observerRef = useIntersectionObserver<HTMLDivElement>({
     onIntersect: onFetchNextPage,
     enabled: Boolean(hasNextPage && !isFetchingNextPage),
   });
-
-  const handleClickCard = (id: number) => {
-    router.push(`/meetings/${id}`);
-  };
-
-  const handleSaveClick = (meetingId: number, isFavorited?: boolean) => {
-    withAuth(() => {
-      toggleFavoriteMutation.mutate({
-        meetingId,
-        isSaved: Boolean(isFavorited),
-      });
-    })();
-  };
-
-  const handleJoinClick = (
-    meetingId: number,
-    isJoined?: boolean,
-    isHost?: boolean,
-  ) => {
-    if (isHost) {
-      shareMeeting(meetingId);
-      return;
-    }
-    withAuth(() => {
-      joinMeetingMutation.mutate({
-        meetingId,
-        isJoined: Boolean(isJoined),
-      });
-    })();
-  };
 
   if (meetings.length === 0) {
     return (
@@ -83,25 +38,9 @@ export function MeetingListUI({
   return (
     <div className="flex flex-col gap-6 w-full">
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-6 w-full">
-        {meetings.map((item: MeetingWithHost) => {
-          const cardProps = mapMeetingToGroupCard(item, user?.id);
-          return (
-            <GroupCard
-              key={item.id}
-              meeting={cardProps}
-              isConfirmed={isMeetingConfirmed(item)}
-              isPending={
-                joinMeetingMutation.isPending &&
-                joinMeetingMutation.variables?.meetingId === item.id
-              }
-              onClick={() => handleClickCard(item.id)}
-              onSaveClick={() => handleSaveClick(item.id, cardProps.isFavorited)}
-              onJoinClick={() =>
-                handleJoinClick(item.id, cardProps.isJoined, cardProps.isHost)
-              }
-            />
-          );
-        })}
+        {meetings.map((item: MeetingWithHost) => (
+          <GroupCard key={item.id} meeting={item} />
+        ))}
       </div>
 
       <div

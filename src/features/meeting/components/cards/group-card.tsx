@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { MeetingWithHost } from '@/api/data-contracts';
 import { UtilityButton } from '@/components/ui/button';
 import { ProgressBar } from '@/components/ui/progress';
 import { Tag } from '@/components/ui/tag';
@@ -10,58 +11,36 @@ import { StatusLabel } from '@/components/ui/label';
 import { IconThumbsUp } from '@/components/icons';
 import AlarmTag from '@/components/ui/tag/alarm-tag';
 import { MeetingJoinButton } from '../detail/meeting-join-button';
+import { useMeetingCardActions } from '../../hooks/use-meeting-card-actions';
 
 export interface GroupCardProps {
-  meeting: {
-    id: string;
-    title: string;
-    imageUrl: string;
-    location: string;
-    category: string;
-    date: string;
-    time: string;
-    deadlineTag?: string;
-    participantCount: number;
-    maxParticipant: number;
-    isFavorited: boolean;
-    isJoined: boolean;
-    isCanceled: boolean;
-    isFull: boolean;
-    isRegistrationClosed: boolean;
-    isHost?: boolean;
-  };
-  isConfirmed?: boolean;
-  isPending?: boolean;
-  onClick?: () => void;
-  onSaveClick?: (e: React.MouseEvent) => void;
-  onJoinClick?: (e: React.MouseEvent) => void;
+  meeting: MeetingWithHost;
 }
 
-export function GroupCard({
-  meeting,
-  isConfirmed = false,
-  isPending = false,
-  onClick,
-  onSaveClick,
-  onJoinClick,
-}: GroupCardProps) {
-  const { isRegistrationClosed } = meeting;
-
-  const handleSaveClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onSaveClick?.(e);
-  };
-
-  const handleJoinClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!isRegistrationClosed) {
-      onJoinClick?.(e);
-    }
-  };
+export function GroupCard({ meeting }: GroupCardProps) {
+  const {
+    isHost,
+    isJoined,
+    isSaved,
+    isFull,
+    isCanceled,
+    isConfirmed,
+    isRegistrationClosed,
+    participantCount,
+    capacity,
+    formattedDate,
+    formattedTime,
+    deadlineTag,
+    imageUrl,
+    handleSaveClick,
+    handleJoinClick,
+    handleCardClick,
+    isJoinPending,
+  } = useMeetingCardActions(meeting);
 
   return (
     <div
-      onClick={onClick}
+      onClick={handleCardClick}
       className={cn(
         'bg-white relative overflow-hidden flex cursor-pointer transition-shadow hover:shadow-md border border-gray-100',
         'flex-col w-full rounded-3xl pb-5',
@@ -71,8 +50,8 @@ export function GroupCard({
       {/* 썸네일 영역 */}
       <div className="relative shrink-0 w-full h-39 sm:w-42.5 sm:h-42.5 sm:rounded-3xl overflow-hidden bg-gray-100 rounded-t-3xl">
         <Image
-          src={meeting.imageUrl}
-          alt={meeting.title}
+          src={imageUrl}
+          alt={meeting.name ?? '모임 이미지'}
           fill
           className="object-cover"
         />
@@ -93,7 +72,7 @@ export function GroupCard({
           ) : (
             <UtilityButton
               onClick={handleSaveClick}
-              isActive={meeting.isFavorited}
+              isActive={isSaved}
             />
           )}
         </div>
@@ -105,7 +84,7 @@ export function GroupCard({
           {/* 제목 영역 */}
           <div className="flex items-center gap-2 mt-1 sm:mt-0 min-w-0">
             <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 tracking-[-0.4px] line-clamp-1 break-all flex-1 min-w-0">
-              {meeting.title}
+              {meeting.name}
             </h3>
             {isConfirmed && (
               <StatusLabel
@@ -118,16 +97,16 @@ export function GroupCard({
 
           {/* 서브타이틀 (위치, 카테고리) */}
           <div className="flex items-center gap-1.5 text-sm sm:text-base text-gray-500 font-medium min-w-0">
-            <span className="truncate">{meeting.location}</span>
+            <span className="truncate">{meeting.region}</span>
             <span className="shrink-0">·</span>
-            <span className="shrink-0">{meeting.category}</span>
+            <span className="shrink-0">{meeting.type}</span>
           </div>
 
           {/* 태그 영역 */}
           <div className="flex flex-wrap items-center gap-3">
-            <Tag size="lg">{meeting.date}</Tag>
-            <Tag size="lg">{meeting.time}</Tag>
-            {meeting.deadlineTag && <AlarmTag>{meeting.deadlineTag}</AlarmTag>}
+            <Tag size="lg">{formattedDate}</Tag>
+            <Tag size="lg">{formattedTime}</Tag>
+            {deadlineTag && <AlarmTag>{deadlineTag}</AlarmTag>}
           </div>
         </div>
 
@@ -142,27 +121,27 @@ export function GroupCard({
             ) : (
               <UtilityButton
                 onClick={handleSaveClick}
-                isActive={meeting.isFavorited}
+                isActive={isSaved}
               />
             )}
           </div>
 
           <div className="w-full sm:flex-1 sm:max-w-[256px] sm:min-w-30">
             <ProgressBar
-              current={meeting.participantCount}
-              total={meeting.maxParticipant}
+              current={participantCount}
+              total={capacity}
               showIcon={true}
               showCounter={true}
             />
           </div>
 
           <MeetingJoinButton
-            isCanceled={meeting.isCanceled}
-            isHost={meeting.isHost}
-            isJoined={meeting.isJoined}
-            isFull={meeting.isFull}
-            isRegistrationClosed={meeting.isRegistrationClosed}
-            isPending={isPending}
+            isCanceled={isCanceled}
+            isHost={isHost}
+            isJoined={isJoined}
+            isFull={isFull}
+            isRegistrationClosed={isRegistrationClosed}
+            isPending={isJoinPending}
             onClick={handleJoinClick}
             size="md"
             mode="list"

@@ -1,76 +1,9 @@
-import { MeetingWithHost, JoinedMeeting, CreateMeeting } from '@/api/data-contracts';
+import { CreateMeeting } from '@/api/data-contracts';
 import { CreateMeetingPayload } from '../schema/create-shcema';
 import { CATEGORIES_DATA } from '@/constants/categories';
-import {
-  formatMeetingDate,
-  formatMeetingTime,
-  formatDeadlineTag,
-} from './date-formatter';
-import {
-  getMeetingBadgeStatuses,
-  getMeetingActionStatus,
-  getMeetingDerivedState,
-} from './meeting-status';
-import { DetailCardProps } from '../components/cards/detail-card';
 
 export const FALLBACK_MEETING_IMAGE =
   'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846';
-
-
-/**
- * 백엔드 API 응답 (MeetingWithHost) 객체를 GroupCard 컴포넌트용 Props 포맷으로 변환하는 유틸리티 함수
- */
-export function mapMeetingToGroupCard(
-  meeting: MeetingWithHost,
-  currentUserId?: number,
-) {
-  const state = getMeetingDerivedState(meeting, currentUserId);
-  
-  return {
-    id: String(meeting.id),
-    title: meeting.name,
-    imageUrl: meeting.image ?? FALLBACK_MEETING_IMAGE,
-    location: meeting.region,
-    category: meeting.type,
-    date: formatMeetingDate(meeting.dateTime),
-    time: formatMeetingTime(meeting.dateTime),
-    deadlineTag: formatDeadlineTag(meeting.registrationEnd),
-    participantCount: state.participantCount,
-    maxParticipant: state.capacity,
-    isFavorited: state.isSaved,
-    isJoined: state.isJoined,
-    isCanceled: state.isCanceled,
-    isFull: state.isFull,
-    isRegistrationClosed: state.isRegistrationClosed,
-    isHost: state.isHost,
-  };
-}
-
-/**
- * 백엔드 API 응답 (MeetingWithHost / JoinedMeeting) 객체를 DetailCard 컴포넌트용 Props 포맷으로 변환하는 유틸리티 함수
- */
-export function mapMeetingToDetailCard(
-  meeting: JoinedMeeting | MeetingWithHost,
-): DetailCardProps {
-  // JoinedMeeting은 MeetingWithHost의 하위집합이지만 필요한 필드가 다 있다면 타입캐스팅 가능
-  const state = getMeetingDerivedState(meeting as MeetingWithHost);
-  
-  return {
-    meeting: {
-      id: String(meeting.id),
-      title: meeting.name,
-      imageUrl: meeting.image ?? FALLBACK_MEETING_IMAGE,
-      location: meeting.address || meeting.region,
-      date: formatMeetingDate(meeting.dateTime),
-      time: formatMeetingTime(meeting.dateTime),
-      participantCount: state.participantCount,
-      maxParticipant: state.capacity,
-      isSaved: state.isSaved,
-    },
-    badgeStatuses: getMeetingBadgeStatuses(meeting),
-    actionStatus: getMeetingActionStatus(meeting),
-  };
-}
 
 /**
  * 프론트엔드의 폼 입력 데이터(CreateMeetingPayload)를
