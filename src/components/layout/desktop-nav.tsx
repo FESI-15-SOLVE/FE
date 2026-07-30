@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { CountBadge } from '@/components/ui/badge';
+import { CountBadge } from '@/components/ui/badge/count-badge';
 import { MobileMenuLinkProps } from './mobile-menu-nav';
 import { useFavoriteCount } from '@/features/meeting/hooks/use-favorite-count';
 

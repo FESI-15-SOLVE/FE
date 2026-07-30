@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { Badge } from './badge';
-import { StatusLabel } from '@/components/ui/label';
+import { StatusLabel } from '@/components/ui/label/status-label';
 
 const statusBadgeVariants = cva(
   'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full select-none transition-colors px-3 py-1.5 text-sm',

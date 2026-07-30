@@ -5,7 +5,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { DatePicker, TimePicker } from '@/components/ui/calendar';
+import { DatePicker } from '@/components/ui/calendar/date-picker';
+import { TimePicker } from '@/components/ui/calendar/time-picker';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

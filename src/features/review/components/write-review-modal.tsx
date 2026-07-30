@@ -10,8 +10,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Rating } from '@/components/ui/rating';
-import { TextAreaField } from '@/components/ui/Input';
+import { Rating } from '@/components/ui/rating/rating';
+import { TextAreaField } from '@/components/ui/Input/textarea-field';
 
 const reviewSchema = z.object({
   rating: z.number().min(1, '별점을 선택해주세요.').max(5),

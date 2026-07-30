@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from '@/components/ui/Input';
+import { Input } from '@/components/ui/Input/input';
 import { Button } from '@/components/ui/button';
 import { Search } from 'lucide-react';
 

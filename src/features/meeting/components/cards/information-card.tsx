@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Tag } from '@/components/ui/tag';
+import { Tag } from '@/components/ui/tag/tag';
 import { UtilityButton } from '@/components/ui/button';
 import IconCrown from '@/assets/icons/crown.svg';
 import IconMeatballs from '@/assets/icons/meetballs.svg';

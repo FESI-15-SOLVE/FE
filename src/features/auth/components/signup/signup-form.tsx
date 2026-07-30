@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 import { InputField } from '@/components/ui/Input/input-field';
-import { Input } from '@/components/ui/Input';
+import { Input } from '@/components/ui/Input/input';
 import { Button } from '@/components/ui/button';
 import { signupAction } from '@/actions/auth/auth-actions';
 import { unwrapAction } from '@/lib/safe-action';

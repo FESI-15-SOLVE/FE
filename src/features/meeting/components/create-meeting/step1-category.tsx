@@ -6,7 +6,7 @@ import {
   FieldContent,
   FieldError,
 } from '@/components/ui/field';
-import { CategoryTab } from '@/components/ui/tab';
+import { CategoryTab } from '@/components/ui/tab/category-tab';
 import { MeetingCategory } from '@/constants/categories';
 
 export interface Step1CategoryProps {

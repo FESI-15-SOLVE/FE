@@ -3,8 +3,8 @@
 import React from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { StatusLabel } from '@/components/ui/label';
-import { ProgressBar } from '@/components/ui/progress';
+import { StatusLabel } from '@/components/ui/label/status-label';
+import { ProgressBar } from '@/components/ui/progress/progress-bar';
 import { useQuery } from '@tanstack/react-query';
 import { meetingQueries } from '../../queries/meeting-query';
 

@@ -6,7 +6,7 @@ import {
   CardFooter,
 } from './card';
 import { Button } from '@/components/ui/button';
-import { Tag } from '@/components/ui/tag';
+import { Tag } from '@/components/ui/tag/tag';
 import { cn } from '@/lib/utils';
 import { formatMeetingDateTime, formatDeadlineText } from '@/lib/date';
 import { MeetingWithHost } from '@/api/data-contracts';

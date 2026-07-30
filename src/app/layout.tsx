@@ -4,7 +4,7 @@ import './globals.css';
 import { GlobalNavigationBar } from '@/components/layout/gnb';
 import { QueryProvider } from '@/providers/query-provider';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { Toaster } from '@/components/ui/toast';
+import { Toaster } from '@/components/ui/toast/toaster';
 
 import { LoginAlertModal } from '@/components/ui/login-alert-modal';
 

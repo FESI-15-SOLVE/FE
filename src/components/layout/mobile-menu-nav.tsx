@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import IconChevronRight from '@/assets/icons/chevron_right.svg';
-import { CountBadge } from '@/components/ui/badge';
+import { CountBadge } from '@/components/ui/badge/count-badge';
 import { useFavoriteCount } from '@/features/meeting/hooks/use-favorite-count';
 
 export interface MobileMenuLinkProps {
