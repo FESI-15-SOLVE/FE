@@ -10,7 +10,7 @@ import { Tag } from '@/components/ui/tag';
 import { StatusLabel } from '@/components/ui/label';
 import { IconThumbsUp } from '@/components/icons';
 import AlarmTag from '@/components/ui/tag/alarm-tag';
-import { MeetingJoinButton } from '../detail/meeting-join-button';
+import { MeetingJoinButton } from '../meeting-join-button';
 import { useMeetingCardActions } from '../../hooks/use-meeting-card-actions';
 
 export interface GroupCardProps {

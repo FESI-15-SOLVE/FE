@@ -6,7 +6,7 @@ import { Tag } from '@/components/ui/tag';
 import { UtilityButton } from '@/components/ui/button';
 import { IconCrown, IconMeatballs } from '@/components/icons';
 import AlarmTag from '@/components/ui/tag/alarm-tag';
-import { MeetingJoinButton } from '../detail/meeting-join-button';
+import { MeetingJoinButton } from '../meeting-join-button';
 import { MeetingWithHost } from '@/api/data-contracts';
 import { useMeetingCardActions } from '../../hooks/use-meeting-card-actions';
 
