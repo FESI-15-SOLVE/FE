@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
-import { IconPlus } from '@/components/icons';
+import IconPlus from '@/assets/icons/plus.svg';
 import { Button } from './button';
 
 const createButtonVariants = cva('font-bold transition-all', {

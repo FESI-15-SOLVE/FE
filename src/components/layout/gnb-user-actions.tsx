@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { IconPerson } from '@/components/icons';
+import IconPerson from '@/assets/icons/person.svg';
 import { Button } from '@/components/ui/button';
 import { NotificationBell } from '@/features/notification/components/notification-bell';
 import { useAuthStore } from '@/providers/auth-provider';

@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/Input';
 import { InputField, FileInput } from '@/components/ui/Input';
 import { PlaceSearchModal } from '@/features/meeting/components/place-search/place-search-modal';
 import { CreateMeetingValues } from '../../types';
-import { IconLocation } from '@/components/icons';
+import IconLocation from '@/assets/icons/location.svg';
 
 export function Step2BasicInfo() {
   const generatedId = useId();

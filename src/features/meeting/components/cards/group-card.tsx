@@ -8,7 +8,7 @@ import { UtilityButton } from '@/components/ui/button';
 import { ProgressBar } from '@/components/ui/progress';
 import { Tag } from '@/components/ui/tag';
 import { StatusLabel } from '@/components/ui/label';
-import { IconThumbsUp } from '@/components/icons';
+import IconThumbsUp from '@/assets/icons/thumbs-up.svg';
 import AlarmTag from '@/components/ui/tag/alarm-tag';
 import { MeetingJoinButton } from '../meeting-join-button';
 import { useMeetingCardActions } from '../../hooks/use-meeting-card-actions';

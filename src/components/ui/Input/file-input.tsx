@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils';
 import { DeleteButton } from '@/components/ui/button';
 import { useEffect, useRef, useMemo } from 'react';
-import { IconImagePlus } from '@/components/icons';
+import IconImagePlus from '@/assets/icons/image-plus.svg';
 
 export interface FileInputProps {
   value?: string | File | null;

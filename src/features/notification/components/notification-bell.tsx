@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useMediaQuery } from '@/hooks/ui/useMediaQuery';
 import { cn } from '@/lib/utils';
-import { IconBell } from '@/components/icons';
+import IconBell from '@/assets/icons/bell.svg';
 import {
   Popover,
   PopoverContent,

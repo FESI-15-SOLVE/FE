@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { IconMenu, IconDelete } from '@/components/icons';
+import IconMenu from '@/assets/icons/menu.svg';
+import IconDelete from '@/assets/icons/delete.svg';
 import {
   Sheet,
   SheetContent,

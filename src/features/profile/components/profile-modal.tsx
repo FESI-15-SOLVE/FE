@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
-import { IconPerson } from '@/components/icons';
+import IconPerson from '@/assets/icons/person.svg';
 
 export interface ProfileModalProps {
   isOpen: boolean;

@@ -1,5 +1,5 @@
 import { Tag } from './tag';
-import { IconAlarm } from '@/components/icons';
+import IconAlarm from '@/assets/icons/alarm.svg';
 
 interface AlarmTagProps {
   children: React.ReactNode;

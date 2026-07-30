@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
-import { IconHeart } from '@/components/icons';
+import IconHeart from '@/assets/icons/heart.svg';
 
 import { getSafeRatingScores } from './utils';
 

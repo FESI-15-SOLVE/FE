@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { IconHeart } from '@/components/icons';
+import IconHeart from '@/assets/icons/heart.svg';
 import { Button } from './button';
 
 export type UtilityButtonProps =

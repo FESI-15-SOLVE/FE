@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { IconDelete } from '@/components/icons';
+import IconDelete from '@/assets/icons/delete.svg';
 import { Button } from './button';
 
 export type DeleteButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>;

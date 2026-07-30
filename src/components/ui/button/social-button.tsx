@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
-import { IconKakao, IconGoogle } from '@/components/icons';
+import IconKakao from '@/assets/icons/kakao.svg';
+import IconGoogle from '@/assets/icons/google.svg';
 import type { ElementType } from 'react';
 import { Button } from './button';
 

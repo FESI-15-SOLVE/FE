@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { IconEdit } from '@/components/icons';
+import IconEdit from '@/assets/icons/edit.svg';
 import { Button } from './button';
 
 export type EditButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>;

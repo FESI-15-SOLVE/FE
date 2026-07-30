@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { IconCheck } from '@/components/icons';
+import IconCheck from '@/assets/icons/check.svg';
 import { Button } from '@/components/ui/button';
 
 export interface RegionItemProps {
