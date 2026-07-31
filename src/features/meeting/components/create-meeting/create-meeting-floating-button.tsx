@@ -21,8 +21,7 @@ export function CreateMeetingFloatingButton() {
           isOpen={createModalOpen}
           onClose={() => setCreateModalOpen(false)}
           categories={CATEGORIES_DATA}
-          onSubmit={(values) => {
-            console.log('Submitted create meeting:', values);
+          onSubmit={() => {
             setCreateModalOpen(false);
           }}
         />

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useMediaQuery } from '@/hooks/ui/useMediaQuery';
+import { useMediaQuery } from '@/hooks/ui/use-media-query';
 import { cn } from '@/lib/utils';
 import IconBell from '@/assets/icons/bell.svg';
 import {

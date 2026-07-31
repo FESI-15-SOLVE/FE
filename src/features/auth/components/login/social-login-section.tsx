@@ -3,9 +3,8 @@
 import { SocialButton } from '@/components/ui/button';
 
 export function SocialLoginSection() {
-  const handleSocialLogin = (provider: 'google' | 'kakao') => {
+  const handleSocialLogin = (_provider: 'google' | 'kakao') => {
     // TODO: Connect to OAuth provider or API redirect
-    console.log(`Login with ${provider}`);
   };
 
   return (

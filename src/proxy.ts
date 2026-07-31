@@ -31,7 +31,6 @@ export async function proxy(request: NextRequest) {
   // 4. 엑세스 토큰 만료 시 (리프레시는 유효) -> 갱신 시도
   if (!isAccessTokenValid) {
     const refreshedResponse = await refreshTokens(request, refreshToken);
-    console.log(refreshedResponse);
     if (refreshedResponse) {
       return refreshedResponse;
     }
@@ -74,8 +73,6 @@ async function refreshTokens(request: NextRequest, refreshToken: string) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),
     });
-
-    console.log(res);
 
     if (!res.ok) return null;
 

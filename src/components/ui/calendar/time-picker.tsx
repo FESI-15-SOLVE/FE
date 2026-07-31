@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { useScrollToCenter } from '@/hooks/ui/useScrollToCenter';
+import { useScrollToCenter } from '@/hooks/ui/use-scroll-to-center';
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
