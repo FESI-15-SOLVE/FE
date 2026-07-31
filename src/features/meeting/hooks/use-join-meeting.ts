@@ -81,6 +81,10 @@ export function useJoinMeeting() {
       //    목록은 patch만 신뢰: 무한스크롤 전체 재요청은 UX 파괴 대비 실익 없음
       //    (participantCount가 다른 사용자의 동시 액션으로 살짝 어긋날 수 있으나 목록에서는 허용)
       queryClient.invalidateQueries({ queryKey: detailKey });
+      // 참여자 아이콘 목록도 갱신 (PersonnelContainer의 아바타 리스트)
+      queryClient.invalidateQueries({
+        queryKey: meetingQueries.participantKey(String(meetingId)),
+      });
     },
   });
 }
