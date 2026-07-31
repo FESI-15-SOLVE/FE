@@ -27,7 +27,7 @@ export function CategoryTabs({
   };
 
   return (
-    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2">
+    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 w-full">
       {CATEGORIES_WITH_ALL.map((cat) => {
         const isActive = checkIsCategoryActive(cat.name, activeCategory);
 
@@ -36,10 +36,10 @@ export function CategoryTabs({
             key={cat.id}
             onClick={() => handleCategoryClick(cat.name)}
             className={cn(
-              'px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer',
+              'px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer',
               isActive
-                ? 'bg-zinc-900 text-white '
-                : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 ',
+                ? 'bg-zinc-900 text-white'
+                : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200',
             )}
           >
             {cat.name}

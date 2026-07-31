@@ -11,11 +11,13 @@ export function MeetingFilterSection() {
   const [type, setType] = useQueryState('type', meetingSearchParams.type);
 
   return (
-    <div className="flex items-center justify-between py-4">
-      <CategoryTabs
-        activeCategory={type}
-        onSelectCategory={(selectedType) => setType(selectedType)}
-      />
+    <div className="flex flex-col gap-3 py-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="min-w-0 flex-1">
+        <CategoryTabs
+          activeCategory={type}
+          onSelectCategory={(selectedType) => setType(selectedType)}
+        />
+      </div>
       <div className="flex items-center justify-end gap-2 shrink-0">
         <DateFilter />
         <RegionFilter />
