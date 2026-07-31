@@ -26,13 +26,11 @@ import { Progress, ProgressBar } from '@/components/ui/progress';
 import { RatingDisplay, RatingInput } from '@/components/ui/rating';
 import { Tag } from '@/components/ui/tag';
 import { toast, Toaster } from '@/components/ui/toast';
-import {
-  Input,
-  InputField,
-  TextArea,
-  TextAreaField,
-  FileInput,
-} from '@/components/ui/Input';
+import { Input } from '@/components/ui/input/input';
+import { InputField } from '@/components/ui/input/input-field';
+import { TextArea } from '@/components/ui/input/textarea';
+import { TextAreaField } from '@/components/ui/input/textarea-field';
+import { FileInput } from '@/components/ui/input/file-input';
 
 import imgCategoryBusiness from '@/assets/imgs/img_category_business.svg';
 import imgCategoryEtc from '@/assets/imgs/img_category_etc.svg';

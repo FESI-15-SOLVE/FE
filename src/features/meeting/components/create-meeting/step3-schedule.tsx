@@ -1,8 +1,8 @@
 import React from 'react';
 import { useFormContext, Controller, useFormState } from 'react-hook-form';
-import { Input } from '@/components/ui/Input/input';
-import { InputField } from '@/components/ui/Input/input-field';
-import { TextAreaField } from '@/components/ui/Input/textarea-field';
+import { Input } from '@/components/ui/input/input';
+import { InputField } from '@/components/ui/input/input-field';
+import { TextAreaField } from '@/components/ui/input/textarea-field';
 import { CreateMeetingValues } from '../../types';
 import { DateTimePicker } from './date-time-picker';
 

@@ -5,9 +5,9 @@ import {
   useFormState,
   useWatch,
 } from 'react-hook-form';
-import { Input } from '@/components/ui/Input/input';
-import { InputField } from '@/components/ui/Input/input-field';
-import { FileInput } from '@/components/ui/Input/file-input';
+import { Input } from '@/components/ui/input/input';
+import { InputField } from '@/components/ui/input/input-field';
+import { FileInput } from '@/components/ui/input/file-input';
 import { PlaceSearchModal } from '@/features/meeting/components/place-search/place-search-modal';
 import { CreateMeetingValues } from '../../types';
 import IconLocation from '@/assets/icons/location.svg';

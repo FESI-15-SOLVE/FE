@@ -3,8 +3,8 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { InputField } from '@/components/ui/Input/input-field';
-import { Input } from '@/components/ui/Input/input';
+import { InputField } from '@/components/ui/input/input-field';
+import { Input } from '@/components/ui/input/input';
 import { Button } from '@/components/ui/button';
 import { loginAction } from '@/actions/auth/auth-actions';
 import { unwrapAction } from '@/lib/safe-action';
