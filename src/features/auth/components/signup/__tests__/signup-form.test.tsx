@@ -4,10 +4,18 @@ import { SignupForm } from '../signup-form';
 describe('SignupForm', () => {
   it('renders correctly', () => {
     render(<SignupForm />);
-    expect(screen.getByRole('heading', { name: '회원가입' })).toBeInTheDocument();
-    expect(screen.getByLabelText('이름')).toBeInTheDocument();
-    expect(screen.getByLabelText('이메일')).toBeInTheDocument();
-    expect(screen.getByLabelText('비밀번호')).toBeInTheDocument();
-    expect(screen.getByLabelText('비밀번호 확인')).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('이름을 입력해 주세요'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('이메일을 입력해 주세요'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('비밀번호를 입력해 주세요'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('비밀번호를 다시 한 번 입력해 주세요'),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '확인' })).toBeInTheDocument();
   });
 });

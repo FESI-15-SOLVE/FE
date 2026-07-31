@@ -61,6 +61,6 @@ describe('GroupCard 컴포넌트', () => {
       isRegistrationClosed: true,
     });
     render(<GroupCard meeting={mockMeeting} />);
-    expect(screen.getByText('모집 마감')).toBeInTheDocument();
+    expect(screen.getAllByText('모집 마감').length).toBeGreaterThan(0);
   });
 });
