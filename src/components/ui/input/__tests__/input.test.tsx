@@ -1,7 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Input, InputField } from '../index';
+import { Input } from '../input';
+import { InputField } from '../input-field';
 
 describe('Input 컴포넌트', () => {
   it('placeholder와 함께 정상적으로 렌더링된다', () => {

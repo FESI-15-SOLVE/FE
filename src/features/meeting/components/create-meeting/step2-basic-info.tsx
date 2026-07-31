@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input/input';
 import { InputField } from '@/components/ui/input/input-field';
 import { FileInput } from '@/components/ui/input/file-input';
 import { PlaceSearchModal } from '@/features/meeting/components/place-search/place-search-modal';
-import { CreateMeetingValues } from '../../types';
+import { CreateMeetingValues } from '../../types/create-meeting';
 import IconLocation from '@/assets/icons/location.svg';
 
 export function Step2BasicInfo() {

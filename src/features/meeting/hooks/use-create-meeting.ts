@@ -6,7 +6,7 @@ import {
   createMeetingSchema,
   stepSchemas,
 } from '../schema/create-shcema';
-import { CreateMeetingValues } from '../types';
+import { CreateMeetingValues } from '../types/create-meeting';
 import { useCreateMeetingMutation } from './use-create-meeting-mutation';
 
 interface UseCreateMeetingProps {

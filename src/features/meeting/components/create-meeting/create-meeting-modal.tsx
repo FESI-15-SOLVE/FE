@@ -7,11 +7,11 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { FormProvider } from 'react-hook-form';
-import { CreateMeetingModalProps } from '../../types';
+import { CreateMeetingModalProps } from '../../types/create-meeting';
 import { Step1Category } from './step1-category';
 import { Step2BasicInfo } from './step2-basic-info';
 import { Step3Schedule } from './step3-schedule';
-import { useCreateMeeting } from '../../hooks';
+import { useCreateMeeting } from '../../hooks/use-create-meeting';
 import { Button } from '@/components/ui/button';
 
 // 모달이 열릴 때 상태를 깨끗이 새롭게 가지는 내부 폼 컴포넌트
@@ -21,13 +21,8 @@ function CreateMeetingForm({
   categories,
   onClose,
 }: Omit<CreateMeetingModalProps, 'isOpen'>) {
-  const {
-    methods,
-    currentStep,
-    isSubmitting,
-    handleStepChange,
-    submitForm,
-  } = useCreateMeeting({ initialStep, onSubmit });
+  const { methods, currentStep, isSubmitting, handleStepChange, submitForm } =
+    useCreateMeeting({ initialStep, onSubmit });
 
   return (
     <FormProvider {...methods}>
@@ -45,17 +40,11 @@ function CreateMeetingForm({
 
       {/* 동적 마운트 영역 - 현재 활성 단계만 마운트 */}
       <div className="w-full">
-        {currentStep === 1 && (
-          <Step1Category categories={categories} />
-        )}
+        {currentStep === 1 && <Step1Category categories={categories} />}
 
-        {currentStep === 2 && (
-          <Step2BasicInfo />
-        )}
+        {currentStep === 2 && <Step2BasicInfo />}
 
-        {currentStep === 3 && (
-          <Step3Schedule />
-        )}
+        {currentStep === 3 && <Step3Schedule />}
       </div>
 
       {/* 하단 공통 액션 버튼 영역 */}
@@ -65,7 +54,11 @@ function CreateMeetingForm({
           variant="tertiary"
           size="md"
           className="flex-1 sm:h-15 sm:text-xl sm:rounded-2xl"
-          onClick={currentStep === 1 ? onClose : () => handleStepChange(currentStep - 1)}
+          onClick={
+            currentStep === 1
+              ? onClose
+              : () => handleStepChange(currentStep - 1)
+          }
           disabled={isSubmitting}
         >
           {currentStep === 1 ? '취소' : '이전'}
@@ -75,10 +68,18 @@ function CreateMeetingForm({
           variant="primary"
           size="md"
           className="flex-1 sm:h-15 sm:text-xl sm:rounded-2xl"
-          onClick={currentStep === 3 ? submitForm : () => handleStepChange(currentStep + 1)}
+          onClick={
+            currentStep === 3
+              ? submitForm
+              : () => handleStepChange(currentStep + 1)
+          }
           disabled={isSubmitting}
         >
-          {currentStep === 3 ? (isSubmitting ? '생성 중...' : '모임 만들기') : '다음'}
+          {currentStep === 3
+            ? isSubmitting
+              ? '생성 중...'
+              : '모임 만들기'
+            : '다음'}
         </Button>
       </div>
     </FormProvider>

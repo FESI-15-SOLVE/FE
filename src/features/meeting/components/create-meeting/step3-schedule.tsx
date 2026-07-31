@@ -3,7 +3,7 @@ import { useFormContext, Controller, useFormState } from 'react-hook-form';
 import { Input } from '@/components/ui/input/input';
 import { InputField } from '@/components/ui/input/input-field';
 import { TextAreaField } from '@/components/ui/input/textarea-field';
-import { CreateMeetingValues } from '../../types';
+import { CreateMeetingValues } from '../../types/create-meeting';
 import { DateTimePicker } from './date-time-picker';
 
 export function Step3Schedule() {

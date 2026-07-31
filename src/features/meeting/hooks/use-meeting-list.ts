@@ -3,7 +3,7 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { useQueryStates } from 'nuqs';
 import { TEAM_ID } from '@/constants/api';
-import { meetingSearchParams } from '../schema';
+import { meetingSearchParams } from '../schema/meeting-search-params';
 import { meetingQueries } from '../queries/meeting-query';
 
 export function useMeetingList(teamId: string = TEAM_ID) {

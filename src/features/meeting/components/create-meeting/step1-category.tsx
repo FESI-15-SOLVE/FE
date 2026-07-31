@@ -1,5 +1,5 @@
 import { Controller, useFormContext } from 'react-hook-form';
-import { CreateMeetingValues } from '../../types';
+import { CreateMeetingValues } from '../../types/create-meeting';
 import {
   Field,
   FieldLabel,

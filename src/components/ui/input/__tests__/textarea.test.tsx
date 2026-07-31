@@ -1,7 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { TextArea, TextAreaField } from '../index';
+import { TextArea } from '../textarea';
+import { TextAreaField } from '../textarea-field';
 
 describe('TextArea 컴포넌트', () => {
   it('정상적으로 렌더링되며 텍스트 타이핑이 가능하다', async () => {

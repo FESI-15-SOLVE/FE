@@ -1,6 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import { IconFilter, IconChevronDown } from "@/components/icons";
+import IconFilter from '@/assets/icons/filter.svg';
+import IconChevronDown from '@/assets/icons/chevron_down.svg';
 import { Button } from "@/components/ui/button";
 
 const filterTriggerVariants = cva(
