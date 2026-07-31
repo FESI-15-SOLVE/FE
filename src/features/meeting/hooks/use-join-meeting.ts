@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { meetingQueries } from '../queries/meeting-query';
+import { MeetingWithHost, MeetingList } from '@/api/data-contracts';
 import { toast } from 'sonner';
 import {
   joinMeetingAction,
@@ -38,10 +39,52 @@ export function useJoinMeeting() {
         isJoined ? '참여가 취소되었습니다.' : '참여 신청이 완료되었습니다.',
       );
 
-      queryClient.invalidateQueries({ queryKey: meetingQueries.listKeys() });
-      queryClient.invalidateQueries({
-        queryKey: meetingQueries.detailKey(String(meetingId)),
-      });
+      const detailKey = meetingQueries.detailKey(String(meetingId));
+      const listKeys = meetingQueries.listKeys();
+      const countDiff = isJoined ? -1 : 1;
+
+      const previousDetail =
+        queryClient.getQueryData<MeetingWithHost>(detailKey);
+      if (previousDetail) {
+        queryClient.setQueryData<MeetingWithHost>(detailKey, {
+          ...previousDetail,
+          isJoined: !isJoined,
+          participantCount: Math.max(
+            0,
+            (previousDetail.participantCount || 0) + countDiff,
+          ),
+        });
+      }
+
+      queryClient.setQueriesData<{ pages?: MeetingList[] }>(
+        { queryKey: listKeys },
+        (old) => {
+          if (!old?.pages) return old;
+          return {
+            ...old,
+            pages: old.pages.map((page) => ({
+              ...page,
+              data: page.data?.map((item) =>
+                String(item.id) === String(meetingId)
+                  ? {
+                      ...item,
+                      isJoined: !isJoined,
+                      participantCount: Math.max(
+                        0,
+                        (item.participantCount || 0) + countDiff,
+                      ),
+                    }
+                  : item,
+              ),
+            })),
+          };
+        },
+      );
+
+      // 2. 상세 페이지만 invalidate (정원 마감 등 정확성이 중요한 데이터)
+      //    목록은 patch만 신뢰: 무한스크롤 전체 재요청은 UX 파괴 대비 실익 없음
+      //    (participantCount가 다른 사용자의 동시 액션으로 살짝 어긋날 수 있으나 목록에서는 허용)
+      queryClient.invalidateQueries({ queryKey: detailKey });
     },
   });
 }
