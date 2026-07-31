@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { jwtDecode } from 'jwt-decode';
+import { setAuthCookies, clearAuthCookies } from '@/features/auth/lib/auth-cookies';
 
 // 로그인이 필수로 요구되는 경로들
 const REQUIRED_AUTH_PATHS = ['/mypage'];
@@ -101,20 +102,10 @@ async function refreshTokens(request: NextRequest, refreshToken: string) {
     });
 
     // 4. 브라우저로 내려갈 응답(Set-Cookie) 세팅
-    response.cookies.set('accessToken', newAccessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      path: '/',
+    setAuthCookies(response.cookies, {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
     });
-    if (newRefreshToken) {
-      response.cookies.set('refreshToken', newRefreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'lax',
-        path: '/',
-      });
-    }
 
     return response;
   } catch {
@@ -125,7 +116,6 @@ async function refreshTokens(request: NextRequest, refreshToken: string) {
 function redirectToLogin(request: NextRequest) {
   const loginUrl = new URL('/sign-in', request.url);
   const response = NextResponse.redirect(loginUrl);
-  response.cookies.delete('accessToken');
-  response.cookies.delete('refreshToken');
+  clearAuthCookies(response.cookies);
   return response;
 }

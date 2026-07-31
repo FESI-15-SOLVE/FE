@@ -6,28 +6,15 @@ import { TEAM_ID } from '@/constants/api';
 import { cookies } from 'next/headers';
 import { LoginRequest, SignupRequest } from '@/api/data-contracts';
 import { actionClient } from '@/lib/safe-action';
+import { setAuthCookies, clearAuthCookies } from '@/features/auth/lib/auth-cookies';
 
 export const loginAction = actionClient
   .inputSchema(z.custom<LoginRequest>())
   .action(async ({ parsedInput: data }) => {
     const response = await ServerApi.auth.login({ teamId: TEAM_ID }, data);
-    const { accessToken, refreshToken } = response.data;
 
     const cookieStore = await cookies();
-    cookieStore.set('accessToken', accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      path: '/',
-    });
-    if (refreshToken) {
-      cookieStore.set('refreshToken', refreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'lax',
-        path: '/',
-      });
-    }
+    setAuthCookies(cookieStore, response.data);
 
     return response.data;
   });
@@ -62,8 +49,7 @@ export const logoutAction = actionClient.action(async () => {
     // 로그아웃 API 실패(이미 만료됨 등)해도 클라이언트 쿠키는 지워야 함
   } finally {
     const cookieStore = await cookies();
-    cookieStore.delete('accessToken');
-    cookieStore.delete('refreshToken');
+    clearAuthCookies(cookieStore);
   }
 
   return { success: true };

@@ -17,6 +17,18 @@ const nextConfig: NextConfig = {
         hostname: 'sprint-fe-project.s3.ap-northeast-2.amazonaws.com',
         pathname: '/together-dallaem/**',
       },
+      {
+        protocol: 'http',
+        hostname: '*.kakaocdn.net',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.kakaocdn.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
     ],
   },
   experimental: {},

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { SignupForm } from './signup-form';
-import { SocialSignupSection } from './social-signup-section';
+import { SocialAuthSection } from '../social-auth-section';
 
 export function SignupContainer() {
   return (
@@ -12,8 +12,7 @@ export function SignupContainer() {
       </div>
 
       <SignupForm />
-
-      <SocialSignupSection />
+      <SocialAuthSection mode="signup" />
 
       <div className="flex items-center justify-center gap-2 mt-8 text-sm text-slate-600">
         <span>이미 회원이신가요?</span>

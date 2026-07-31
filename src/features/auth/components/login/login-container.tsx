@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { LoginForm } from './login-form';
-import { SocialLoginSection } from './social-login-section';
+import { SocialAuthSection } from '../social-auth-section';
 
 export function LoginContainer() {
   return (
@@ -12,7 +12,7 @@ export function LoginContainer() {
       </div>
 
       <LoginForm />
-      <SocialLoginSection />
+      <SocialAuthSection mode="login" />
 
       <div className="flex items-center justify-center gap-2 mt-8 text-sm text-slate-600">
         <span>같이달램이 처음이신가요?</span>
