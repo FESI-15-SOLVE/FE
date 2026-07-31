@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## 환경 변수 설정
 
-## Getting Started
+프로젝트 실행을 위해 루트 디렉토리에 `.env.local` 파일을 생성하고 아래 값을 채워주세요.
 
-First, run the development server:
+```dotenv
+NEXT_PUBLIC_KAKAO_MAP_KEY=
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+KAKAO_CLIENT_ID=
+KAKAO_CLIENT_SECRET=
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 1. `NEXT_PUBLIC_KAKAO_MAP_KEY`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+카카오맵 JavaScript SDK 키입니다.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. [카카오 디벨로퍼스](https://developers.kakao.com/)에 로그인 후 애플리케이션을 생성합니다.
+2. **앱 키 > JavaScript 키**를 복사해 값으로 넣어주세요.
+3. **플랫폼 > Web 플랫폼 등록**에서 사용할 도메인(예: `http://localhost:3000`, 배포 도메인)을 반드시 등록해야 지도가 정상 동작합니다.
 
-## Learn More
+### 2. `NEXT_PUBLIC_APP_URL`
 
-To learn more about Next.js, take a look at the following resources:
+현재 서비스의 base URL입니다. OAuth 로그인 시 redirect_uri를 구성하는 데 사용됩니다.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 로컬 개발: `http://localhost:3000`
+- 배포 환경: 실제 서비스 도메인 (예: `https://example.com`)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 3. Google OAuth (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`)
 
-## Deploy on Vercel
+1. [Google Cloud Console](https://console.cloud.google.com/) > **APIs & Services > Credentials**에서 OAuth 2.0 클라이언트 ID를 생성합니다.
+2. **승인된 리디렉션 URI**에 아래 값을 등록합니다.
+   ```
+   {NEXT_PUBLIC_APP_URL}/api/auth/callback/google
+   ```
+3. 발급받은 클라이언트 ID/Secret을 각각 값으로 넣어주세요.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+> 두 값 모두 서버에서만 사용되며 클라이언트에 노출되지 않습니다.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 4. Kakao OAuth (`KAKAO_CLIENT_ID`, `KAKAO_CLIENT_SECRET`)
+
+1. [카카오 디벨로퍼스](https://developers.kakao.com/)에서 카카오 로그인용 애플리케이션을 생성(또는 위 지도 앱과 동일 앱 사용)합니다.
+2. **카카오 로그인 > Redirect URI**에 아래 값을 등록합니다.
+   ```
+   {NEXT_PUBLIC_APP_URL}/api/auth/callback/kakao
+   ```
+3. **앱 키 > REST API 키**를 `KAKAO_CLIENT_ID`에 넣습니다.
+4. **카카오 로그인 > 보안 > Client Secret**을 활성화 후 발급받은 값을 `KAKAO_CLIENT_SECRET`에 넣습니다. (선택사항이지만 보안 강화를 위해 활성화를 권장합니다.)
+
+> 두 값 모두 서버에서만 사용되며 클라이언트에 노출되지 않습니다.
+
+---
