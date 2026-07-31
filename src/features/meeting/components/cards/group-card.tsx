@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { MeetingWithHost } from '@/api/data-contracts';
@@ -8,7 +7,6 @@ import { UtilityButton } from '@/components/ui/button';
 import { ProgressBar } from '@/components/ui/progress/progress-bar';
 import { Tag } from '@/components/ui/tag/tag';
 import { StatusLabel } from '@/components/ui/label/status-label';
-import IconThumbsUp from '@/assets/icons/thumbs-up.svg';
 import AlarmTag from '@/components/ui/tag/alarm-tag';
 import { MeetingJoinButton } from '../meeting-join-button';
 import { useMeetingCardActions } from '../../hooks/use-meeting-card-actions';
@@ -65,16 +63,7 @@ export function GroupCard({ meeting }: GroupCardProps) {
 
         {/* 모바일 아이콘 (마감 여부에 따라 하트 또는 박수) */}
         <div className="absolute top-4 right-4 sm:hidden z-10">
-          {isRegistrationClosed ? (
-            <div className="bg-slate-100 rounded-full flex items-center justify-center text-slate-500 size-12 shadow-sm border border-slate-200">
-              <IconThumbsUp className="size-6" />
-            </div>
-          ) : (
-            <UtilityButton
-              onClick={handleSaveClick}
-              isActive={isSaved}
-            />
-          )}
+          <UtilityButton onClick={handleSaveClick} isActive={isSaved} />
         </div>
       </div>
 
@@ -114,16 +103,7 @@ export function GroupCard({ meeting }: GroupCardProps) {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-6 sm:mt-auto relative w-full">
           {/* 데스크톱 상단 아이콘 */}
           <div className="hidden sm:block absolute -top-32 right-2 z-10">
-            {isRegistrationClosed ? (
-              <div className="bg-slate-100 rounded-full flex items-center justify-center text-slate-500 size-12 shadow-sm border border-slate-200">
-                <IconThumbsUp className="size-6" />
-              </div>
-            ) : (
-              <UtilityButton
-                onClick={handleSaveClick}
-                isActive={isSaved}
-              />
-            )}
+            <UtilityButton onClick={handleSaveClick} isActive={isSaved} />
           </div>
 
           <div className="w-full sm:flex-1 sm:max-w-[256px] sm:min-w-30">
