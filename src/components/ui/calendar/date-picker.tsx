@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import { ko } from "date-fns/locale";
+import { defaultLocale } from "@/lib/date-locale";
 
 import Calendar from "./calendar";
 import { Button } from "@/components/ui/button";
@@ -49,7 +49,7 @@ export function DatePicker({
         mode="single"
         selected={selectedDate}
         onSelect={handleSelect}
-        locale={ko}
+        locale={defaultLocale}
         formatters={{
           formatCaption: (d, options) => {
             return format(d, "yyyy년 M월", { locale: options?.locale });

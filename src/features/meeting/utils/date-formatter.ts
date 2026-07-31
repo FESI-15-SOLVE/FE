@@ -1,5 +1,5 @@
 import { format, differenceInDays, isBefore, isToday } from 'date-fns';
-import { ko } from 'date-fns/locale';
+import { defaultLocale } from '@/lib/date-locale';
 
 /**
  * 모임 일시(dateTime) ➡️ "2026년 02월 01일 (일)" 포맷 반환
@@ -7,7 +7,7 @@ import { ko } from 'date-fns/locale';
 export function formatMeetingDate(dateTime?: string | null): string {
   if (!dateTime) return '날짜 미정';
   try {
-    return format(new Date(dateTime), 'yyyy년 MM월 dd일 (EEE)', { locale: ko });
+    return format(new Date(dateTime), 'yyyy년 MM월 dd일 (EEE)', { locale: defaultLocale });
   } catch {
     return '날짜 미정';
   }
