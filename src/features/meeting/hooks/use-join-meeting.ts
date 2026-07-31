@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { produce } from 'immer';
 import { meetingQueries } from '../queries/meeting-query';
 import { MeetingWithHost, MeetingList } from '@/api/data-contracts';
 import { toast } from 'sonner';
@@ -43,42 +44,37 @@ export function useJoinMeeting() {
       const listKeys = meetingQueries.listKeys();
       const countDiff = isJoined ? -1 : 1;
 
-      const previousDetail =
-        queryClient.getQueryData<MeetingWithHost>(detailKey);
-      if (previousDetail) {
-        queryClient.setQueryData<MeetingWithHost>(detailKey, {
-          ...previousDetail,
-          isJoined: !isJoined,
-          participantCount: Math.max(
-            0,
-            (previousDetail.participantCount || 0) + countDiff,
-          ),
-        });
-      }
+      // 1. 서버 확인 후 캐시 즉시 패치 → 버튼 상태 번쩍임 없이 즉시 반영
+      queryClient.setQueryData<MeetingWithHost>(
+        detailKey,
+        (old) =>
+          old &&
+          produce(old, (draft) => {
+            draft.isJoined = !isJoined;
+            draft.participantCount = Math.max(
+              0,
+              (draft.participantCount || 0) + countDiff,
+            );
+          }),
+      );
 
       queryClient.setQueriesData<{ pages?: MeetingList[] }>(
         { queryKey: listKeys },
-        (old) => {
-          if (!old?.pages) return old;
-          return {
-            ...old,
-            pages: old.pages.map((page) => ({
-              ...page,
-              data: page.data?.map((item) =>
-                String(item.id) === String(meetingId)
-                  ? {
-                      ...item,
-                      isJoined: !isJoined,
-                      participantCount: Math.max(
-                        0,
-                        (item.participantCount || 0) + countDiff,
-                      ),
-                    }
-                  : item,
-              ),
-            })),
-          };
-        },
+        (old) =>
+          produce(old, (draft) => {
+            draft?.pages?.forEach((page) => {
+              const item = page.data?.find(
+                (i) => String(i.id) === String(meetingId),
+              );
+              if (item) {
+                item.isJoined = !isJoined;
+                item.participantCount = Math.max(
+                  0,
+                  (item.participantCount || 0) + countDiff,
+                );
+              }
+            });
+          }),
       );
 
       // 2. 상세 페이지만 invalidate (정원 마감 등 정확성이 중요한 데이터)

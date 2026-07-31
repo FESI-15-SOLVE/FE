@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { produce } from 'immer';
 import { addFavoriteApi, removeFavoriteApi } from '../api/toggle-favorite';
 import { meetingQueries } from '../queries/meeting-query';
 import { favoriteQueries } from '../queries/favorite-query';
@@ -23,7 +24,7 @@ export function useToggleFavorite() {
       }
     },
 
-    // 1. onMutate: Promise.all 병렬 취소 & 상세/목록 캐시 즉시 낙관적 업데이트
+    // 1. onMutate: 낙관적 업데이트 (찜하기는 실패해도 UX 임팩트 낮음)
     onMutate: async ({ meetingId, isSaved }) => {
       const detailKey = meetingQueries.detailKey(String(meetingId));
       const listKeys = meetingQueries.listKeys();
@@ -34,43 +35,39 @@ export function useToggleFavorite() {
         queryClient.cancelQueries({ queryKey: listKeys }),
       ]);
 
-      // 스냅샷 저장 (상세 스냅샷, 목록 스냅샷, 카운트 스냅샷)
-      const previousDetail =
-        queryClient.getQueryData<MeetingWithHost>(detailKey);
+      // 스냅샷 저장
+      const previousDetail = queryClient.getQueryData<MeetingWithHost>(detailKey);
       const previousLists = queryClient.getQueriesData<{ pages?: MeetingList[] }>({
         queryKey: listKeys,
       });
       const countKey = favoriteQueries.countKey();
       const previousCount = queryClient.getQueryData<{ count: number }>(countKey);
 
-      // 상세 캐시 즉시 업데이트 (0ms)
-      if (previousDetail) {
-        queryClient.setQueryData<MeetingWithHost>(detailKey, {
-          ...previousDetail,
-          isFavorited: !isSaved,
-        });
-      }
-
-      // 무한 스크롤 목록 캐시 즉시 업데이트 (0ms)
-      queryClient.setQueriesData<{ pages?: MeetingList[] }>(
-        { queryKey: listKeys },
-        (old) => {
-          if (!old?.pages) return old;
-          return {
-            ...old,
-            pages: old.pages.map((page) => ({
-              ...page,
-              data: page.data?.map((item) =>
-                String(item.id) === String(meetingId)
-                  ? { ...item, isFavorited: !isSaved }
-                  : item,
-              ),
-            })),
-          };
-        },
+      // 상세 캐시 즉시 업데이트
+      queryClient.setQueryData<MeetingWithHost>(
+        detailKey,
+        (old) =>
+          old &&
+          produce(old, (draft) => {
+            draft.isFavorited = !isSaved;
+          }),
       );
 
-      // 찜 개수 즉시 업데이트 (0ms)
+      // 무한 스크롤 목록 캐시 즉시 업데이트
+      queryClient.setQueriesData<{ pages?: MeetingList[] }>(
+        { queryKey: listKeys },
+        (old) =>
+          produce(old, (draft) => {
+            draft?.pages?.forEach((page) => {
+              const item = page.data?.find(
+                (i) => String(i.id) === String(meetingId),
+              );
+              if (item) item.isFavorited = !isSaved;
+            });
+          }),
+      );
+
+      // 찜 개수 즉시 업데이트
       if (previousCount !== undefined) {
         queryClient.setQueryData(countKey, {
           count: Math.max(0, previousCount.count + (isSaved ? -1 : 1)),
@@ -96,22 +93,18 @@ export function useToggleFavorite() {
       if (context?.previousCount !== undefined) {
         queryClient.setQueryData(favoriteQueries.countKey(), context.previousCount);
       }
-      toast.error(
-        '찜 처리 중 오류가 발생했습니다. (로그인이 필요할 수 있습니다)',
-      );
+      toast.error('찜 처리 중 오류가 발생했습니다. (로그인이 필요할 수 있습니다)');
     },
 
-    // 3. onSettled: 성공 시 N페이지 무한 재요청 릴레이 방지! 실패 시에만 전체 목록 무효화
+    // 3. onSettled: 실패 시에만 목록 무효화, 항상 상세 단건 갱신
     onSettled: (_data, error, { meetingId, isSaved }) => {
       if (!error) {
         toast.success(
           isSaved ? '찜 목록에서 삭제되었습니다.' : '찜 목록에 추가되었습니다.',
         );
       } else {
-        // 실패 시에만 전체 목록 쿼리 무효화
         queryClient.invalidateQueries({ queryKey: meetingQueries.listKeys() });
       }
-      // 단건 상세 쿼리만 갱신 (네트워크 부담 0)
       queryClient.invalidateQueries({
         queryKey: meetingQueries.detailKey(String(meetingId)),
       });
