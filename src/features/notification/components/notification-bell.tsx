@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { MEDIA_QUERIES } from '@/constants/breakpoint';
 import { useMediaQuery } from '@/hooks/ui/use-media-query';
 import { cn } from '@/lib/utils';
 import IconBell from '@/assets/icons/bell.svg';
@@ -24,7 +25,7 @@ interface NotificationBellProps {
 
 export function NotificationBell({ hasUnread = true }: NotificationBellProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const isDesktop = useMediaQuery('(min-width: 640px)');
+  const isDesktop = useMediaQuery(MEDIA_QUERIES.sm);
 
   // 종 모양 아이콘 트리거 버튼
   const TriggerButton = (
