@@ -6,9 +6,9 @@ import {
   editMeetingSchema,
   EditMeetingValues,
 } from '../schema/edit-meeting-schema';
-import { MeetingWithHost, UpdateMeeting } from '@/api/data-contracts';
+import { MeetingWithHost } from '@/api/data-contracts';
 import { useUpdateMeeting } from './use-host-meeting-actions';
-import { formatFullAddress, parseFullAddress } from '../utils/meeting-mapper';
+import { parseFullAddress } from '../utils/meeting-mapper';
 
 interface UseEditMeetingProps {
   meeting: MeetingWithHost;
@@ -51,30 +51,9 @@ export function useEditMeeting({
     useUpdateMeeting();
 
   const submitForm = handleSubmit(async (data) => {
-    const fullAddress = formatFullAddress(
-      data.placeAddress || data.location,
-      data.detailAddress,
-    );
-
-    const updateData: UpdateMeeting = {
-      name: data.name,
-      type: data.type,
-      region: data.location,
-      address: fullAddress,
-      latitude: data.latitude,
-      longitude: data.longitude,
-      capacity: Number(data.capacity),
-      description: data.description,
-      dateTime: data.dateTime ? data.dateTime.toISOString() : undefined,
-      registrationEnd: data.registrationEnd
-        ? data.registrationEnd.toISOString()
-        : undefined,
-      image: typeof data.file === 'string' ? data.file : undefined,
-    };
-
     await updateMeetingAsync({
       meetingId: Number(meeting.id),
-      data: updateData,
+      payload: data,
     });
 
     onSubmitSuccess?.();

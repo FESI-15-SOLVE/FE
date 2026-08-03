@@ -1,12 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { UpdateMeeting } from '@/api/data-contracts';
-import {
-  updateMeetingAction,
-  cancelMeetingAction,
-} from '@/actions/meeting/meeting-actions';
+import { cancelMeetingAction } from '@/actions/meeting/meeting-actions';
 import { unwrapAction } from '@/lib/safe-action';
 import { meetingQueries } from '../queries/meeting-query';
+import { updateMeeting } from '../api/update-meeting';
+import { EditMeetingPayload } from '../schema/edit-meeting-schema';
 
 export function useUpdateMeeting() {
   const queryClient = useQueryClient();
@@ -14,12 +12,12 @@ export function useUpdateMeeting() {
   return useMutation({
     mutationFn: async ({
       meetingId,
-      data,
+      payload,
     }: {
       meetingId: number;
-      data: UpdateMeeting;
+      payload: EditMeetingPayload;
     }) => {
-      return unwrapAction(await updateMeetingAction({ meetingId, data }));
+      return updateMeeting(meetingId, payload);
     },
     onSuccess: (_updatedMeeting, { meetingId }) => {
       toast.success('모임 정보가 수정되었습니다.');

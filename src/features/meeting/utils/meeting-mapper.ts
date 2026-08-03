@@ -1,5 +1,6 @@
-import { CreateMeeting } from '@/api/data-contracts';
+import { CreateMeeting, UpdateMeeting } from '@/api/data-contracts';
 import { CreateMeetingPayload } from '../schema/create-shcema';
+import { EditMeetingPayload } from '../schema/edit-meeting-schema';
 import { CATEGORIES_DATA } from '@/constants/categories';
 
 export const FALLBACK_MEETING_IMAGE =
@@ -52,15 +53,47 @@ export function mapCreatePayloadToServerData(
 
   return {
     name: payload.name,
-    type: type,
+    type,
     region: payload.location,
     address: fullAddress,
     latitude: payload.latitude,
     longitude: payload.longitude,
-    dateTime: payload.dateTime?.toISOString() ?? null,
-    registrationEnd: payload.registrationEnd?.toISOString() ?? null,
-    capacity: payload.capacity,
-    image: imageUrl,
+    capacity: Number(payload.capacity),
     description: payload.description,
+    dateTime: payload.dateTime ? payload.dateTime.toISOString() : null,
+    registrationEnd: payload.registrationEnd
+      ? payload.registrationEnd.toISOString()
+      : null,
+    image: imageUrl,
+  };
+}
+
+/**
+ * 프론트엔드의 폼 입력 데이터(EditMeetingPayload)를
+ * 서버 수정 스펙(UpdateMeeting)에 맞게 변환합니다.
+ */
+export function mapUpdatePayloadToServerData(
+  payload: EditMeetingPayload,
+  imageUrl?: string | null,
+): UpdateMeeting {
+  const fullAddress = formatFullAddress(
+    payload.placeAddress || payload.location,
+    payload.detailAddress,
+  );
+
+  return {
+    name: payload.name,
+    type: payload.type,
+    region: payload.location,
+    address: fullAddress,
+    latitude: payload.latitude,
+    longitude: payload.longitude,
+    capacity: Number(payload.capacity),
+    description: payload.description,
+    dateTime: payload.dateTime ? payload.dateTime.toISOString() : undefined,
+    registrationEnd: payload.registrationEnd
+      ? payload.registrationEnd.toISOString()
+      : undefined,
+    image: imageUrl,
   };
 }
