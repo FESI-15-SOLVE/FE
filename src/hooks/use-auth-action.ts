@@ -22,7 +22,7 @@ export function useAuthAction() {
         return action(...args);
       };
     },
-    [user?.id, openAlert]
+    [user?.id, openAlert],
   );
 
   return withAuth;
