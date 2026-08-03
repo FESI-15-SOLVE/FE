@@ -37,16 +37,18 @@ export function mapFiltersToQueryParams(
 ) {
   const isAllRegion = !filters.region || filters.region === '지역 전체';
   const todayKST = getTodayKST();
-  const targetDateStr =
-    filters.date || (options?.defaultToCurrentDate ? todayKST : undefined);
 
   let computedDateStart: string | undefined = undefined;
   let computedDateEnd: string | undefined = undefined;
 
-  if (targetDateStr) {
-    const range = getKSTDateRange(targetDateStr);
+  if (filters.date) {
+    const range = getKSTDateRange(filters.date);
     computedDateStart = range.dateStart;
     computedDateEnd = range.dateEnd;
+  } else if (options?.defaultToCurrentDate) {
+    const range = getKSTDateRange(todayKST);
+    computedDateStart = range.dateStart; // 오늘 00:00:00 KST (안정적인 SSR/CSR hydration)
+    computedDateEnd = undefined; // 상한 없음 — 미래의 모든 모임 노출
   }
 
   return {
