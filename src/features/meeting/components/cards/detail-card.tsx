@@ -5,7 +5,7 @@ import {
   CardTitle,
   CardContent,
   CardFooter,
-} from './card';
+} from '@/components/ui/card/card';
 import { Button, UtilityButton } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { MeetingWithHost } from '@/api/data-contracts';
