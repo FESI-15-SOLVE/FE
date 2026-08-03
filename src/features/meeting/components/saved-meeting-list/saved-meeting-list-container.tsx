@@ -1,13 +1,11 @@
 'use client';
 
 import { Suspense } from 'react';
-import { useQueryState } from 'nuqs';
-import { meetingSearchParams } from '@/features/meeting/schema/meeting-search-params';
-import { CategoryTabs } from '../filter/category-tabs';
 import { SavedBanner } from './saved-banner';
 import { MeetingListUI } from '../meeting-list/meeting-list';
 import { MeetingListSkeleton } from '../meeting-list/meeting-list-skeleton';
 import { useSavedMeetingList } from '../../hooks/use-saved-meeting-list';
+import { MeetingFilterSection } from '../filter/meeting-filter-section';
 import { ClientErrorBoundary } from '@/components/ui/error/client-error-boundary';
 
 export function SuspensefulSavedMeetingList() {
@@ -27,18 +25,11 @@ export function SuspensefulSavedMeetingList() {
 }
 
 export function SavedMeetingListContainer() {
-  const [type, setType] = useQueryState('type', meetingSearchParams.type);
-
   return (
     <div className="flex flex-col gap-6 w-full px-4 py-8 relative min-h-screen">
       <SavedBanner />
 
-      <div className="py-1">
-        <CategoryTabs
-          activeCategory={type}
-          onSelectCategory={(selectedType) => setType(selectedType)}
-        />
-      </div>
+      <MeetingFilterSection />
 
       <ClientErrorBoundary>
         <Suspense fallback={<MeetingListSkeleton />}>

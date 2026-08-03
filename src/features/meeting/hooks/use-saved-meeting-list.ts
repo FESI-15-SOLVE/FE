@@ -1,26 +1,24 @@
 'use client';
 
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useQueryState } from 'nuqs';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { useQueryStates } from 'nuqs';
 import { meetingSearchParams } from '../schema/meeting-search-params';
 import { favoriteQueries } from '../queries/favorite-query';
 import { TEAM_ID } from '@/constants/api';
 import { FavoriteWithMeeting } from '@/api/data-contracts';
+import { mapFiltersToQueryParams } from '../utils/filter-mapper';
 
-export function useSavedMeetingList() {
-  const [type] = useQueryState('type', meetingSearchParams.type);
+export function useSavedMeetingList(teamId: string = TEAM_ID) {
+  const [filters, setFilters] = useQueryStates(meetingSearchParams);
+  const queryParams = mapFiltersToQueryParams(filters);
 
-  const filters = {
-    type: type || undefined,
-  };
-
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery(favoriteQueries.listQuery(TEAM_ID, filters));
-  // 백엔드 스웨거 명세에는 isFavorited가 오지만 실제 데이터에선 오지 않기에 추가함
+  const query = useSuspenseInfiniteQuery(
+    favoriteQueries.listQuery(teamId, queryParams),
+  );
 
   const meetings =
-    data?.pages.flatMap((page) =>
-      page.data.map((fav: FavoriteWithMeeting) => ({
+    query.data.pages.flatMap((page) =>
+      (page.data ?? []).map((fav: FavoriteWithMeeting) => ({
         ...fav.meeting,
         isFavorited: true,
       })),
@@ -28,8 +26,10 @@ export function useSavedMeetingList() {
 
   return {
     meetings,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
+    filters,
+    setFilters,
+    fetchNextPage: query.fetchNextPage,
+    hasNextPage: query.hasNextPage,
+    isFetchingNextPage: query.isFetchingNextPage,
   };
 }
