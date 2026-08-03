@@ -10,19 +10,24 @@ import { useAuthStore } from '@/providers/auth-provider';
 import { logoutAction } from '@/actions/auth/auth-actions';
 import { unwrapAction } from '@/lib/safe-action';
 import { MobileMenuSheet } from './mobile-menu-sheet';
+import { useNavLinks } from '@/hooks/use-nav-links';
+import { ROUTES } from '@/constants/routes';
 
 export function GnbUserActions() {
   const router = useRouter();
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
   const user = useAuthStore((s) => s.user);
   const clearAuth = useAuthStore((s) => s.clearAuth);
+  const links = useNavLinks(isLoggedIn);
+  const myPageLink = links.find((link) => link.label === '마이페이지');
+  const myPageHref = myPageLink?.href ?? ROUTES.MY_PAGE.JOINED;
 
   const handleLogout = async () => {
     try {
       unwrapAction(await logoutAction());
     } finally {
       clearAuth();
-      router.push('/sign-in');
+      router.push(ROUTES.AUTH.SIGN_IN);
     }
   };
 
@@ -34,7 +39,7 @@ export function GnbUserActions() {
 
           <div className="hidden sm:flex items-center gap-4">
             {/* 데스크톱 유저 프로필 버튼 */}
-            <Link href="/mypage" className="cursor-pointer">
+            <Link href={myPageHref} className="cursor-pointer">
               <Button
                 variant={'custom'}
                 size={'icon'}
@@ -48,43 +53,45 @@ export function GnbUserActions() {
                     className="object-cover"
                   />
                 ) : (
-                  <IconPerson className="size-6" />
+                  <IconPerson className="size-6 shrink-0" />
                 )}
               </Button>
             </Link>
 
-            {/* 로그아웃 버튼 */}
-            <button
+            <Button
+              variant={'secondary'}
               onClick={handleLogout}
-              className="text-sm font-medium text-slate-500 hover:text-slate-800 cursor-pointer"
+              className="px-4 text-[14px] font-semibold leading-5 shadow-none h-10 transition-colors bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 cursor-pointer"
             >
               로그아웃
-            </button>
-          </div>
-
-          {/* 모바일 액션 */}
-          <div className="flex sm:hidden items-center gap-3">
-            <MobileMenuSheet isLoggedIn={isLoggedIn} />
+            </Button>
           </div>
         </>
       ) : (
-        <>
-          {/* 데스크톱 로그인 버튼 */}
-          <div className="hidden sm:flex items-center px-4 py-2">
-            <Link
-              href="/sign-in"
-              className="text-base font-medium text-slate-600 hover:text-neutral-900 tracking-[-0.32px] cursor-pointer"
+        <div className="hidden sm:flex items-center gap-2">
+          <Link href={ROUTES.AUTH.SIGN_IN}>
+            <Button
+              variant={'secondary'}
+              className="px-4 text-[14px] font-semibold leading-5 shadow-none h-10 transition-colors bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 cursor-pointer"
             >
               로그인
-            </Link>
-          </div>
-
-          {/* 모바일 액션 */}
-          <div className="flex sm:hidden items-center gap-3">
-            <MobileMenuSheet isLoggedIn={isLoggedIn} />
-          </div>
-        </>
+            </Button>
+          </Link>
+          <Link href={ROUTES.AUTH.SIGN_UP}>
+            <Button
+              variant={'primary'}
+              className="px-4 text-[14px] font-semibold leading-5 shadow-none h-10 cursor-pointer"
+            >
+              회원가입
+            </Button>
+          </Link>
+        </div>
       )}
+
+      {/* 모바일 햄버거 버튼 & 드로어 */}
+      <div className="sm:hidden flex items-center">
+        <MobileMenuSheet isLoggedIn={isLoggedIn} />
+      </div>
     </div>
   );
 }

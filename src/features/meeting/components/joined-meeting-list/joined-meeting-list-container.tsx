@@ -5,6 +5,7 @@ import { meetingQueries } from '../../queries/meeting-query';
 import { DetailCard } from '../cards/detail-card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { ROUTES } from '@/constants/routes';
 
 export function JoinedMeetingListContainer() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
@@ -27,7 +28,7 @@ export function JoinedMeetingListContainer() {
         <p className="text-slate-500 text-lg font-medium">
           아직 참여한 모임이 없습니다.
         </p>
-        <Link href="/meetings">
+        <Link href={ROUTES.MEETINGS.LIST}>
           <Button variant="primary">모임 둘러보기</Button>
         </Link>
       </div>

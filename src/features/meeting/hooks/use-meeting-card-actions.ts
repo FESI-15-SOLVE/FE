@@ -15,6 +15,7 @@ import {
   formatDeadlineTag,
 } from '../utils/date-formatter';
 import { FALLBACK_MEETING_IMAGE } from '../utils/meeting-mapper';
+import { ROUTES } from '@/constants/routes';
 
 /**
  * GroupCard / InformationCard 에서 공통으로 사용하는 찜하기·참여하기 핸들러와
@@ -58,7 +59,7 @@ export function useMeetingCardActions(meeting: MeetingWithHost) {
   };
 
   const handleCardClick = () => {
-    router.push(`/meetings/${meeting.id}`);
+    router.push(ROUTES.MEETINGS.DETAIL(meeting.id));
   };
 
   return {

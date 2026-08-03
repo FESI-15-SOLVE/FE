@@ -3,11 +3,12 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { ROUTES } from '@/constants/routes';
 
 const TABS = [
-  { href: '/mypage/joined', label: '나의 모임' },
-  { href: '/mypage/reviews', label: '나의 리뷰' },
-  { href: '/mypage/created', label: '내가 만든 모임' },
+  { href: ROUTES.MY_PAGE.JOINED, label: '나의 모임' },
+  { href: ROUTES.MY_PAGE.REVIEWS, label: '나의 리뷰' },
+  { href: ROUTES.MY_PAGE.CREATED, label: '내가 만든 모임' },
 ];
 
 export function MyPageTabNavigation() {
@@ -24,7 +25,7 @@ export function MyPageTabNavigation() {
             className={cn(
               'relative py-3 px-4 text-base font-semibold transition-colors cursor-pointer',
               isActive
-                ? 'text-green-600 font-bold border-b-2 border-green-500 -mb-0.5'
+                ? 'text-green-600 font-bold border-b-2 border-green-500 -mb-[2px]'
                 : 'text-slate-400 hover:text-slate-600',
             )}
           >
