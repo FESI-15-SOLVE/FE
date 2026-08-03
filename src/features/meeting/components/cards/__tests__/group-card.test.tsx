@@ -23,6 +23,7 @@ const mockActions = {
   isFull: false,
   isCanceled: false,
   isConfirmed: false,
+  isCompleted: false,
   isRegistrationClosed: false,
   participantCount: 12,
   capacity: 20,
