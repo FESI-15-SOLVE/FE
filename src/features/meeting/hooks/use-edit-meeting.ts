@@ -27,7 +27,6 @@ export function useEditMeeting({
   const methods = useForm<EditMeetingValues, unknown, EditMeetingPayload>({
     resolver: zodResolver(editMeetingSchema),
     defaultValues: {
-      categoryId: 1,
       type: meeting.type || '기타',
       name: meeting.name || '',
       location: meeting.region || '',
