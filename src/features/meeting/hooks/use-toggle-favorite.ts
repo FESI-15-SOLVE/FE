@@ -96,7 +96,7 @@ export function useToggleFavorite() {
       toast.error('찜 처리 중 오류가 발생했습니다. (로그인이 필요할 수 있습니다)');
     },
 
-    // 3. onSettled: 실패 시에만 목록 무효화, 항상 상세 단건 갱신
+    // 3. onSettled: 실패 시 목록 무효화, 항상 찜 목록 및 상세 단건 갱신
     onSettled: (_data, error, { meetingId, isSaved }) => {
       if (!error) {
         toast.success(
@@ -105,6 +105,7 @@ export function useToggleFavorite() {
       } else {
         queryClient.invalidateQueries({ queryKey: meetingQueries.listKeys() });
       }
+      queryClient.invalidateQueries({ queryKey: favoriteQueries.listKeys() });
       queryClient.invalidateQueries({
         queryKey: meetingQueries.detailKey(String(meetingId)),
       });
