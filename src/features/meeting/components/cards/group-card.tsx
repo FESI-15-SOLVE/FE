@@ -8,7 +8,6 @@ import { ProgressBar } from '@/components/ui/progress/progress-bar';
 import { Tag } from '@/components/ui/tag/tag';
 import { StatusLabel } from '@/components/ui/label/status-label';
 import AlarmTag from '@/components/ui/tag/alarm-tag';
-import { FormattedDate } from '@/components/ui/date/formatted-date';
 import { MeetingJoinButton } from '../meeting-join-button';
 import { useMeetingCardActions } from '../../hooks/use-meeting-card-actions';
 
@@ -27,6 +26,8 @@ export function GroupCard({ meeting }: GroupCardProps) {
     isRegistrationClosed,
     participantCount,
     capacity,
+    formattedDate,
+    formattedTime,
     deadlineTag,
     imageUrl,
     handleSaveClick,
@@ -91,14 +92,10 @@ export function GroupCard({ meeting }: GroupCardProps) {
             <span className="shrink-0">{meeting.type}</span>
           </div>
 
-          {/* 태그 영역 (FormattedDate 활용으로 하이드레이션 오류 완전 해결) */}
+          {/* 태그 영역 */}
           <div className="flex flex-wrap items-center gap-3">
-            <Tag size="lg">
-              <FormattedDate value={meeting.dateTime} mode="date" />
-            </Tag>
-            <Tag size="lg">
-              <FormattedDate value={meeting.dateTime} mode="time" />
-            </Tag>
+            <Tag size="lg">{formattedDate}</Tag>
+            <Tag size="lg">{formattedTime}</Tag>
             {deadlineTag && <AlarmTag>{deadlineTag}</AlarmTag>}
           </div>
         </div>

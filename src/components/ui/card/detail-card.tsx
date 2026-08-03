@@ -7,9 +7,12 @@ import {
   CardFooter,
 } from './card';
 import { Button, UtilityButton } from '@/components/ui/button';
-import { FormattedDate } from '@/components/ui/date/formatted-date';
 import { cn } from '@/lib/utils';
 import { MeetingWithHost } from '@/api/data-contracts';
+import {
+  formatMeetingDate,
+  formatMeetingTime,
+} from '@/features/meeting/utils/date-formatter';
 
 export interface DetailCardProps {
   /** API에서 전달받는 모임 데이터 (MeetingWithHost) */
@@ -182,16 +185,12 @@ export function DetailCard({
               <span className="text-slate-300">|</span>
               <div className="flex items-center gap-1">
                 <span className="text-slate-400">날짜</span>
-                <span>
-                  <FormattedDate value={dateTime} mode="date" />
-                </span>
+                <span>{formatMeetingDate(dateTime)}</span>
               </div>
               <span className="text-slate-300">|</span>
               <div className="flex items-center gap-1">
                 <span className="text-slate-400">시간</span>
-                <span>
-                  <FormattedDate value={dateTime} mode="time" />
-                </span>
+                <span>{formatMeetingTime(dateTime)}</span>
               </div>
             </div>
           </CardContent>
