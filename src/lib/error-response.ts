@@ -9,8 +9,13 @@ export class ErrorResponse extends Error implements ErrorResponseGenerated {
   code: string;
   status: number;
 
-  constructor(message: string, code: string, status: number) {
-    super(message);
+  constructor(
+    message: string,
+    code: string,
+    status: number,
+    options?: ErrorOptions,
+  ) {
+    super(message, options);
     this.name = 'ErrorResponse';
     this.code = code;
     this.status = status;

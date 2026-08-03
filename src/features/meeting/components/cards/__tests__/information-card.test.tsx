@@ -3,6 +3,20 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { InformationCard } from '../information-card';
 import * as useMeetingCardActionsModule from '../../../hooks/use-meeting-card-actions';
 import { MeetingWithHost } from '@/api/data-contracts';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from 'react';
+
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  function TestWrapper({ children }: { children: React.ReactNode }) {
+    return (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+  }
+  return TestWrapper;
+};
 
 const mockMeeting = {
   id: 1,
@@ -50,7 +64,9 @@ beforeEach(() => {
 
 describe('InformationCard 컴포넌트', () => {
   it('모임 세부 정보를 올바르게 렌더링해야 한다', () => {
-    render(<InformationCard meeting={mockMeeting} />);
+    render(<InformationCard meeting={mockMeeting} />, {
+      wrapper: createWrapper(),
+    });
 
     expect(screen.getByText('작은 독서 습관 만들기')).toBeInTheDocument();
     expect(screen.getByText('1월 7일')).toBeInTheDocument();
@@ -60,7 +76,9 @@ describe('InformationCard 컴포넌트', () => {
   });
 
   it('참여하기 클릭 시 handleJoinClick이 호출되어야 한다', () => {
-    render(<InformationCard meeting={mockMeeting} />);
+    render(<InformationCard meeting={mockMeeting} />, {
+      wrapper: createWrapper(),
+    });
 
     fireEvent.click(screen.getByRole('button', { name: '참여하기' }));
 

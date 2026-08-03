@@ -39,7 +39,7 @@ export const createMeetingBaseSchema = z.object({
     .optional(),
 });
 
-const validateDateRange = (
+export const validateDateRange = (
   data: { dateTime?: Date; registrationEnd?: Date },
   ctx: z.RefinementCtx,
 ) => {
