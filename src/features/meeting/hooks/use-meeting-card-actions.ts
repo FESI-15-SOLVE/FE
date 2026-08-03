@@ -69,6 +69,7 @@ export function useMeetingCardActions(meeting: MeetingWithHost) {
     isFull: state.isFull,
     isCanceled: state.isCanceled,
     isConfirmed: state.isConfirmed,
+    isCompleted: state.isCompleted,
     isRegistrationClosed: state.isRegistrationClosed,
     participantCount: state.participantCount,
     capacity: state.capacity,

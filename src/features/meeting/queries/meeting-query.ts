@@ -4,10 +4,17 @@ import {
   QueryFunctionContext,
 } from '@tanstack/react-query';
 import { MeetingFilters } from '../utils/filter-mapper';
-import { MeetingList, MeetingWithHost, ParticipantList } from '@/api/data-contracts';
+import {
+  MeetingList,
+  MeetingWithHost,
+  ParticipantList,
+  GetJoinedMeetingsParams,
+  JoinedMeetingList,
+} from '@/api/data-contracts';
 import { fetchMeetings } from '../api/fetch-meetings';
 import { fetchMeetingDetail } from '../api/fetch-meeting-detail';
 import { fetchParticipants } from '../api/fetch-participants';
+import { fetchJoinedMeetings } from '../api/fetch-joined-meetings';
 
 type MeetingQueryFn = (
   context: QueryFunctionContext<readonly unknown[], string | undefined>,
@@ -21,6 +28,10 @@ type MeetingParticipantsQueryFn = (
   context: QueryFunctionContext<readonly unknown[]>,
 ) => Promise<ParticipantList>;
 
+type JoinedMeetingQueryFn = (
+  context: QueryFunctionContext<readonly unknown[], string | undefined>,
+) => Promise<JoinedMeetingList>;
+
 export const meetingQueries = {
   all: () => ['meetings'] as const,
 
@@ -28,6 +39,10 @@ export const meetingQueries = {
   listKeys: () => [...meetingQueries.all(), 'list'] as const,
   listKey: (teamId: string, filters: MeetingFilters) =>
     [...meetingQueries.listKeys(), teamId, filters] as const,
+
+  joinedListKeys: () => [...meetingQueries.listKeys(), 'joined'] as const,
+  joinedListKey: (params?: Partial<GetJoinedMeetingsParams>) =>
+    [...meetingQueries.joinedListKeys(), params ?? {}] as const,
 
   detailKeys: () => [...meetingQueries.all(), 'detail'] as const,
   detailKey: (id: string) => [...meetingQueries.detailKeys(), id] as const,
@@ -51,6 +66,21 @@ export const meetingQueries = {
         lastPage?.nextCursor ?? undefined,
     }),
 
+  joinedListQuery: (
+    params?: Partial<GetJoinedMeetingsParams>,
+    customQueryFn?: JoinedMeetingQueryFn,
+  ) =>
+    infiniteQueryOptions({
+      queryKey: meetingQueries.joinedListKey(params),
+      queryFn:
+        customQueryFn ??
+        (async ({ pageParam }) =>
+          fetchJoinedMeetings(params, pageParam ? String(pageParam) : undefined)),
+      getNextPageParam: (lastPage: JoinedMeetingList) =>
+        lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
+      initialPageParam: undefined as string | undefined,
+    }),
+
   detailQuery: (id: string, customQueryFn?: MeetingDetailQueryFn) =>
     queryOptions({
       queryKey: meetingQueries.detailKey(id),
@@ -65,3 +95,4 @@ export const meetingQueries = {
       enabled: Boolean(id),
     }),
 };
+
