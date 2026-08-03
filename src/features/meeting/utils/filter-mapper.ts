@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { SortBy, SortOrder } from '@/features/meeting/schema/meeting-query-schema';
 
 export interface MeetingFilters {
@@ -21,10 +22,20 @@ export function mapFiltersToQueryParams(
     ? new Date().toISOString()
     : undefined;
 
+  const todayStr = format(new Date(), 'yyyy-MM-dd');
+  const isSelectedDateToday = filters.date === todayStr;
+
+  let computedDateStart: string | undefined = defaultDateStart;
+  if (filters.date) {
+    computedDateStart = isSelectedDateToday
+      ? new Date().toISOString()
+      : `${filters.date}T00:00:00Z`;
+  }
+
   return {
     type: filters.type || undefined,
     region: isAllRegion ? undefined : (filters.region || undefined),
-    dateStart: filters.date ? `${filters.date}T00:00:00Z` : defaultDateStart,
+    dateStart: computedDateStart,
     dateEnd: filters.date ? `${filters.date}T23:59:59Z` : undefined,
     sortBy: filters.sortBy || undefined,
     sortOrder: filters.sortOrder || undefined,
