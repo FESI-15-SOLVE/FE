@@ -72,7 +72,7 @@ export function useToggleFavorite() {
           }),
       );
 
-      // 찜한 모임 목록 캐시 즉시 업데이트 (찜 해제 시 목록에서 제거)
+      // 찜한 모임 목록 캐시 즉시 업데이트 (찜 해제 시 목록에서 즉시 제거)
       queryClient.setQueriesData<{ pages?: FavoriteList[] }>(
         { queryKey: favListKeys },
         (old) =>
@@ -132,15 +132,12 @@ export function useToggleFavorite() {
       toast.error('찜 처리 중 오류가 발생했습니다. (로그인이 필요할 수 있습니다)');
     },
 
-    // 3. onSettled: 실패시에만 전체 리스트 무효화, 성공시 메모리 캐시 유지
+    // 3. onSettled: 성공 토스트 알림 및 상세 단건 갱신 (리스트 재요청 제거)
     onSettled: (_data, error, { meetingId, isSaved }) => {
       if (!error) {
         toast.success(
           isSaved ? '찜 목록에서 삭제되었습니다.' : '찜 목록에 추가되었습니다.',
         );
-      } else {
-        queryClient.invalidateQueries({ queryKey: meetingQueries.listKeys() });
-        queryClient.invalidateQueries({ queryKey: favoriteQueries.listKeys() });
       }
       queryClient.invalidateQueries({
         queryKey: meetingQueries.detailKey(String(meetingId)),
