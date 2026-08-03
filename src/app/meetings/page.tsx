@@ -18,9 +18,12 @@ export default async function MeetingsPage({ searchParams }: PageProps) {
   const filters = meetingSearchParamsCache.parse(await searchParams);
   const queryClient = new QueryClient();
 
+  const queryParams = mapFiltersToQueryParams(filters, {
+    defaultToCurrentDate: true,
+  });
+
   await queryClient.prefetchInfiniteQuery(
     meetingQueries.listQuery(TEAM_ID, filters, async () => {
-      const queryParams = mapFiltersToQueryParams(filters);
       const res = await ServerApi.meetings.getMeetings({
         teamId: TEAM_ID,
         ...queryParams,

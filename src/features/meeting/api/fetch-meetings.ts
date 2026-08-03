@@ -4,9 +4,11 @@ import { MeetingFilters, mapFiltersToQueryParams } from '../utils/filter-mapper'
 
 export async function fetchMeetings(
   filters: MeetingFilters,
-  pageParam?: string
+  pageParam?: string,
 ): Promise<MeetingList> {
-  const queryParams = mapFiltersToQueryParams(filters);
+  const queryParams = mapFiltersToQueryParams(filters, {
+    defaultToCurrentDate: true,
+  });
   const res = await clientApi.get<MeetingList>('/meetings', {
     params: {
       ...queryParams,

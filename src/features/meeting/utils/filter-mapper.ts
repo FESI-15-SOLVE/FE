@@ -8,13 +8,23 @@ export interface MeetingFilters {
   sortOrder?: SortOrder | null;
 }
 
-export function mapFiltersToQueryParams(filters: MeetingFilters) {
+export interface MapFiltersOptions {
+  defaultToCurrentDate?: boolean;
+}
+
+export function mapFiltersToQueryParams(
+  filters: MeetingFilters,
+  options?: MapFiltersOptions,
+) {
   const isAllRegion = !filters.region || filters.region === '지역 전체';
+  const defaultDateStart = options?.defaultToCurrentDate
+    ? new Date().toISOString()
+    : undefined;
 
   return {
     type: filters.type || undefined,
     region: isAllRegion ? undefined : (filters.region || undefined),
-    dateStart: filters.date ? `${filters.date}T00:00:00Z` : undefined,
+    dateStart: filters.date ? `${filters.date}T00:00:00Z` : defaultDateStart,
     dateEnd: filters.date ? `${filters.date}T23:59:59Z` : undefined,
     sortBy: filters.sortBy || undefined,
     sortOrder: filters.sortOrder || undefined,
