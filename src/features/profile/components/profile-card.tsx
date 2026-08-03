@@ -17,8 +17,8 @@ export function ProfileCard() {
 
   return (
     <>
-      <div className="flex w-full flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm lg:w-72 lg:shrink-0 lg:rounded-3xl lg:p-6">
-        <div className="flex items-center gap-4 lg:flex-col lg:items-center lg:text-center">
+      <div className="flex w-full flex-col rounded-2xl border border-green-400 p-5 shadow-sm lg:w-72 lg:shrink-0 lg:rounded-3xl lg:p-6 bg-linear-to-r from-gradient-start-100 to-gradient-end-100">
+        <div className="flex items-center gap-8 lg:flex-col lg:items-center lg:text-center">
           {/* Avatar Image */}
           <div className="relative size-16 shrink-0 overflow-hidden rounded-full bg-slate-100 lg:size-28 flex items-center justify-center text-slate-400">
             {profileImage ? (
@@ -34,7 +34,7 @@ export function ProfileCard() {
           </div>
 
           {/* User Details */}
-          <div className="flex flex-col gap-2 flex-1 min-w-0 lg:items-center">
+          <div className="flex flex-col gap-6 flex-1 min-w-0 lg:items-center">
             {/* Nickname & Edit Button */}
             <div className="flex items-center gap-1.5 lg:justify-center">
               <span className="text-lg font-bold text-slate-900 truncate lg:text-xl">
@@ -52,7 +52,7 @@ export function ProfileCard() {
 
             {/* Badges */}
             <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-600 lg:justify-center">
-              <span className="inline-flex items-center rounded-md bg-slate-100 px-2.5 py-1 text-slate-600 truncate max-w-48 sm:max-w-none">
+              <span className="inline-flex items-center rounded-md bg-linear-to-r from-gradient-start-200 to-gradient-end-200 px-2.5 py-1 text-slate-600 truncate max-w-48 sm:max-w-none">
                 {email}
               </span>
             </div>
