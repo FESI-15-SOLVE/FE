@@ -10,7 +10,8 @@ export function Toaster() {
         unstyled: true,
         classNames: {
           toast:
-            "bg-black/80 text-white font-semibold px-8 py-4 rounded-xl text-base tracking-tight",
+            "flex items-center gap-2.5 bg-black/80 text-white font-semibold px-6 py-3.5 rounded-xl text-base tracking-tight whitespace-nowrap",
+          icon: "shrink-0",
         },
       }}
     />
