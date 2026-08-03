@@ -1,4 +1,3 @@
-import { format } from 'date-fns';
 import { SortBy, SortOrder } from '@/features/meeting/schema/meeting-query-schema';
 
 export interface MeetingFilters {
@@ -14,15 +13,22 @@ export interface MapFiltersOptions {
 }
 
 /**
- * 날짜를 자정(00:00:00.000) 기준으로 정규화하여
- * SSR과 CSR 시점 간 밀리초 차이로 인한 QueryKey 불일치를 방지합니다.
+ * 한국 시각(KST, UTC+9) 기준 날짜를 UTC ISO 8601 문자열 범위로 변환합니다.
  */
-function getNormalizedDateStart(dateStr?: string): string {
-  if (dateStr) {
-    return `${dateStr}T00:00:00.000Z`;
-  }
-  const today = format(new Date(), 'yyyy-MM-dd');
-  return `${today}T00:00:00.000Z`;
+function getKSTDateRange(dateStr: string) {
+  const dateStart = new Date(`${dateStr}T00:00:00+09:00`).toISOString();
+  const dateEnd = new Date(`${dateStr}T23:59:59.999+09:00`).toISOString();
+  return { dateStart, dateEnd };
+}
+
+/**
+ * 한국 시각(KST, UTC+9) 기준 오늘 날짜를 'yyyy-MM-dd' 형식으로 반환합니다.
+ * 서버(UTC)와 브라우저(로컬 타임존)가 달라도 항상 동일한 결과를 보장합니다.
+ */
+function getTodayKST(): string {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Seoul',
+  }).format(new Date()); // 'yyyy-MM-dd'
 }
 
 export function mapFiltersToQueryParams(
@@ -30,20 +36,24 @@ export function mapFiltersToQueryParams(
   options?: MapFiltersOptions,
 ) {
   const isAllRegion = !filters.region || filters.region === '지역 전체';
-  const defaultDateStart = options?.defaultToCurrentDate
-    ? getNormalizedDateStart()
-    : undefined;
+  const todayKST = getTodayKST();
+  const targetDateStr =
+    filters.date || (options?.defaultToCurrentDate ? todayKST : undefined);
 
-  let computedDateStart: string | undefined = defaultDateStart;
-  if (filters.date) {
-    computedDateStart = getNormalizedDateStart(filters.date);
+  let computedDateStart: string | undefined = undefined;
+  let computedDateEnd: string | undefined = undefined;
+
+  if (targetDateStr) {
+    const range = getKSTDateRange(targetDateStr);
+    computedDateStart = range.dateStart;
+    computedDateEnd = range.dateEnd;
   }
 
   return {
     type: filters.type || undefined,
     region: isAllRegion ? undefined : (filters.region || undefined),
     dateStart: computedDateStart,
-    dateEnd: filters.date ? `${filters.date}T23:59:59.999Z` : undefined,
+    dateEnd: computedDateEnd,
     sortBy: filters.sortBy || undefined,
     sortOrder: filters.sortOrder || undefined,
     size: 10,
