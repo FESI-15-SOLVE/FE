@@ -7,13 +7,17 @@ assignees: ''
 ---
 
 ## 🧭 Summary
-- 
+
+-
 
 ## 🎯 To-do
-- [ ] 
+
+- [ ]
 
 ## ✅ 완료 조건
-- 
+
+-
 
 ## 🔗 Related
-- 
+
+-

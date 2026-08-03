@@ -27,7 +27,9 @@ export function useUpdateMeeting() {
       queryClient.invalidateQueries({ queryKey: meetingQueries.listKeys() });
     },
     onError: (err) => {
-      toast.error((err as Error).message || '모임 수정 중 오류가 발생했습니다.');
+      toast.error(
+        err instanceof Error ? err.message : '모임 수정 중 오류가 발생했습니다.',
+      );
     },
   });
 }
@@ -47,7 +49,9 @@ export function useCancelMeeting() {
       queryClient.invalidateQueries({ queryKey: meetingQueries.listKeys() });
     },
     onError: (err) => {
-      toast.error((err as Error).message || '모임 취소 중 오류가 발생했습니다.');
+      toast.error(
+        err instanceof Error ? err.message : '모임 취소 중 오류가 발생했습니다.',
+      );
     },
   });
 }
