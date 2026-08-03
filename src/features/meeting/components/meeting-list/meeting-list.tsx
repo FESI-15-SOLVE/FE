@@ -11,6 +11,9 @@ interface MeetingListUIProps {
   hasNextPage?: boolean;
   isFetchingNextPage?: boolean;
   onFetchNextPage: () => void;
+  emptyTitle?: string;
+  emptyDescription?: string;
+  emptyImage?: string;
 }
 
 export function MeetingListUI({
@@ -18,6 +21,9 @@ export function MeetingListUI({
   hasNextPage,
   isFetchingNextPage,
   onFetchNextPage,
+  emptyTitle = '아직 등록된 모임이 없습니다',
+  emptyDescription = '새로운 모임을 만들어 첫 번째 호스트가 되어보세요!',
+  emptyImage,
 }: MeetingListUIProps) {
   const observerRef = useIntersectionObserver<HTMLDivElement>({
     onIntersect: onFetchNextPage,
@@ -28,8 +34,9 @@ export function MeetingListUI({
     return (
       <div className="py-16">
         <EmptyState
-          title="아직 등록된 모임이 없습니다"
-          description="새로운 모임을 만들어 첫 번째 호스트가 되어보세요!"
+          title={emptyTitle}
+          description={emptyDescription}
+          icon={emptyImage}
         />
       </div>
     );
