@@ -33,27 +33,30 @@ export function GnbUserActions() {
           <NotificationBell />
 
           <div className="hidden sm:flex items-center gap-4">
-            {/* 데스크톱 유저 정보 */}
-            <Button
-              variant={'custom'}
-              size={'icon'}
-              className="size-11 items-center justify-center overflow-hidden rounded-full bg-slate-200 text-slate-400 relative"
-            >
-              {user?.image ? (
-                <Image
-                  src={user.image}
-                  alt="Profile"
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <IconPerson className="size-6" />
-              )}
-            </Button>
+            {/* 데스크톱 유저 프로필 버튼 */}
+            <Link href="/mypage" className="cursor-pointer">
+              <Button
+                variant={'custom'}
+                size={'icon'}
+                className="size-11 items-center justify-center overflow-hidden rounded-full bg-slate-200 text-slate-400 relative cursor-pointer"
+              >
+                {user?.image ? (
+                  <Image
+                    src={user.image}
+                    alt="Profile"
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <IconPerson className="size-6" />
+                )}
+              </Button>
+            </Link>
 
+            {/* 로그아웃 버튼 */}
             <button
               onClick={handleLogout}
-              className="text-sm font-medium text-slate-500 hover:text-slate-800"
+              className="text-sm font-medium text-slate-500 hover:text-slate-800 cursor-pointer"
             >
               로그아웃
             </button>
@@ -70,7 +73,7 @@ export function GnbUserActions() {
           <div className="hidden sm:flex items-center px-4 py-2">
             <Link
               href="/sign-in"
-              className="text-base font-medium text-slate-600 hover:text-neutral-900 tracking-[-0.32px]"
+              className="text-base font-medium text-slate-600 hover:text-neutral-900 tracking-[-0.32px] cursor-pointer"
             >
               로그인
             </Link>

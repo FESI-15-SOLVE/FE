@@ -27,11 +27,11 @@ export function NotificationBell({ hasUnread = true }: NotificationBellProps) {
   const [isOpen, setIsOpen] = useState(false);
   const isDesktop = useMediaQuery(MEDIA_QUERIES.sm);
 
-  // 종 모양 아이콘 트리거 버튼
+  // 종 모양 아이콘 트리거 버튼 
   const TriggerButton = (
     <div
       className={cn(
-        'relative flex items-center justify-center p-1 text-slate-600 hover:text-neutral-900',
+        'relative flex items-center justify-center p-1 text-slate-600 hover:text-neutral-900 cursor-pointer',
       )}
     >
       <IconBell className="size-5 sm:size-6" />
@@ -47,7 +47,7 @@ export function NotificationBell({ hasUnread = true }: NotificationBellProps) {
         알림 내역
       </span>
       <button
-        className="text-[12px] font-semibold text-[#bbb] hover:text-gray-500 transition-colors"
+        className="text-[12px] font-semibold text-[#bbb] hover:text-gray-500 transition-colors cursor-pointer"
         onClick={() => {
           /* 모두 읽기 로직 */
         }}
