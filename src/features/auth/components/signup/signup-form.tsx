@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { signupAction } from '@/actions/auth/auth-actions';
 import { unwrapAction } from '@/lib/safe-action';
 import { useRouter } from 'next/navigation';
+import { ErrorResponse } from '@/lib/error-response';
 
 const signupSchema = z
   .object({
@@ -44,7 +45,7 @@ export function SignupForm() {
       unwrapAction(await signupAction(requestData));
       router.push('/sign-in');
     } catch (error) {
-      if (error instanceof Error) {
+      if (error instanceof ErrorResponse) {
         setError('root', { type: 'server', message: error.message });
       }
     }

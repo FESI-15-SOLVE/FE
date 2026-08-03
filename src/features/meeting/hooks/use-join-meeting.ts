@@ -8,6 +8,7 @@ import {
   leaveMeetingAction,
 } from '@/actions/meeting/meeting-actions';
 import { unwrapAction } from '@/lib/safe-action';
+import { ErrorResponse } from '@/lib/error-response';
 
 export function useJoinMeeting() {
   const queryClient = useQueryClient();
@@ -31,7 +32,9 @@ export function useJoinMeeting() {
 
     onError: (err) => {
       toast.error(
-        (err as Error).message || '참여 처리 중 오류가 발생했습니다.',
+        err instanceof ErrorResponse
+          ? err.message
+          : '참여 처리 중 오류가 발생했습니다.',
       );
     },
 

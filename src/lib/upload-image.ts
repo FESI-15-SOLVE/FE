@@ -14,7 +14,7 @@ export async function uploadImage(
   // 1. 서버 액션을 통해 Presigned URL 발급
   const response = await getPresignedUrlAction({
     fileName: file.name,
-    contentType,
+    contentType,  
     folder,
   });
 

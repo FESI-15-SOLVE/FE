@@ -10,6 +10,7 @@ import { loginAction } from '@/actions/auth/auth-actions';
 import { unwrapAction } from '@/lib/safe-action';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/providers/auth-provider';
+import { ErrorResponse } from '@/lib/error-response';
 
 const loginSchema = z.object({
   email: z.string().email('이메일 형식으로 작성해 주세요.'),
@@ -39,7 +40,7 @@ export function LoginForm() {
       }
       router.push('/');
     } catch (error) {
-      if (error instanceof Error) {
+      if (error instanceof ErrorResponse) {
         setError('root', { type: 'server', message: error.message });
       }
     }

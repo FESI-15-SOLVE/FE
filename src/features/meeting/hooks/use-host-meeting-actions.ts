@@ -5,6 +5,7 @@ import { unwrapAction } from '@/lib/safe-action';
 import { meetingQueries } from '../queries/meeting-query';
 import { updateMeeting } from '../api/update-meeting';
 import { EditMeetingPayload } from '../schema/edit-meeting-schema';
+import { ErrorResponse } from '@/lib/error-response';
 
 export function useUpdateMeeting() {
   const queryClient = useQueryClient();
@@ -28,7 +29,9 @@ export function useUpdateMeeting() {
     },
     onError: (err) => {
       toast.error(
-        err instanceof Error ? err.message : '모임 수정 중 오류가 발생했습니다.',
+        err instanceof ErrorResponse
+          ? err.message
+          : '모임 수정 중 오류가 발생했습니다.',
       );
     },
   });
@@ -50,7 +53,9 @@ export function useCancelMeeting() {
     },
     onError: (err) => {
       toast.error(
-        err instanceof Error ? err.message : '모임 취소 중 오류가 발생했습니다.',
+        err instanceof ErrorResponse
+          ? err.message
+          : '모임 취소 중 오류가 발생했습니다.',
       );
     },
   });

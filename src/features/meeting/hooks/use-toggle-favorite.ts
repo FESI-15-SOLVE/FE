@@ -5,6 +5,7 @@ import { meetingQueries } from '../queries/meeting-query';
 import { favoriteQueries } from '../queries/favorite-query';
 import { MeetingWithHost, MeetingList, FavoriteList } from '@/api/data-contracts';
 import { toast } from 'sonner';
+import { ErrorResponse } from '@/lib/error-response';
 
 export function useToggleFavorite() {
   const queryClient = useQueryClient();
@@ -109,7 +110,7 @@ export function useToggleFavorite() {
     },
 
     // 2. onError: 실패 시 스냅샷으로 정밀 롤백
-    onError: (_err, { meetingId }, context) => {
+    onError: (err, { meetingId }, context) => {
       if (context?.previousDetail) {
         queryClient.setQueryData(
           meetingQueries.detailKey(String(meetingId)),
@@ -129,7 +130,11 @@ export function useToggleFavorite() {
       if (context?.previousCount !== undefined) {
         queryClient.setQueryData(favoriteQueries.countKey(), context.previousCount);
       }
-      toast.error('찜 처리 중 오류가 발생했습니다. (로그인이 필요할 수 있습니다)');
+      toast.error(
+        err instanceof ErrorResponse
+          ? err.message
+          : '찜 처리 중 오류가 발생했습니다. (로그인이 필요할 수 있습니다)',
+      );
     },
 
     // 3. onSettled: 성공 토스트 알림 및 상세 단건 갱신 (리스트 재요청 제거)
