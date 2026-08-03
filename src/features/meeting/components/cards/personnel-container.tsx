@@ -92,6 +92,7 @@ export function PersonnelContainer({
                     src={src}
                     alt="Participant"
                     fill
+                    sizes="28px"
                     className="object-cover"
                   />
                 </div>

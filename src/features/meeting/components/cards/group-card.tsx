@@ -51,6 +51,7 @@ export function GroupCard({ meeting }: GroupCardProps) {
           src={imageUrl}
           alt={meeting.name ?? '모임 이미지'}
           fill
+          sizes="(max-width: 640px) 100vw, 200px"
           className="object-cover"
         />
         {isRegistrationClosed && (

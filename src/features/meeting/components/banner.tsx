@@ -13,7 +13,7 @@ export function MeetingBanner() {
         </h2>
       </div>
       <div className=" relative w-130 h-80 pr-6">
-        <Image src={img_banner_lg} alt="" fill className="object-cover" />
+        <Image src={img_banner_lg} alt="" fill sizes="(max-width: 768px) 100vw, 520px" className="object-cover" />
       </div>
     </div>
   );

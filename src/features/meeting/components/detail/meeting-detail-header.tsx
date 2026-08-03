@@ -29,6 +29,7 @@ export function MeetingDetailHeader({ meeting }: MeetingDetailHeaderProps) {
           src={meeting.image || FALLBACK_MEETING_IMAGE}
           alt={meeting.name ?? '모임 대표 이미지'}
           fill
+          sizes="(max-width: 1024px) 100vw, 50vw"
           className="object-cover"
           priority
         />

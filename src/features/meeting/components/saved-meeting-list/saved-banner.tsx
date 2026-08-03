@@ -9,6 +9,7 @@ export function SavedBanner() {
           src={img_saved_lg}
           alt="찜한 모임 아이콘"
           fill
+          sizes="100px"
           className="object-contain"
         />
       </div>

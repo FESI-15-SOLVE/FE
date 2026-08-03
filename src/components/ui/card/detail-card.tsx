@@ -6,7 +6,7 @@ import {
   CardContent,
   CardFooter,
 } from './card';
-import { Button } from '@/components/ui/button';
+import { Button, UtilityButton } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { formatMeetingDateTime } from '@/lib/date';
 import { MeetingWithHost } from '@/api/data-contracts';
@@ -118,6 +118,7 @@ export function DetailCard({
             src={image}
             alt={name ?? '모임 이미지'}
             fill
+            sizes="(max-width: 640px) 100vw, 200px"
             className="object-cover"
           />
         ) : (
@@ -127,26 +128,13 @@ export function DetailCard({
         )}
 
         {/* Bookmark Overlay Heart Button */}
-        <button
-          type="button"
-          onClick={onBookmarkToggle}
-          aria-label="찜하기"
-          className="absolute top-3 right-3 flex size-10 cursor-pointer items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-xs backdrop-blur-xs transition-colors hover:bg-white focus-visible:outline-none"
-        >
-          <svg
-            aria-hidden="true"
-            className={cn(
-              'size-5 transition-colors',
-              isFavorited
-                ? 'fill-red-500 stroke-red-500 text-red-500'
-                : 'fill-none stroke-current',
-            )}
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-          >
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-          </svg>
-        </button>
+        <div className="absolute top-3 right-3 z-10">
+          <UtilityButton
+            size="sm"
+            onClick={onBookmarkToggle}
+            isActive={isFavorited}
+          />
+        </div>
       </div>
 
       {/* Main Details Section */}
