@@ -4,7 +4,7 @@ import { jwtDecode } from 'jwt-decode';
 import { setAuthCookies, clearAuthCookies } from '@/features/auth/lib/auth-cookies';
 
 // 로그인이 필수로 요구되는 경로들
-const REQUIRED_AUTH_PATHS = ['/mypage'];
+const REQUIRED_AUTH_PATHS = ['/mypage', '/saved'];
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
