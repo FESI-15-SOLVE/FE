@@ -6,6 +6,14 @@ import { MeetingWithHost } from '@/api/data-contracts';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 
+// FormattedDate dynamic import mock for vitest
+vi.mock('@/components/ui/date/formatted-date', () => ({
+  FormattedDate: ({ value, mode }: { value?: string; mode?: string }) => {
+    if (mode === 'time') return <span>17:30</span>;
+    return <span>1월 7일</span>;
+  },
+}));
+
 const createWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },

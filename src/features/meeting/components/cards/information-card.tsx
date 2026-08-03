@@ -6,6 +6,7 @@ import { Tag } from '@/components/ui/tag/tag';
 import { UtilityButton } from '@/components/ui/button';
 import IconCrown from '@/assets/icons/crown.svg';
 import AlarmTag from '@/components/ui/tag/alarm-tag';
+import { FormattedDate } from '@/components/ui/date/formatted-date';
 import { MeetingJoinButton } from '../meeting-join-button';
 import { MeetingWithHost } from '@/api/data-contracts';
 import { useMeetingCardActions } from '../../hooks/use-meeting-card-actions';
@@ -26,8 +27,6 @@ export function InformationCard({ meeting }: InformationCardProps) {
     isFull,
     isCanceled,
     isRegistrationClosed,
-    formattedDate,
-    formattedTime,
     deadlineTag,
     handleSaveClick,
     handleJoinClick,
@@ -60,11 +59,15 @@ export function InformationCard({ meeting }: InformationCardProps) {
       >
         {/* 콘텐츠 영역 */}
         <div className="flex flex-col flex-1 w-full sm:h-full gap-4 sm:gap-6">
-          {/* 태그 영역 */}
+          {/* 태그 영역 (FormattedDate 적용으로 하이드레이션 오류 방지) */}
           <div className="flex flex-wrap items-center gap-2 pr-10">
             {deadlineTag && <AlarmTag>{deadlineTag}</AlarmTag>}
-            <Tag>{formattedDate}</Tag>
-            <Tag>{formattedTime}</Tag>
+            <Tag>
+              <FormattedDate value={meeting.dateTime} mode="date" />
+            </Tag>
+            <Tag>
+              <FormattedDate value={meeting.dateTime} mode="time" />
+            </Tag>
           </div>
 
           {/* 제목 및 방장 표시 */}

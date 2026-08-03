@@ -7,8 +7,8 @@ import {
   CardFooter,
 } from './card';
 import { Button, UtilityButton } from '@/components/ui/button';
+import { FormattedDate } from '@/components/ui/date/formatted-date';
 import { cn } from '@/lib/utils';
-import { formatMeetingDateTime } from '@/lib/date';
 import { MeetingWithHost } from '@/api/data-contracts';
 
 export interface DetailCardProps {
@@ -87,9 +87,6 @@ export function DetailCard({
 
   // 개설 확정/대기 바지 텍스트 ("개설 확정" | "개설 대기")
   const subBadgeText = confirmedAt ? '개설 확정' : '개설 대기';
-
-  // 일시 포맷팅 (공통 유틸 활용)
-  const { dateText, timeText } = formatMeetingDateTime(dateTime);
 
   // 액션 버튼 텍스트 및 변형(variant)
   const resolvedActionText =
@@ -185,12 +182,16 @@ export function DetailCard({
               <span className="text-slate-300">|</span>
               <div className="flex items-center gap-1">
                 <span className="text-slate-400">날짜</span>
-                <span>{dateText}</span>
+                <span>
+                  <FormattedDate value={dateTime} mode="date" />
+                </span>
               </div>
               <span className="text-slate-300">|</span>
               <div className="flex items-center gap-1">
                 <span className="text-slate-400">시간</span>
-                <span>{timeText}</span>
+                <span>
+                  <FormattedDate value={dateTime} mode="time" />
+                </span>
               </div>
             </div>
           </CardContent>
