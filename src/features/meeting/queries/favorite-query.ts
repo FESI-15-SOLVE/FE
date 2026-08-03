@@ -1,6 +1,6 @@
 import { infiniteQueryOptions } from '@tanstack/react-query';
 import { GetFavoritesParams, FavoriteList } from '@/api/data-contracts';
-import { ServerApi } from '@/api/server-api';
+import { fetchFavorites } from '../api/fetch-favorites';
 
 export const favoriteQueries = {
   all: ['favorites'] as const,
@@ -18,12 +18,7 @@ export const favoriteQueries = {
       queryKey: favoriteQueries.listKey(filters),
       queryFn: async ({ pageParam }) => {
         if (queryFn) return queryFn();
-        const res = await ServerApi.favorites.getFavorites({
-          teamId,
-          ...filters,
-          cursor: pageParam ? String(pageParam) : undefined,
-        });
-        return res.data;
+        return fetchFavorites(filters, pageParam ? String(pageParam) : undefined);
       },
       getNextPageParam: (lastPage: FavoriteList) =>
         lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
