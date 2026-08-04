@@ -8,7 +8,7 @@ import { MeetingLocationMap } from './meeting-location-map';
 import { MeetingReviews } from './meeting-reviews';
 
 export interface MeetingDetailViewProps {
-  meetingId: string;
+  meetingId: number;
 }
 
 export function MeetingDetailView({ meetingId }: MeetingDetailViewProps) {

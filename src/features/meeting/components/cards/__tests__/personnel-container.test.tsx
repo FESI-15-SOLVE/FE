@@ -20,7 +20,7 @@ describe('PersonnelContainer 컴포넌트', () => {
   it('참여자 수가 올바르게 렌더링되어야 합니다', () => {
     render(
       <PersonnelContainer
-        meetingId="1"
+        meetingId={1}
         currentParticipant={16}
         minParticipant={5}
         maxParticipant={20}
@@ -34,7 +34,7 @@ describe('PersonnelContainer 컴포넌트', () => {
   it('isConfirmed가 true일 때 개설확정 뱃지가 노출되어야 합니다', () => {
     render(
       <PersonnelContainer
-        meetingId="1"
+        meetingId={1}
         currentParticipant={16}
         minParticipant={5}
         maxParticipant={20}
@@ -58,7 +58,7 @@ describe('PersonnelContainer 컴포넌트', () => {
 
     render(
       <PersonnelContainer
-        meetingId="1"
+        meetingId={1}
         currentParticipant={16}
         minParticipant={5}
         maxParticipant={20}

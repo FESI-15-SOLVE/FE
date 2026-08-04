@@ -2,7 +2,7 @@ import { toast } from 'sonner';
 import { useCallback } from 'react';
 
 export function useShareMeeting() {
-  const shareMeeting = useCallback(async (meetingId: string | number) => {
+  const shareMeeting = useCallback(async (meetingId: number) => {
     const url = `${window.location.origin}/meetings/${meetingId}`;
     try {
       await navigator.clipboard.writeText(url);

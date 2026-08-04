@@ -48,25 +48,26 @@ export default async function MeetingDetailPage({
   params,
 }: MeetingDetailPageProps) {
   const { id } = await params;
+  const numericId = Number(id);
   const queryClient = new QueryClient();
 
   try {
     // 서버 컴포넌트 사전 페칭 (ServerApi 직접 연동)
     await Promise.all([
       queryClient.prefetchQuery(
-        meetingQueries.detailQuery(id, async () => {
+        meetingQueries.detailQuery(numericId, async () => {
           const res = await ServerApi.meetings.getMeetingDetail({
             teamId: TEAM_ID,
-            meetingId: Number(id),
+            meetingId: numericId,
           });
           return res.data;
         }),
       ),
       queryClient.prefetchQuery(
-        meetingQueries.participantsQuery(id, async () => {
+        meetingQueries.participantsQuery(numericId, async () => {
           const res = await ServerApi.meetings.getParticipants({
             teamId: TEAM_ID,
-            meetingId: Number(id),
+            meetingId: numericId,
           });
           return res.data;
         }),
@@ -78,7 +79,7 @@ export default async function MeetingDetailPage({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <MeetingDetailView meetingId={id} />
+      <MeetingDetailView meetingId={numericId} />
     </HydrationBoundary>
   );
 }
