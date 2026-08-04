@@ -59,9 +59,9 @@ export function GnbUserActions() {
             </Link>
 
             <Button
-              variant={'secondary'}
+              variant={'custom'}
               onClick={handleLogout}
-              className="px-4 text-[14px] font-semibold leading-5 shadow-none h-10 transition-colors bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 cursor-pointer"
+              className="px-4 text-[14px] font-semibold leading-5 shadow-none h-10 transition-colors  text-slate-700  hover:bg-slate-50 cursor-pointer"
             >
               로그아웃
             </Button>
@@ -71,18 +71,10 @@ export function GnbUserActions() {
         <div className="hidden sm:flex items-center gap-2">
           <Link href={ROUTES.AUTH.SIGN_IN}>
             <Button
-              variant={'secondary'}
-              className="px-4 text-[14px] font-semibold leading-5 shadow-none h-10 transition-colors bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 cursor-pointer"
+              variant={'custom'}
+              className="px-4 text-[14px] font-semibold leading-5 shadow-none h-10 transition-colors  text-slate-700  hover:bg-slate-50 cursor-pointer"
             >
               로그인
-            </Button>
-          </Link>
-          <Link href={ROUTES.AUTH.SIGN_UP}>
-            <Button
-              variant={'primary'}
-              className="px-4 text-[14px] font-semibold leading-5 shadow-none h-10 cursor-pointer"
-            >
-              회원가입
             </Button>
           </Link>
         </div>
