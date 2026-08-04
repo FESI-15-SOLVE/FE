@@ -75,18 +75,18 @@ export function DetailCardActionButton({
   isHost = false,
   isCompleted = false,
   isReviewed = false,
-  isJoined,
+  isJoined = true,
   isRegistrationClosed,
   isPending,
   onClick,
   className,
 }: DetailCardActionButtonProps) {
-  let status: ButtonStatus = 'joinable';
+  let status: ButtonStatus = 'joined';
   if (isCanceled) status = 'canceled';
-  else if (isHost) status = 'hosted';
   else if (isCompleted) status = isReviewed ? 'reviewed' : 'reviewable';
-  else if (isJoined) status = 'joined';
-  else if (isRegistrationClosed) status = 'closed';
+  else if (isHost) status = 'hosted';
+  else if (isRegistrationClosed && !isJoined) status = 'closed';
+  else status = 'joined';
 
   const config = STATUS_CONFIG[status];
 

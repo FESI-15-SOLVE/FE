@@ -41,7 +41,7 @@ export function DetailCard({ meeting, className }: DetailCardProps) {
     handleJoinClick,
     handleCardClick,
     isJoinPending,
-  } = useMeetingCardActions(meeting);
+  } = useMeetingCardActions(meeting, { defaultIsJoined: true });
 
   const { name, image, participantCount, capacity, region, isReviewed } = meeting;
 

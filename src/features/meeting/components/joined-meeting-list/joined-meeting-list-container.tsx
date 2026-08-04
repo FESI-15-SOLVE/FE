@@ -6,10 +6,16 @@ import { DetailCard } from '../cards/detail-card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ROUTES } from '@/constants/routes';
+import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 
 export function JoinedMeetingListContainer() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery(meetingQueries.joinedListQuery());
+
+  const observerRef = useIntersectionObserver<HTMLDivElement>({
+    onIntersect: () => fetchNextPage(),
+    enabled: Boolean(hasNextPage && !isFetchingNextPage),
+  });
 
   const meetings = data?.pages.flatMap((page) => page.data ?? []) ?? [];
 
@@ -41,17 +47,16 @@ export function JoinedMeetingListContainer() {
         <DetailCard key={meeting.id} meeting={meeting} />
       ))}
 
-      {hasNextPage && (
-        <div className="flex justify-center pt-4">
-          <Button
-            variant="secondary"
-            onClick={() => fetchNextPage()}
-            disabled={isFetchingNextPage}
-          >
-            {isFetchingNextPage ? '불러오는 중...' : '더보기'}
-          </Button>
-        </div>
-      )}
+      <div
+        ref={observerRef}
+        className="h-10 flex items-center justify-center py-4"
+      >
+        {isFetchingNextPage && (
+          <p className="text-sm text-slate-500 animate-pulse">
+            참여한 모임을 불러오는 중...
+          </p>
+        )}
+      </div>
     </div>
   );
 }
