@@ -3,8 +3,10 @@ import type { NextRequest } from 'next/server';
 import { jwtDecode } from 'jwt-decode';
 import { setAuthCookies, clearAuthCookies } from '@/features/auth/lib/auth-cookies';
 
+import { ROUTES } from '@/constants/routes';
+
 // 로그인이 필수로 요구되는 경로들
-const REQUIRED_AUTH_PATHS = ['/mypage', '/saved'];
+const REQUIRED_AUTH_PATHS = [ROUTES.MY_PAGE.ROOT, ROUTES.SAVED];
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -114,7 +116,7 @@ async function refreshTokens(request: NextRequest, refreshToken: string) {
 }
 
 function redirectToLogin(request: NextRequest) {
-  const loginUrl = new URL('/sign-in', request.url);
+  const loginUrl = new URL(ROUTES.AUTH.SIGN_IN, request.url);
   const response = NextResponse.redirect(loginUrl);
   clearAuthCookies(response.cookies);
   return response;

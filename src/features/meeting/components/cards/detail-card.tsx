@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import {
   Card,
@@ -5,114 +7,70 @@ import {
   CardTitle,
   CardContent,
   CardFooter,
-} from './card';
-import { Button, UtilityButton } from '@/components/ui/button';
+} from '@/components/ui/card/card';
+import { UtilityButton } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { MeetingWithHost } from '@/api/data-contracts';
-import {
-  formatMeetingDate,
-  formatMeetingTime,
-} from '@/features/meeting/utils/date-formatter';
+import { useMeetingCardActions } from '../../hooks/use-meeting-card-actions';
+import { DetailCardActionButton } from '../detail-card-action-button';
 
 export interface DetailCardProps {
-  /** API에서 전달받는 모임 데이터 (MeetingWithHost) */
-  meeting: MeetingWithHost;
-  /** 액션 버튼 클릭 핸들러 (예: 예약 취소, 참여하기 등) */
-  onAction?: () => void;
-  /** 찜하기 토글 핸들러 */
-  onBookmarkToggle?: () => void;
-  /** 버튼 텍스트 커스텀 */
-  actionText?: string;
-  actionDisabled?: boolean;
+  /** API에서 전달받는 모임 데이터 (MeetingWithHost 또는 JoinedMeeting) */
+  meeting: MeetingWithHost & { isReviewed?: boolean };
   className?: string;
 }
-
-export const DUMMY_DETAIL_CARD_MEETING: MeetingWithHost = {
-  id: 1,
-  teamId: 'dallaem',
-  name: '달램핏 오피스 스트레칭',
-  type: '달램핏',
-  region: '을지로 3가',
-  address: '서울시 중구 을지로 3가',
-  latitude: 37.5665,
-  longitude: 126.978,
-  dateTime: '2026-11-17T17:30:00.000Z',
-  registrationEnd: '2026-11-16T23:59:59.000Z',
-  capacity: 20,
-  participantCount: 20,
-  image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600',
-  description: '달램핏 스트레칭',
-  canceledAt: null,
-  confirmedAt: '2026-11-10T10:00:00.000Z',
-  hostId: 1,
-  createdBy: 1,
-  createdAt: '2026-11-01T10:00:00.000Z',
-  updatedAt: '2026-11-01T10:00:00.000Z',
-  host: {
-    id: 1,
-    name: '홍길동',
-    image: 'https://example.com/profile.jpg',
-  },
-  isFavorited: true,
-  isJoined: true,
-  isCompleted: false,
-};
 
 /**
  * DetailCard Component
  * Figma Node: 13976:63499 (Detail Card)
  *
- * meeting 객체 중심의 반응형 모임 정보 카드 컴포넌트.
+ * meeting 객체 중심의 마이페이지/세부 모임 정보 카드 컴포넌트.
  */
-export function DetailCard({
-  meeting = DUMMY_DETAIL_CARD_MEETING,
-  onAction,
-  onBookmarkToggle,
-  actionText,
-  actionDisabled = false,
-  className,
-}: DetailCardProps) {
+export function DetailCard({ meeting, className }: DetailCardProps) {
   const {
-    name,
-    image,
-    participantCount,
-    capacity,
-    region,
-    dateTime,
-    confirmedAt,
-    isCompleted,
-    isFavorited,
+    isHost,
     isJoined,
-  } = meeting;
+    isSaved,
+    isCanceled,
+    isCompleted,
+    isConfirmed,
+    isRegistrationClosed,
+    formattedDate,
+    formattedTime,
+    handleSaveClick,
+    handleJoinClick,
+    handleCardClick,
+    isJoinPending,
+  } = useMeetingCardActions(meeting, { defaultIsJoined: true });
+
+  const { name, image, participantCount, capacity, region, isReviewed } = meeting;
 
   // 상태 바지 텍스트 ("이용 완료" | "이용 예정")
   const statusBadgeText = isCompleted ? '이용 완료' : '이용 예정';
 
   // 개설 확정/대기 바지 텍스트 ("개설 확정" | "개설 대기")
-  const subBadgeText = confirmedAt ? '개설 확정' : '개설 대기';
+  const subBadgeText = isConfirmed ? '개설 확정' : '개설 대기';
 
-  // 액션 버튼 텍스트 및 변형(variant)
-  const resolvedActionText =
-    actionText ?? (isJoined ? '예약 취소하기' : '참여하기');
-  const resolvedActionVariant = isJoined ? 'secondary' : 'primary';
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleCardClick();
+    }
+  };
 
   return (
     <Card
+      role="button"
+      tabIndex={0}
+      onClick={handleCardClick}
+      onKeyDown={handleKeyDown}
       className={cn(
-        /* Figma 픽셀 스펙 기반 반응형 패딩 & 둥글기:
-           - 모바일: rounded-2xl (20px), p-5 (20px), gap-4 (16px), flex-col
-           - 데스크톱 (sm 이상): rounded-3xl (32px), p-6 (24px), gap-6 (24px), flex-row
-        */
-        'flex w-full flex-col gap-4 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all sm:flex-row sm:items-stretch sm:gap-6 sm:rounded-3xl sm:p-6',
+        'flex w-full flex-col gap-4 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all cursor-pointer hover:shadow-md focus:outline-hidden focus:ring-2 focus:ring-slate-400 sm:flex-row sm:items-stretch sm:gap-6 sm:rounded-3xl sm:p-6',
         className,
       )}
     >
       {/* Thumbnail Image Section */}
-      <div
-        className={cn(
-          'relative h-44 w-full shrink-0 overflow-hidden rounded-2xl bg-slate-100 sm:h-47 sm:w-47',
-        )}
-      >
+      <div className="relative h-44 w-full shrink-0 overflow-hidden rounded-2xl bg-slate-100 sm:h-47 sm:w-47">
         {image ? (
           <Image
             src={image}
@@ -131,8 +89,8 @@ export function DetailCard({
         <div className="absolute top-3 right-3 z-10">
           <UtilityButton
             size="sm"
-            onClick={onBookmarkToggle}
-            isActive={isFavorited}
+            onClick={handleSaveClick}
+            isActive={isSaved}
           />
         </div>
       </div>
@@ -185,26 +143,29 @@ export function DetailCard({
               <span className="text-slate-300">|</span>
               <div className="flex items-center gap-1">
                 <span className="text-slate-400">날짜</span>
-                <span>{formatMeetingDate(dateTime)}</span>
+                <span>{formattedDate}</span>
               </div>
               <span className="text-slate-300">|</span>
               <div className="flex items-center gap-1">
                 <span className="text-slate-400">시간</span>
-                <span>{formatMeetingTime(dateTime)}</span>
+                <span>{formattedTime}</span>
               </div>
             </div>
           </CardContent>
 
           {/* Footer Section: Action Button */}
           <CardFooter className="w-full shrink-0 p-0 sm:w-auto sm:self-end">
-            <Button
-              variant={resolvedActionVariant}
-              disabled={actionDisabled}
-              onClick={onAction}
+            <DetailCardActionButton
+              isCanceled={isCanceled}
+              isHost={isHost}
+              isCompleted={isCompleted}
+              isReviewed={isReviewed}
+              isJoined={isJoined}
+              isRegistrationClosed={isRegistrationClosed}
+              isPending={isJoinPending}
+              onClick={handleJoinClick}
               className="h-11 w-full min-w-36 sm:h-12 sm:w-auto"
-            >
-              {resolvedActionText}
-            </Button>
+            />
           </CardFooter>
         </div>
       </div>

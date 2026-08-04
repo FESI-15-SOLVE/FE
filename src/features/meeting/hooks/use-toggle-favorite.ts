@@ -138,23 +138,12 @@ export function useToggleFavorite() {
       );
     },
 
-    // 3. onSettled: 성공 토스트 알림, 상세 단건 갱신, 찜 카운트 및 찜 추가 시 리스트 무효화
-    onSettled: (_data, error, { meetingId, isSaved }) => {
+    // 3. onSettled: 성공 토스트 알림만 수행 (낙관적 업데이트 유지)
+    onSettled: (_data, error, { isSaved }) => {
       if (!error) {
         toast.success(
           isSaved ? '찜 목록에서 삭제되었습니다.' : '찜 목록에 추가되었습니다.',
         );
-      }
-      queryClient.invalidateQueries({
-        queryKey: meetingQueries.detailKey(String(meetingId)),
-      });
-      queryClient.invalidateQueries({
-        queryKey: favoriteQueries.countKey(),
-      });
-      if (!isSaved) {
-        queryClient.invalidateQueries({
-          queryKey: favoriteQueries.listKeys(),
-        });
       }
     },
   });

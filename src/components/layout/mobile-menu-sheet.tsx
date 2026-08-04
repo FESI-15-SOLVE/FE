@@ -11,11 +11,12 @@ import {
   SheetTrigger,
   SheetClose,
 } from '@/components/ui/sheet';
-import { NAV_LINKS } from '@/constants/navigation';
 import { MobileMenuNav } from './mobile-menu-nav';
 import { useAuthStore } from '@/providers/auth-provider';
 import { logoutAction } from '@/actions/auth/auth-actions';
 import { unwrapAction } from '@/lib/safe-action';
+import { useNavLinks } from '@/hooks/use-nav-links';
+import { ROUTES } from '@/constants/routes';
 
 interface MobileMenuSheetProps {
   isLoggedIn: boolean;
@@ -27,6 +28,7 @@ export function MobileMenuSheet({
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const clearAuth = useAuthStore((s) => s.clearAuth);
+  const links = useNavLinks(isLoggedIn);
 
   const handleLogout = async () => {
     setIsOpen(false);
@@ -34,14 +36,9 @@ export function MobileMenuSheet({
       unwrapAction(await logoutAction());
     } finally {
       clearAuth();
-      router.push('/sign-in');
+      router.push(ROUTES.AUTH.SIGN_IN);
     }
   };
-
-  // 로그인 상태에 따라 '마이페이지' 링크 추가
-  const links = isLoggedIn
-    ? [...NAV_LINKS, { href: '/mypage', label: '마이페이지' }]
-    : NAV_LINKS;
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -53,41 +50,52 @@ export function MobileMenuSheet({
         showCloseButton={false}
         className="w-78.5 p-0 flex flex-col bg-white rounded-l-[24px] shadow-[0px_4px_16px_0px_rgba(0,0,0,0.04)] border-none"
       >
-        <div className="flex flex-col h-full pt-6 pb-4">
-          {/* 상단 닫기 버튼 */}
-          <div className="flex items-center px-6 mb-6 shrink-0">
-            <SheetClose className="flex size-6 items-center justify-center text-neutral-900 hover:opacity-80 transition-opacity outline-none cursor-pointer">
-              <IconDelete className="size-full" />
-            </SheetClose>
-          </div>
+        {/* 드로어 상단 닫기 영역 */}
+        <div className="flex justify-end p-6 border-b border-slate-100">
+          <SheetClose className="focus:outline-none">
+            <IconDelete className="size-6 text-slate-600 hover:text-slate-900 cursor-pointer" />
+          </SheetClose>
+        </div>
 
-          {/* 네비게이션 링크 목록 */}
+        {/* 내비게이션 메뉴 영역 */}
+        <div className="flex-1 overflow-y-auto px-6 py-4">
           <MobileMenuNav
             links={links}
             isLoggedIn={isLoggedIn}
             onLinkClick={() => setIsOpen(false)}
           />
+        </div>
 
-          {/* 하단 로그인/로그아웃 버튼 */}
-          <div className="flex justify-end px-4 mt-auto">
-            {isLoggedIn ? (
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="p-4 text-base font-medium text-neutral-400 hover:text-neutral-900 tracking-[-0.32px] transition-colors cursor-pointer"
-              >
-                로그아웃
-              </button>
-            ) : (
-              <Link
-                href="/sign-in"
-                onClick={() => setIsOpen(false)}
-                className="p-4 text-base font-medium text-neutral-400 hover:text-neutral-900 tracking-[-0.32px] transition-colors cursor-pointer"
-              >
-                로그인
+        {/* 하단 인증 버튼 영역 */}
+        <div className="p-6 border-t border-slate-100 bg-slate-50 rounded-bl-[24px]">
+          {isLoggedIn ? (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="w-full text-left font-bold text-slate-500 hover:text-slate-900 py-2 text-base transition-colors cursor-pointer"
+            >
+              로그아웃
+            </button>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <Link href={ROUTES.AUTH.SIGN_IN} onClick={() => setIsOpen(false)}>
+                <button
+                  type="button"
+                  className="w-full py-3 px-4 bg-white border border-slate-200 rounded-xl font-bold text-slate-700 hover:bg-slate-50 text-center transition-colors cursor-pointer"
+                >
+                  로그인
+                </button>
               </Link>
-            )}
-          </div>
+              <Link href={ROUTES.AUTH.SIGN_UP} onClick={() => setIsOpen(false)}>
+                <button
+                  type="button"
+                  className="w-full py-3 px-4 bg-slate-900 text-white rounded-xl font-bold text-center hover:bg-slate-800 transition-colors cursor-pointer"
+                >
+                  회원가입
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
       </SheetContent>
     </Sheet>

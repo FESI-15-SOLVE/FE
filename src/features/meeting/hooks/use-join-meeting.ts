@@ -45,6 +45,7 @@ export function useJoinMeeting() {
 
       const detailKey = meetingQueries.detailKey(String(meetingId));
       const listKeys = meetingQueries.listKeys();
+      const joinedListKeys = meetingQueries.joinedListKeys();
       const countDiff = isJoined ? -1 : 1;
 
       // 1. 서버 확인 후 캐시 즉시 패치 → 버튼 상태 번쩍임 없이 즉시 반영
@@ -80,9 +81,25 @@ export function useJoinMeeting() {
           }),
       );
 
-      // 2. 상세 페이지만 invalidate (정원 마감 등 정확성이 중요한 데이터)
+      // 2. 나의 모임 목록(joinedListKeys)에서 참여 취소 시 해당 카드만 즉시 제거
+      if (isJoined) {
+        queryClient.setQueriesData<{ pages?: MeetingList[] }>(
+          { queryKey: joinedListKeys },
+          (old) =>
+            produce(old, (draft) => {
+              draft?.pages?.forEach((page) => {
+                if (page.data) {
+                  page.data = page.data.filter(
+                    (item) => String(item.id) !== String(meetingId),
+                  );
+                }
+              });
+            }),
+        );
+      }
+
+      // 3. 상세 페이지만 invalidate (정원 마감 등 정확성이 중요한 데이터)
       //    목록은 patch만 신뢰: 무한스크롤 전체 재요청은 UX 파괴 대비 실익 없음
-      //    (participantCount가 다른 사용자의 동시 액션으로 살짝 어긋날 수 있으나 목록에서는 허용)
       queryClient.invalidateQueries({ queryKey: detailKey });
       // 참여자 아이콘 목록도 갱신 (PersonnelContainer의 아바타 리스트)
       queryClient.invalidateQueries({
