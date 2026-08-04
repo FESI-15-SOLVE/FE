@@ -115,12 +115,12 @@ describe('LoginForm 행위 및 통합 테스트', () => {
 
   it('서버 에러 응답 수신 시 폼 하단에 root 에러 메시지를 표시해야 합니다', async () => {
     const user = userEvent.setup();
-    vi.mocked(loginAction).mockImplementationOnce(() => {
-      throw new ErrorResponse(
-        '이메일 또는 비밀번호가 일치하지 않습니다.',
-        'INVALID_CREDENTIALS',
-        400,
-      );
+    vi.mocked(loginAction).mockResolvedValueOnce({
+      serverError: {
+        message: '이메일 또는 비밀번호가 일치하지 않습니다.',
+        code: 'INVALID_CREDENTIALS',
+        status: 400,
+      },
     });
 
     render(<LoginForm />);

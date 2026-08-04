@@ -98,8 +98,12 @@ describe('SignupForm 행위 및 통합 테스트', () => {
 
   it('서버 에러 응답 수신 시 폼 하단에 root 에러 메시지를 표시해야 합니다', async () => {
     const user = userEvent.setup();
-    vi.mocked(signupAction).mockImplementationOnce(() => {
-      throw new ErrorResponse('이미 가입된 이메일입니다.', 'EMAIL_EXISTS', 400);
+    vi.mocked(signupAction).mockResolvedValueOnce({
+      serverError: {
+        message: '이미 가입된 이메일입니다.',
+        code: 'EMAIL_EXISTS',
+        status: 400,
+      },
     });
 
     render(<SignupForm />);
