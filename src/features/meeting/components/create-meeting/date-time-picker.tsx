@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { format } from 'date-fns';
 import {
   Popover,
@@ -37,15 +37,18 @@ export function DateTimePicker({
       : undefined,
   );
 
-  // 외부 valueProp 변경 및 폼 reset 시 상태 동기화
-  useEffect(() => {
+  // 💡 [React Best Practice] useEffect + setState 안티패턴 전면 제거!
+  // 렌더링 도중 외부 valueProp 변경(폼 reset 등) 감지 시 즉시 상태 조정 (이중 렌더링 0건)
+  const [prevValue, setPrevValue] = useState(value);
+  if (value !== prevValue) {
+    setPrevValue(value);
     setSelectedDate(value);
-    if (value) {
-      setSelectedTime({ hour: value.getHours(), minute: value.getMinutes() });
-    } else {
-      setSelectedTime(undefined);
-    }
-  }, [value]);
+    setSelectedTime(
+      value
+        ? { hour: value.getHours(), minute: value.getMinutes() }
+        : undefined,
+    );
+  }
 
   // 날짜 선택 적용 시
   const handleDateApply = (date?: Date) => {
