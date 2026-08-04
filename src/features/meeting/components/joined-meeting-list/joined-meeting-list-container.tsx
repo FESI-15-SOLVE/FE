@@ -9,8 +9,15 @@ import { ROUTES } from '@/constants/routes';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 
 export function JoinedMeetingListContainer() {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery(meetingQueries.joinedListQuery());
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+    refetch,
+  } = useInfiniteQuery(meetingQueries.joinedListQuery());
 
   const observerRef = useIntersectionObserver<HTMLDivElement>({
     onIntersect: () => fetchNextPage(),
@@ -24,6 +31,19 @@ export function JoinedMeetingListContainer() {
       <div className="flex flex-col gap-4 py-6">
         <div className="h-44 w-full animate-pulse rounded-2xl bg-slate-100" />
         <div className="h-44 w-full animate-pulse rounded-2xl bg-slate-100" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
+        <p className="text-slate-500 text-lg font-medium">
+          참여한 모임 목록을 불러오는데 실패했습니다.
+        </p>
+        <Button variant="secondary" onClick={() => refetch()}>
+          다시 시도
+        </Button>
       </div>
     );
   }

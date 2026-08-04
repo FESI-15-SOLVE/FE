@@ -51,11 +51,21 @@ export function DetailCard({ meeting, className }: DetailCardProps) {
   // 개설 확정/대기 바지 텍스트 ("개설 확정" | "개설 대기")
   const subBadgeText = isConfirmed ? '개설 확정' : '개설 대기';
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleCardClick();
+    }
+  };
+
   return (
     <Card
+      role="button"
+      tabIndex={0}
       onClick={handleCardClick}
+      onKeyDown={handleKeyDown}
       className={cn(
-        'flex w-full flex-col gap-4 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all cursor-pointer hover:shadow-md sm:flex-row sm:items-stretch sm:gap-6 sm:rounded-3xl sm:p-6',
+        'flex w-full flex-col gap-4 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all cursor-pointer hover:shadow-md focus:outline-hidden focus:ring-2 focus:ring-slate-400 sm:flex-row sm:items-stretch sm:gap-6 sm:rounded-3xl sm:p-6',
         className,
       )}
     >
