@@ -2,8 +2,8 @@
 
 import { cn } from '@/lib/utils';
 import { DeleteButton } from '@/components/ui/button';
-import { useEffect, useRef, useMemo } from 'react';
 import IconImagePlus from '@/assets/icons/image-plus.svg';
+import { useFileInput } from '@/hooks/use-file-input';
 
 export interface FileInputProps {
   value?: string | File | null;
@@ -22,46 +22,13 @@ function FileInput({
   className,
   accept = 'image/*',
 }: FileInputProps) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const previewUrl = useMemo(() => {
-    if (!value) return null;
-    if (typeof value === 'string') return value;
-    return URL.createObjectURL(value);
-  }, [value]);
-
-  useEffect(() => {
-    return () => {
-      if (previewUrl && typeof value !== 'string') {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [previewUrl, value]);
-
-  const handleClick = () => {
-    if (disabled) return;
-    if (!previewUrl) {
-      fileInputRef.current?.click();
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    if (onChange) {
-      onChange(file);
-    }
-  };
-
-  const handleDelete = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (disabled) return;
-    if (onChange) {
-      onChange(null);
-    }
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
+  const {
+    fileInputRef,
+    previewUrl,
+    handleClick,
+    handleFileChange,
+    handleDelete,
+  } = useFileInput({ value, onChange, disabled });
 
   return (
     <div

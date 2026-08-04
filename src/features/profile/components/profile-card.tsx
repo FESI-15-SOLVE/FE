@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { useAuthStore } from '@/providers/auth-provider';
-import { ProfileModal } from './profile-modal';
+import { ProfileEditModal } from './profile-edit-modal';
 import IconPerson from '@/assets/icons/person.svg';
 import IconEdit from '@/assets/icons/edit.svg';
 
@@ -20,7 +20,12 @@ export function ProfileCard() {
       <div className="flex w-full flex-col rounded-2xl border border-green-400 p-5 shadow-sm lg:w-72 lg:shrink-0 lg:rounded-3xl lg:p-6 bg-linear-to-r from-gradient-start-100 to-gradient-end-100">
         <div className="flex items-center gap-8 lg:flex-col lg:items-center lg:text-center">
           {/* Avatar Image */}
-          <div className="relative size-16 shrink-0 overflow-hidden rounded-full bg-slate-100 lg:size-28 flex items-center justify-center text-slate-400">
+          <button
+            type="button"
+            onClick={() => setIsEditModalOpen(true)}
+            aria-label="프로필 수정"
+            className="group relative size-16 shrink-0 overflow-hidden rounded-full bg-slate-100 flex items-center justify-center text-slate-400 cursor-pointer border border-slate-200 hover:border-slate-400 transition-all lg:size-28"
+          >
             {profileImage ? (
               <Image
                 src={profileImage}
@@ -31,7 +36,10 @@ export function ProfileCard() {
             ) : (
               <IconPerson className="size-10 lg:size-16" />
             )}
-          </div>
+            <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+              <IconEdit className="size-4 lg:size-6" />
+            </div>
+          </button>
 
           {/* User Details */}
           <div className="flex flex-col gap-6 flex-1 min-w-0 lg:items-center">
@@ -60,12 +68,11 @@ export function ProfileCard() {
         </div>
       </div>
 
-      {/* Edit Profile Modal */}
+      {/* Dedicated Edit Profile Modal */}
       {user && (
-        <ProfileModal
+        <ProfileEditModal
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
-          userId={user.id}
         />
       )}
     </>
