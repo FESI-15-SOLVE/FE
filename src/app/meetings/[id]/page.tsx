@@ -14,14 +14,29 @@ interface MeetingDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
+function parseMeetingId(id: string): number | null {
+  const numericId = Number(id);
+  if (!Number.isFinite(numericId) || numericId <= 0) {
+    return null;
+  }
+  return numericId;
+}
+
 export async function generateMetadata({
   params,
 }: MeetingDetailPageProps): Promise<Metadata> {
   const { id } = await params;
+  const numericId = parseMeetingId(id);
+  if (!numericId) {
+    return {
+      title: '모임 상세 | 같이달래',
+    };
+  }
+
   try {
     const res = await ServerApi.meetings.getMeetingDetail({
       teamId: TEAM_ID,
-      meetingId: Number(id),
+      meetingId: numericId,
     });
     const meeting = res.data;
 
@@ -48,7 +63,12 @@ export default async function MeetingDetailPage({
   params,
 }: MeetingDetailPageProps) {
   const { id } = await params;
-  const numericId = Number(id);
+  const numericId = parseMeetingId(id);
+
+  if (!numericId) {
+    notFound();
+  }
+
   const queryClient = new QueryClient();
 
   try {
