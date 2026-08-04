@@ -88,8 +88,8 @@ export function ProfileEditModal({ isOpen, onClose }: ProfileEditModalProps) {
           <DialogTitle className="text-xl font-bold text-slate-900">
             프로필 수정하기
           </DialogTitle>
-          <DialogClose>
-            <XIcon className="hover:cursor-pointer" />
+          <DialogClose aria-label="닫기" className="cursor-pointer">
+            <XIcon aria-hidden="true" />
           </DialogClose>
         </DialogHeader>
 
