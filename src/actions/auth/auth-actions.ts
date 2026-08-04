@@ -6,7 +6,11 @@ import { TEAM_ID } from '@/constants/api';
 import { cookies } from 'next/headers';
 import { LoginRequest, SignupRequest } from '@/api/data-contracts';
 import { actionClient } from '@/lib/safe-action';
-import { setAuthCookies, clearAuthCookies } from '@/features/auth/lib/auth-cookies';
+import {
+  setAuthCookies,
+  clearAuthCookies,
+} from '@/features/auth/lib/auth-cookies';
+import { ErrorResponse } from '@/lib/error-response';
 
 export const loginAction = actionClient
   .inputSchema(z.custom<LoginRequest>())
@@ -26,12 +30,27 @@ export const signupAction = actionClient
     return response.data;
   });
 
+
+// 루트 레이아웃에서 유저 정보를 주입하기 위해 사용하는 내용인데(클라에서 사용예정 x) 해당 에러로 루트가 멈추는걸 방지하기 위해 null 반환 
 export const getMyProfileAction = actionClient.action(async () => {
+  const cookieStore = await cookies();
+
+  const refreshToken = cookieStore.get('refreshToken')?.value;
+
+  if (!refreshToken) {
+    return null;
+  }
+
   try {
     const response = await ServerApi.users.getMyProfile({ teamId: TEAM_ID });
     return response.data;
-  } catch {
-    // 401 Unauthorized 등 에러 발생 시 예외를 삼키고 null 반환
+  } catch (error) {
+    if (error instanceof ErrorResponse && error.status === 401) {
+      //제대로 유효한 사용자가 아니기에 (즉 에러로 볼 여지는 없기에 return null 만 한다.)
+      return null;
+    }
+    // 무언가 다른 이유로 서버가 죽으면 서버 콘솔에 로깅하고 반환한다.
+    console.error('[getMyProfileAction] 프로필 조회 중 서버 에러 발생:', error);
     return null;
   }
 });
