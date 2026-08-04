@@ -46,13 +46,17 @@ export function DateTimePicker({
               defaultDate={value}
               onApply={(date) => {
                 if (date) {
-                  const newDate = value ? new Date(value) : new Date();
-                  newDate.setFullYear(
+                  const baseDate = value ? new Date(value) : new Date();
+                  const hours = value ? value.getHours() : 0;
+                  const minutes = value ? value.getMinutes() : 0;
+
+                  baseDate.setFullYear(
                     date.getFullYear(),
                     date.getMonth(),
                     date.getDate(),
                   );
-                  onChange(newDate);
+                  baseDate.setHours(hours, minutes, 0, 0);
+                  onChange(baseDate);
                 } else {
                   onChange(undefined);
                 }
@@ -88,14 +92,14 @@ export function DateTimePicker({
               hour={value?.getHours() ?? 0}
               minute={value?.getMinutes() ?? 0}
               onHourChange={(h) => {
-                const newDate = value ? new Date(value) : new Date();
-                newDate.setHours(h);
-                onChange(newDate);
+                const baseDate = value ? new Date(value) : new Date();
+                baseDate.setHours(h, baseDate.getMinutes(), 0, 0);
+                onChange(baseDate);
               }}
               onMinuteChange={(m) => {
-                const newDate = value ? new Date(value) : new Date();
-                newDate.setMinutes(m);
-                onChange(newDate);
+                const baseDate = value ? new Date(value) : new Date();
+                baseDate.setMinutes(m, 0, 0);
+                onChange(baseDate);
               }}
             />
           </PopoverContent>
