@@ -18,15 +18,15 @@ export function useJoinMeeting() {
       meetingId,
       isJoined,
     }: {
-      meetingId: string | number;
+      meetingId: number;
       isJoined: boolean;
     }) => {
       if (isJoined) {
         unwrapAction(
-          await leaveMeetingAction({ meetingId: Number(meetingId) }),
+          await leaveMeetingAction({ meetingId }),
         );
       } else {
-        unwrapAction(await joinMeetingAction({ meetingId: Number(meetingId) }));
+        unwrapAction(await joinMeetingAction({ meetingId }));
       }
     },
 
@@ -43,7 +43,7 @@ export function useJoinMeeting() {
         isJoined ? '참여가 취소되었습니다.' : '참여 신청이 완료되었습니다.',
       );
 
-      const detailKey = meetingQueries.detailKey(String(meetingId));
+      const detailKey = meetingQueries.detailKey(meetingId);
       const listKeys = meetingQueries.listKeys();
       const joinedListKeys = meetingQueries.joinedListKeys();
       const countDiff = isJoined ? -1 : 1;
@@ -67,9 +67,7 @@ export function useJoinMeeting() {
         (old) =>
           produce(old, (draft) => {
             draft?.pages?.forEach((page) => {
-              const item = page.data?.find(
-                (i) => String(i.id) === String(meetingId),
-              );
+              const item = page.data?.find((i) => i.id === meetingId);
               if (item) {
                 item.isJoined = !isJoined;
                 item.participantCount = Math.max(
@@ -89,9 +87,7 @@ export function useJoinMeeting() {
             produce(old, (draft) => {
               draft?.pages?.forEach((page) => {
                 if (page.data) {
-                  page.data = page.data.filter(
-                    (item) => String(item.id) !== String(meetingId),
-                  );
+                  page.data = page.data.filter((item) => item.id !== meetingId);
                 }
               });
             }),
@@ -103,7 +99,7 @@ export function useJoinMeeting() {
       queryClient.invalidateQueries({ queryKey: detailKey });
       // 참여자 아이콘 목록도 갱신 (PersonnelContainer의 아바타 리스트)
       queryClient.invalidateQueries({
-        queryKey: meetingQueries.participantKey(String(meetingId)),
+        queryKey: meetingQueries.participantKey(meetingId),
       });
     },
   });

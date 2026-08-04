@@ -45,10 +45,10 @@ export const meetingQueries = {
     [...meetingQueries.joinedListKeys(), params ?? {}] as const,
 
   detailKeys: () => [...meetingQueries.all(), 'detail'] as const,
-  detailKey: (id: string) => [...meetingQueries.detailKeys(), id] as const,
+  detailKey: (id: number) => [...meetingQueries.detailKeys(), String(id)] as const,
 
   participantKeys: () => [...meetingQueries.all(), 'participants'] as const,
-  participantKey: (id: string) => [...meetingQueries.participantKeys(), id] as const,
+  participantKey: (id: number) => [...meetingQueries.participantKeys(), String(id)] as const,
 
   // 2. 쿼리 전체 옵션(Options)을 관리하는 영역
   listQuery: (
@@ -81,14 +81,14 @@ export const meetingQueries = {
       initialPageParam: undefined as string | undefined,
     }),
 
-  detailQuery: (id: string, customQueryFn?: MeetingDetailQueryFn) =>
+  detailQuery: (id: number, customQueryFn?: MeetingDetailQueryFn) =>
     queryOptions({
       queryKey: meetingQueries.detailKey(id),
       queryFn: customQueryFn ?? (async () => fetchMeetingDetail(id)),
       enabled: Boolean(id),
     }),
 
-  participantsQuery: (id: string, customQueryFn?: MeetingParticipantsQueryFn) =>
+  participantsQuery: (id: number, customQueryFn?: MeetingParticipantsQueryFn) =>
     queryOptions({
       queryKey: meetingQueries.participantKey(id),
       queryFn: customQueryFn ?? (async () => fetchParticipants(id)),

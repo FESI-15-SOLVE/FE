@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { meetingQueries } from '../../queries/meeting-query';
 
 export interface PersonnelContainerProps {
-  meetingId: string;
+  meetingId: number;
   currentParticipant: number;
   minParticipant: number;
   maxParticipant: number;

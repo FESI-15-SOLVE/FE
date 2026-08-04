@@ -18,19 +18,3 @@ export function formatMeetingDateTime(dateTime?: string | null): {
     timeText: formatInTimeZone(d, defaultTimeZone, 'HH:mm'),
   };
 }
-
-/**
- * 마감 일시 ISO 문자열을 받아 기본 타임존 기준 '오늘 H시 마감' 또는 '마감 임박' 텍스트로 변환합니다.
- */
-export function formatDeadlineText(registrationEnd?: string | null): string {
-  if (!registrationEnd) return '마감 임박';
-
-  const regEnd = new Date(registrationEnd);
-  if (isNaN(regEnd.getTime())) return '마감 임박';
-
-  return `오늘 ${formatInTimeZone(regEnd, defaultTimeZone, 'H')}시 마감`;
-}
-
-
-
-

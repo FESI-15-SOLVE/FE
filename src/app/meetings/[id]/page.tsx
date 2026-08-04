@@ -14,14 +14,29 @@ interface MeetingDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
+function parseMeetingId(id: string): number | null {
+  const numericId = Number(id);
+  if (!Number.isFinite(numericId) || numericId <= 0) {
+    return null;
+  }
+  return numericId;
+}
+
 export async function generateMetadata({
   params,
 }: MeetingDetailPageProps): Promise<Metadata> {
   const { id } = await params;
+  const numericId = parseMeetingId(id);
+  if (!numericId) {
+    return {
+      title: '모임 상세 | 같이달래',
+    };
+  }
+
   try {
     const res = await ServerApi.meetings.getMeetingDetail({
       teamId: TEAM_ID,
-      meetingId: Number(id),
+      meetingId: numericId,
     });
     const meeting = res.data;
 
@@ -48,25 +63,31 @@ export default async function MeetingDetailPage({
   params,
 }: MeetingDetailPageProps) {
   const { id } = await params;
+  const numericId = parseMeetingId(id);
+
+  if (!numericId) {
+    notFound();
+  }
+
   const queryClient = new QueryClient();
 
   try {
     // 서버 컴포넌트 사전 페칭 (ServerApi 직접 연동)
     await Promise.all([
       queryClient.prefetchQuery(
-        meetingQueries.detailQuery(id, async () => {
+        meetingQueries.detailQuery(numericId, async () => {
           const res = await ServerApi.meetings.getMeetingDetail({
             teamId: TEAM_ID,
-            meetingId: Number(id),
+            meetingId: numericId,
           });
           return res.data;
         }),
       ),
       queryClient.prefetchQuery(
-        meetingQueries.participantsQuery(id, async () => {
+        meetingQueries.participantsQuery(numericId, async () => {
           const res = await ServerApi.meetings.getParticipants({
             teamId: TEAM_ID,
-            meetingId: Number(id),
+            meetingId: numericId,
           });
           return res.data;
         }),
@@ -78,7 +99,7 @@ export default async function MeetingDetailPage({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <MeetingDetailView meetingId={id} />
+      <MeetingDetailView meetingId={numericId} />
     </HydrationBoundary>
   );
 }

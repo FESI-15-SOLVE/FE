@@ -23,7 +23,7 @@ export function useUpdateMeeting() {
     onSuccess: (_updatedMeeting, { meetingId }) => {
       toast.success('모임 정보가 수정되었습니다.');
       queryClient.invalidateQueries({
-        queryKey: meetingQueries.detailKey(String(meetingId)),
+        queryKey: meetingQueries.detailKey(meetingId),
       });
       queryClient.invalidateQueries({ queryKey: meetingQueries.listKeys() });
     },
@@ -47,7 +47,7 @@ export function useCancelMeeting() {
     onSuccess: (_cancelledMeeting, { meetingId }) => {
       toast.success('모임이 취소되었습니다.');
       queryClient.invalidateQueries({
-        queryKey: meetingQueries.detailKey(String(meetingId)),
+        queryKey: meetingQueries.detailKey(meetingId),
       });
       queryClient.invalidateQueries({ queryKey: meetingQueries.listKeys() });
     },

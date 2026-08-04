@@ -3,7 +3,11 @@ import { produce } from 'immer';
 import { addFavoriteApi, removeFavoriteApi } from '../api/toggle-favorite';
 import { meetingQueries } from '../queries/meeting-query';
 import { favoriteQueries } from '../queries/favorite-query';
-import { MeetingWithHost, MeetingList, FavoriteList } from '@/api/data-contracts';
+import {
+  MeetingWithHost,
+  MeetingList,
+  FavoriteList,
+} from '@/api/data-contracts';
 import { toast } from 'sonner';
 import { ErrorResponse } from '@/lib/error-response';
 
@@ -15,7 +19,7 @@ export function useToggleFavorite() {
       meetingId,
       isSaved,
     }: {
-      meetingId: string | number;
+      meetingId: number;
       isSaved: boolean;
     }) => {
       if (isSaved) {
@@ -27,7 +31,7 @@ export function useToggleFavorite() {
 
     // 1. onMutate: 낙관적 업데이트 (메모리 캐시 패치)
     onMutate: async ({ meetingId, isSaved }) => {
-      const detailKey = meetingQueries.detailKey(String(meetingId));
+      const detailKey = meetingQueries.detailKey(meetingId);
       const listKeys = meetingQueries.listKeys();
       const favListKeys = favoriteQueries.listKeys();
       const countKey = favoriteQueries.countKey();
@@ -41,14 +45,21 @@ export function useToggleFavorite() {
       ]);
 
       // 스냅샷 저장
-      const previousDetail = queryClient.getQueryData<MeetingWithHost>(detailKey);
-      const previousLists = queryClient.getQueriesData<{ pages?: MeetingList[] }>({
+      const previousDetail =
+        queryClient.getQueryData<MeetingWithHost>(detailKey);
+      const previousLists = queryClient.getQueriesData<{
+        pages?: MeetingList[];
+      }>({
         queryKey: listKeys,
       });
-      const previousFavLists = queryClient.getQueriesData<{ pages?: FavoriteList[] }>({
+      const previousFavLists = queryClient.getQueriesData<{
+        pages?: FavoriteList[];
+      }>({
         queryKey: favListKeys,
       });
-      const previousCount = queryClient.getQueryData<{ count: number }>(countKey);
+      const previousCount = queryClient.getQueryData<{ count: number }>(
+        countKey,
+      );
 
       // 상세 캐시 즉시 업데이트
       queryClient.setQueryData<MeetingWithHost>(
@@ -66,9 +77,7 @@ export function useToggleFavorite() {
         (old) =>
           produce(old, (draft) => {
             draft?.pages?.forEach((page) => {
-              const item = page.data?.find(
-                (i) => String(i.id) === String(meetingId),
-              );
+              const item = page.data?.find((i) => i.id === meetingId);
               if (item) item.isFavorited = !isSaved;
             });
           }),
@@ -83,14 +92,14 @@ export function useToggleFavorite() {
               if (isSaved) {
                 page.data = page.data.filter(
                   (item) =>
-                    String(item.meetingId) !== String(meetingId) &&
-                    String(item.meeting?.id) !== String(meetingId),
+                    item.meetingId !== meetingId &&
+                    item.meeting?.id !== meetingId,
                 );
               } else {
                 const item = page.data?.find(
                   (i) =>
-                    String(i.meetingId) === String(meetingId) ||
-                    String(i.meeting?.id) === String(meetingId),
+                    i.meetingId === meetingId ||
+                    i.meeting?.id === meetingId,
                 );
                 if (item?.meeting) {
                   item.meeting.isFavorited = true;
@@ -114,7 +123,7 @@ export function useToggleFavorite() {
     onError: (err, { meetingId }, context) => {
       if (context?.previousDetail) {
         queryClient.setQueryData(
-          meetingQueries.detailKey(String(meetingId)),
+          meetingQueries.detailKey(meetingId),
           context.previousDetail,
         );
       }
@@ -129,7 +138,10 @@ export function useToggleFavorite() {
         });
       }
       if (context?.previousCount !== undefined) {
-        queryClient.setQueryData(favoriteQueries.countKey(), context.previousCount);
+        queryClient.setQueryData(
+          favoriteQueries.countKey(),
+          context.previousCount,
+        );
       }
       toast.error(
         err instanceof ErrorResponse
@@ -137,7 +149,6 @@ export function useToggleFavorite() {
           : '찜 처리 중 오류가 발생했습니다. (로그인이 필요할 수 있습니다)',
       );
     },
-
     // 3. onSettled: 성공 토스트 알림만 수행 (낙관적 업데이트 유지)
     onSettled: (_data, error, { isSaved }) => {
       if (!error) {

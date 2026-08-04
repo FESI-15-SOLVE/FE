@@ -42,7 +42,7 @@ export function MeetingDetailHeader({ meeting }: MeetingDetailHeaderProps) {
 
         {/* 모집 현황 및 개설확정 뱃지 카드 (PersonnelContainer) */}
         <PersonnelContainer
-          meetingId={String(meeting.id)}
+          meetingId={meeting.id}
           currentParticipant={participantCount}
           minParticipant={5}
           maxParticipant={capacity}
