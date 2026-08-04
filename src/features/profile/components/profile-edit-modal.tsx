@@ -130,12 +130,12 @@ export function ProfileEditModal({ isOpen, onClose }: ProfileEditModalProps) {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-4 ">
+          <div className="flex items-center gap-3 pt-4 w-full">
             <Button
               type="button"
               variant="secondary"
               onClick={onClose}
-              className="w-28 h-12 font-semibold cursor-pointer"
+              className="flex-1 h-12 font-semibold cursor-pointer"
             >
               취소
             </Button>
@@ -143,7 +143,7 @@ export function ProfileEditModal({ isOpen, onClose }: ProfileEditModalProps) {
               type="submit"
               variant="primary"
               disabled={isSubmitting}
-              className="w-32 h-12 font-semibold cursor-pointer"
+              className="flex-1 h-12 font-semibold cursor-pointer"
             >
               {isSubmitting ? '수정 중...' : '수정하기'}
             </Button>
