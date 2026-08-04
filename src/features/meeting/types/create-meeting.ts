@@ -1,19 +1,7 @@
 import { MeetingCategory } from '@/constants/categories';
+import { CreateMeetingValues } from '../schema/create-shcema';
 
-export interface CreateMeetingValues {
-  categoryId: number;
-  name: string;
-  location: string;
-  placeAddress?: string;
-  detailAddress: string;
-  latitude?: number;
-  longitude?: number;
-  file: File | null;
-  dateTime?: Date;
-  registrationEnd?: Date;
-  capacity: number | '';
-  description?: string;
-}
+export type { CreateMeetingValues };
 
 export interface CreateMeetingModalProps {
   isOpen: boolean;

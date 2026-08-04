@@ -24,6 +24,9 @@ export function useEditMeeting({
   const { placeAddress: parsedPlace, detailAddress: parsedDetail } =
     parseFullAddress(meeting.address);
 
+  const meetingDateObj = meeting.dateTime ? new Date(meeting.dateTime) : undefined;
+  const regEndObj = meeting.registrationEnd ? new Date(meeting.registrationEnd) : undefined;
+
   const methods = useForm<EditMeetingValues, unknown, EditMeetingPayload>({
     resolver: zodResolver(editMeetingSchema),
     defaultValues: {
@@ -35,9 +38,13 @@ export function useEditMeeting({
       latitude: meeting.latitude ?? undefined,
       longitude: meeting.longitude ?? undefined,
       file: meeting.image || null,
-      dateTime: meeting.dateTime ? new Date(meeting.dateTime) : undefined,
-      registrationEnd: meeting.registrationEnd
-        ? new Date(meeting.registrationEnd)
+      dateTimeDate: meetingDateObj,
+      dateTimeTime: meetingDateObj
+        ? { hour: meetingDateObj.getHours(), minute: meetingDateObj.getMinutes() }
+        : undefined,
+      registrationEndDate: regEndObj,
+      registrationEndTime: regEndObj
+        ? { hour: regEndObj.getHours(), minute: regEndObj.getMinutes() }
         : undefined,
       capacity: meeting.capacity || 10,
       description: meeting.description || '',

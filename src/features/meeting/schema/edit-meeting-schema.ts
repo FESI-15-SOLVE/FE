@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { createMeetingBaseSchema, validateDateRange } from './create-shcema';
+import {
+  createMeetingBaseSchema,
+  transformDateTimeFields,
+  validateDateTimeFields,
+} from './create-shcema';
 
 export const editMeetingBaseSchema = createMeetingBaseSchema.extend({
   categoryId: z.number().optional(),
@@ -12,8 +16,9 @@ export const editMeetingBaseSchema = createMeetingBaseSchema.extend({
     }),
 });
 
-export const editMeetingSchema =
-  editMeetingBaseSchema.superRefine(validateDateRange);
+export const editMeetingSchema = editMeetingBaseSchema
+  .transform(transformDateTimeFields)
+  .superRefine(validateDateTimeFields);
 
 export type EditMeetingValues = z.input<typeof editMeetingBaseSchema>;
 export type EditMeetingPayload = z.infer<typeof editMeetingSchema>;

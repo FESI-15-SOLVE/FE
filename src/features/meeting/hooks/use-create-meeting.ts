@@ -29,8 +29,10 @@ export function useCreateMeeting({
       location: '',
       detailAddress: '',
       file: null,
-      dateTime: undefined,
-      registrationEnd: undefined,
+      dateTimeDate: undefined,
+      dateTimeTime: undefined,
+      registrationEndDate: undefined,
+      registrationEndTime: undefined,
       capacity: '',
       description: '',
     },
@@ -61,7 +63,7 @@ export function useCreateMeeting({
   // 폼 최종 제출
   const submitForm = handleSubmit(async (data) => {
     await createMeetingAsync(data);
-    onSubmit(data);
+    onSubmit(methods.getValues());
   });
 
   return {
