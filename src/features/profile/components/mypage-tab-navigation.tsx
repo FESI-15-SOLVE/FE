@@ -1,36 +1,40 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useQueryState, parseAsString } from 'nuqs';
 import { cn } from '@/lib/utils';
-import { ROUTES } from '@/constants/routes';
 
-const TABS = [
-  { href: ROUTES.MY_PAGE.JOINED, label: '나의 모임' },
-  { href: ROUTES.MY_PAGE.REVIEWS, label: '나의 리뷰' },
-  { href: ROUTES.MY_PAGE.CREATED, label: '내가 만든 모임' },
+export type MyPageTabType = 'joined' | 'reviews' | 'created';
+
+const TABS: { id: MyPageTabType; label: string }[] = [
+  { id: 'joined', label: '나의 모임' },
+  { id: 'reviews', label: '나의 리뷰' },
+  { id: 'created', label: '내가 만든 모임' },
 ];
 
 export function MyPageTabNavigation() {
-  const pathname = usePathname();
+  const [tab, setTab] = useQueryState(
+    'tab',
+    parseAsString.withDefault('joined'),
+  );
 
   return (
     <div className="flex border-b border-slate-200">
-      {TABS.map((tab) => {
-        const isActive = pathname.startsWith(tab.href);
+      {TABS.map((t) => {
+        const isActive = tab === t.id;
         return (
-          <Link
-            key={tab.href}
-            href={tab.href}
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => setTab(t.id)}
             className={cn(
-              'relative py-3 px-4 text-base font-semibold transition-colors cursor-pointer',
+              'relative py-3 px-4 text-base font-semibold transition-colors cursor-pointer outline-none',
               isActive
                 ? 'text-green-600 font-bold border-b-2 border-green-500 -mb-[2px]'
                 : 'text-slate-400 hover:text-slate-600',
             )}
           >
-            {tab.label}
-          </Link>
+            {t.label}
+          </button>
         );
       })}
     </div>

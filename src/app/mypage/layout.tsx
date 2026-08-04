@@ -1,4 +1,3 @@
-import { MyPageTabNavigation } from '@/features/profile/components/mypage-tab-navigation';
 import { ProfileCard } from '@/features/profile/components/profile-card';
 
 export default function MyPageLayout({
@@ -16,11 +15,8 @@ export default function MyPageLayout({
         {/* Profile Card (Left column on desktop, top banner on mobile/tablet) */}
         <ProfileCard />
 
-        {/* Main Content (Right column on desktop, bottom section on mobile/tablet) */}
-        <div className="flex-1 min-w-0 flex flex-col gap-4">
-          <MyPageTabNavigation />
-          {children}
-        </div>
+        {/* Main Content Area */}
+        {children}
       </div>
     </main>
   );

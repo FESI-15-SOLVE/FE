@@ -17,8 +17,9 @@ export const ROUTES = {
   TALK: '/talk',
   MY_PAGE: {
     ROOT: '/mypage',
-    JOINED: '/mypage/joined',
-    REVIEWS: '/mypage/reviews',
-    CREATED: '/mypage/created',
+    INDEX: '/mypage',
+    JOINED: '/mypage?tab=joined',
+    REVIEWS: '/mypage?tab=reviews',
+    CREATED: '/mypage?tab=created',
   },
 } as const;
