@@ -22,6 +22,7 @@ import {
   ProfileEditFormValues,
 } from '../schemas/profile-schema';
 import { XIcon } from 'lucide-react';
+import { ErrorResponse } from '@/lib/error-response';
 
 export interface ProfileEditModalProps {
   isOpen: boolean;
@@ -71,7 +72,7 @@ export function ProfileEditModal({ isOpen, onClose }: ProfileEditModalProps) {
       }
     } catch (error) {
       toast.error(
-        error instanceof Error
+        error instanceof ErrorResponse
           ? error.message
           : '프로필 수정 중 오류가 발생했습니다.',
       );
