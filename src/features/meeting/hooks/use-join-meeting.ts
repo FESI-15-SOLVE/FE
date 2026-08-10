@@ -95,9 +95,7 @@ export function useJoinMeeting() {
       }
 
       // 3. 상세 페이지만 invalidate (정원 마감 등 정확성이 중요한 데이터)
-      //    목록은 patch만 신뢰: 무한스크롤 전체 재요청은 UX 파괴 대비 실익 없음
       queryClient.invalidateQueries({ queryKey: detailKey });
-      // 참여자 아이콘 목록도 갱신 (PersonnelContainer의 아바타 리스트)
       queryClient.invalidateQueries({
         queryKey: meetingQueries.participantKey(meetingId),
       });
