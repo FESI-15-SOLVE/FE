@@ -10,7 +10,6 @@ import { TiptapEditor } from './editor/tiptap-editor';
 import { extractFirstImageFromAST } from '../utils/extract-first-image';
 import { Button } from '@/components/ui/button';
 import { ErrorResponse } from '@/lib/error-response';
-import { ROUTES } from '@/constants/routes';
 
 export function PostCreateForm() {
   const router = useRouter();
@@ -45,15 +44,22 @@ export function PostCreateForm() {
     try {
       setIsSubmitting(true);
 
-      // 1. Tiptap AST 및 마크다운 직렬화 (official @tiptap/markdown)
+      // 1. Tiptap AST 및 마크다운 직렬화 (공식 @tiptap/markdown)
+      if (!editor.markdown) {
+        toast.error(
+          '에디터 초기화 오류입니다. 페이지 새로고침 후 다시 시도해주세요.',
+        );
+        return;
+      }
+
       const jsonAST = editor.getJSON();
-      const contentMarkdown = editor.markdown?.serialize(jsonAST) ?? editor.getText();
+      const contentMarkdown = editor.markdown.serialize(jsonAST);
 
       // 2. AST 트리를 순회하여 첫번째 이미지 URL 추출 (정규식 오탐 방지)
       const firstImageUrl = extractFirstImageFromAST(jsonAST);
 
       // 3. Server Action 호출
-      await unwrapAction(
+      unwrapAction(
         await createPostAction({
           title: title.trim(),
           content: contentMarkdown,
@@ -75,7 +81,10 @@ export function PostCreateForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col w-full max-w-[860px] mx-auto gap-6 py-8 px-4 sm:px-0">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col w-full max-w-[860px] mx-auto gap-6 py-8 px-4 sm:px-0"
+    >
       {/* Title Bar & Submit Button (Figma Node: 15273:43147) */}
       <div className="flex items-center justify-between gap-4 w-full">
         {/* Title Input Row */}
