@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { MeetingWithHost } from '@/api/data-contracts';
+import { MeetingWithHost, JoinedMeeting } from '@/api/data-contracts';
 import { useAuthStore } from '@/providers/auth-provider';
 import { useAuthAction } from '@/hooks/use-auth-action';
 import { useToggleFavorite } from './use-toggle-favorite';
@@ -25,10 +25,11 @@ import { ROUTES } from '@/constants/routes';
  */
 export interface UseMeetingCardActionsOptions {
   defaultIsJoined?: boolean;
+  onWriteReview?: () => void;
 }
 
 export function useMeetingCardActions(
-  meeting: MeetingWithHost,
+  meeting: MeetingWithHost & { isReviewed?: boolean },
   options?: UseMeetingCardActionsOptions,
 ) {
   const router = useRouter();
@@ -54,8 +55,17 @@ export function useMeetingCardActions(
   const handleJoinClick = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    // 취소되었거나 이미 종료된 모임은 액션 차단
-    if (state.isCanceled || state.isCompleted) return;
+    // 취소된 모임은 액션 차단
+    if (state.isCanceled) return;
+
+    // 이용 완료된 모임인 경우 리뷰 작성 가능 여부에 따라 콜백 실행
+    if (state.isCompleted) {
+      if (!meeting.isReviewed && options?.onWriteReview) {
+        options.onWriteReview();
+      }
+      return;
+    }
+
 
     // 호스트인 경우 공유하기 실행
     if (state.isHost) {

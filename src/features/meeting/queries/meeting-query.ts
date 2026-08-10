@@ -16,6 +16,12 @@ import { fetchMeetingDetail } from '../api/fetch-meeting-detail';
 import { fetchParticipants } from '../api/fetch-participants';
 import { fetchJoinedMeetings } from '../api/fetch-joined-meetings';
 
+/** 작성 가능한 리뷰 모임 목록 쿼리 파라미터 상수 (서버 프리페치/클라이언트 양쪽에서 공유) */
+export const JOINED_WRITABLE_PARAMS = {
+  completed: 'true',
+  reviewed: 'false',
+} as const satisfies Partial<GetJoinedMeetingsParams>;
+
 type MeetingQueryFn = (
   context: QueryFunctionContext<readonly unknown[], string | undefined>,
 ) => Promise<MeetingList>;
