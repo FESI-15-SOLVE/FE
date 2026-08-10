@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, Suspense } from 'react';
-import { useQueryState, parseAsString } from 'nuqs';
+import { useQueryState, parseAsStringEnum } from 'nuqs';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import {
   meetingQueries,
@@ -91,7 +91,7 @@ function SuspensefulWrittenReviewList({
 export function MyReviewTabContainer() {
   const [subTab, setSubTab] = useQueryState(
     'reviewTab',
-    parseAsString.withDefault('writable'),
+    parseAsStringEnum(['writable', 'written']).withDefault('writable'),
   );
 
   const deleteReviewMutation = useDeleteReviewMutation();

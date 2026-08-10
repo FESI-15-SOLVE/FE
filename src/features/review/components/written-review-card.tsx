@@ -14,7 +14,7 @@ export interface WrittenReviewCardProps {
     comment: string;
     createdAt?: string | null;
     user?: {
-      name: string;
+      name?: string;
       image?: string | null;
     };
     meeting?: {
@@ -41,7 +41,7 @@ export function WrittenReviewCard({
   const meetingImage = review.meeting?.image;
   const meetingName = review.meeting?.name ?? '모임';
   const meetingType = review.meeting?.type;
-  const userName = review.user?.name ?? '럽윈즈올';
+  const userName = review.user?.name;
   const userImage = review.user?.image;
 
   return (
@@ -76,17 +76,17 @@ export function WrittenReviewCard({
               <div className="relative w-5 h-5 rounded-full overflow-hidden shrink-0 bg-slate-200">
                 <Image
                   src={userImage}
-                  alt={userName}
+                  alt={userName ?? '사용자 프로필'}
                   fill
                   className="object-cover"
                 />
               </div>
-            ) : (
+            ) : userName ? (
               <div className="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center text-slate-400 shrink-0">
                 <UserIcon className="w-3 h-3" />
               </div>
-            )}
-            <span>{userName}</span>
+            ) : null}
+            {userName && <span>{userName}</span>}
             <span>{formattedDate}</span>
           </div>
         </div>
