@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { MEDIA_QUERIES } from '@/constants/breakpoint';
 import { useMediaQuery } from '@/hooks/ui/use-media-query';
 import { cn } from '@/lib/utils';
@@ -18,16 +19,23 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { NotificationList } from './notification-list';
+import { notificationQueries } from '../queries/notification-query';
+import { useMarkAllNotificationsAsReadMutation } from '../hooks/use-notification-mutations';
 
-interface NotificationBellProps {
-  hasUnread?: boolean;
-}
-
-export function NotificationBell({ hasUnread = true }: NotificationBellProps) {
+export function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
   const isDesktop = useMediaQuery(MEDIA_QUERIES.sm);
+  const lastCountRef = useRef(0);
 
-  // 종 모양 아이콘 트리거 버튼 
+  const { data: unreadData } = useQuery(
+    notificationQueries.unreadCountQuery(lastCountRef),
+  );
+  const markAllAsReadMutation = useMarkAllNotificationsAsReadMutation();
+
+  const unreadCount = unreadData?.count ?? 0;
+  const hasUnread = unreadCount > 0;
+
+  // 종 모양 아이콘 트리거 버튼
   const TriggerButton = (
     <div
       className={cn(
@@ -47,9 +55,12 @@ export function NotificationBell({ hasUnread = true }: NotificationBellProps) {
         알림 내역
       </span>
       <button
+        type="button"
         className="text-[12px] font-semibold text-[#bbb] hover:text-gray-500 transition-colors cursor-pointer"
         onClick={() => {
-          /* 모두 읽기 로직 */
+          if (hasUnread) {
+            markAllAsReadMutation.mutate();
+          }
         }}
       >
         모두 읽기
@@ -69,7 +80,7 @@ export function NotificationBell({ hasUnread = true }: NotificationBellProps) {
           <div className="flex flex-col bg-white max-h-203">
             {Header}
             <div className="overflow-y-auto">
-              <NotificationList />
+              <NotificationList isOpen={isOpen} />
             </div>
           </div>
         </PopoverContent>
@@ -91,7 +102,7 @@ export function NotificationBell({ hasUnread = true }: NotificationBellProps) {
         <div className="flex flex-col h-full">
           {Header}
           <div className="flex-1 overflow-y-auto">
-            <NotificationList />
+            <NotificationList isOpen={isOpen} />
           </div>
         </div>
       </SheetContent>
