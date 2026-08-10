@@ -35,30 +35,31 @@ export function NotificationBell() {
   const unreadCount = unreadData?.count ?? 0;
   const hasUnread = unreadCount > 0;
 
-  // 2대 프로덕션 가드: 첫 로드 오탐 방지 & 드롭다운 열림 상태별 분기 (reset vs invalidate)
+  // 2대 프로덕션 가드: 첫 로드 오탐 완벽 방지 (unreadData 원본 객체 참조) 및 드롭다운 열림 상태별 분기
   useEffect(() => {
-    if (unreadCount === undefined) return;
+    // 1. 아직 API 데이터가 로드되기 전(undefined)이면 비교 대상이 아니므로 중단
+    if (unreadData === undefined) return;
 
-    // 가드 1: 앱 첫 진입 시 오탐 방지
+    // 2. 앱 첫 로드 시 오탐 방지 가드
     if (isInitialRef.current || prevCountRef.current === undefined) {
       isInitialRef.current = false;
-      prevCountRef.current = unreadCount;
+      prevCountRef.current = unreadData.count;
       return;
     }
 
-    // 가드 2: 새 알림 감지 시 드롭다운 상태에 따라 reset / invalidate 분기
-    if (unreadCount > prevCountRef.current) {
+    // 3. 실질적인 새 알림 수신 감지 (newCount > prevCount)
+    if (unreadData.count > prevCountRef.current) {
       if (!isOpen) {
-        // 닫혀 있을 때는 다음 오픈 시 스켈레톤 로딩을 위해 캐시 리셋
         queryClient.resetQueries({ queryKey: notificationQueries.listKeys() });
       } else {
-        // 열려 있을 때는 읽던 화면 유지를 위해 백그라운드 자연스러운 갱신
-        queryClient.invalidateQueries({ queryKey: notificationQueries.listKeys() });
+        queryClient.invalidateQueries({
+          queryKey: notificationQueries.listKeys(),
+        });
       }
     }
 
-    prevCountRef.current = unreadCount;
-  }, [unreadCount, isOpen, queryClient]);
+    prevCountRef.current = unreadData.count;
+  }, [unreadData, isOpen, queryClient]);
 
   // 종 모양 아이콘 트리거 버튼
   const TriggerButton = (
@@ -81,9 +82,10 @@ export function NotificationBell() {
       </span>
       <button
         type="button"
-        className="text-[12px] font-semibold text-[#bbb] hover:text-gray-500 transition-colors cursor-pointer"
+        disabled={markAllAsReadMutation.isPending}
+        className="text-[12px] font-semibold text-[#bbb] hover:text-gray-500 transition-colors cursor-pointer disabled:opacity-50"
         onClick={() => {
-          if (hasUnread) {
+          if (hasUnread && !markAllAsReadMutation.isPending) {
             markAllAsReadMutation.mutate();
           }
         }}
