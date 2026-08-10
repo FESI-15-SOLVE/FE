@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { MEDIA_QUERIES } from '@/constants/breakpoint';
 import { useMediaQuery } from '@/hooks/ui/use-media-query';
 import { cn } from '@/lib/utils';
@@ -18,16 +19,47 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { NotificationList } from './notification-list';
+import { notificationQueries } from '../queries/notification-query';
+import { useMarkAllNotificationsAsReadMutation } from '../hooks/use-notification-mutations';
 
-interface NotificationBellProps {
-  hasUnread?: boolean;
-}
-
-export function NotificationBell({ hasUnread = true }: NotificationBellProps) {
+export function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
   const isDesktop = useMediaQuery(MEDIA_QUERIES.sm);
+  const isInitialRef = useRef(true);
+  const prevCountRef = useRef<number | undefined>(undefined);
+  const queryClient = useQueryClient();
 
-  // 종 모양 아이콘 트리거 버튼 
+  const { data: unreadData } = useQuery(notificationQueries.unreadCountQuery());
+  const markAllAsReadMutation = useMarkAllNotificationsAsReadMutation();
+
+  const unreadCount = unreadData?.count ?? 0;
+  const hasUnread = unreadCount > 0;
+
+  // 2대 프로덕션 가드: 첫 로드 오탐 완벽 방지 (unreadData 원본 객체 참조) 및 드롭다운 열림 상태별 분기
+  useEffect(() => {
+    // 1. 아직 API 데이터가 로드되기 전(undefined)이면 비교 대상이 아니므로 중단 (0 폴백 오탐 방지)
+    if (unreadData === undefined) return;
+
+    // 2. 앱 첫 로드 시 오탐 방지 가드
+    if (isInitialRef.current || prevCountRef.current === undefined) {
+      isInitialRef.current = false;
+      prevCountRef.current = unreadData.count;
+      return;
+    }
+
+    // 3. 실질적인 새 알림 수신 감지 (newCount > prevCount)
+    if (unreadData.count > prevCountRef.current) {
+      if (!isOpen) {
+        queryClient.resetQueries({ queryKey: notificationQueries.listKeys() });
+      } else {
+        queryClient.invalidateQueries({ queryKey: notificationQueries.listKeys() });
+      }
+    }
+
+    prevCountRef.current = unreadData.count;
+  }, [unreadData, isOpen, queryClient]);
+
+  // 종 모양 아이콘 트리거 버튼
   const TriggerButton = (
     <div
       className={cn(
@@ -47,9 +79,13 @@ export function NotificationBell({ hasUnread = true }: NotificationBellProps) {
         알림 내역
       </span>
       <button
-        className="text-[12px] font-semibold text-[#bbb] hover:text-gray-500 transition-colors cursor-pointer"
+        type="button"
+        disabled={markAllAsReadMutation.isPending}
+        className="text-[12px] font-semibold text-[#bbb] hover:text-gray-500 transition-colors cursor-pointer disabled:opacity-50"
         onClick={() => {
-          /* 모두 읽기 로직 */
+          if (hasUnread && !markAllAsReadMutation.isPending) {
+            markAllAsReadMutation.mutate();
+          }
         }}
       >
         모두 읽기
@@ -66,10 +102,10 @@ export function NotificationBell({ hasUnread = true }: NotificationBellProps) {
           sideOffset={8}
           className="w-78.5 p-0 rounded-3xl shadow-[0px_4px_16px_0px_rgba(0,0,0,0.04)] border-none overflow-hidden"
         >
-          <div className="flex flex-col bg-white max-h-203">
+          <div className="flex flex-col bg-white max-h-[min(75vh,520px)]">
             {Header}
-            <div className="overflow-y-auto">
-              <NotificationList />
+            <div className="flex-1 overflow-y-auto">
+              <NotificationList isOpen={isOpen} />
             </div>
           </div>
         </PopoverContent>
@@ -83,15 +119,15 @@ export function NotificationBell({ hasUnread = true }: NotificationBellProps) {
       <SheetContent
         showCloseButton={false}
         side="right"
-        className="w-full sm:w-85 p-0 flex flex-col bg-white"
+        className="w-full sm:w-85 p-0 flex flex-col bg-white h-full"
       >
         <SheetHeader className="p-0 text-left border-none">
           <SheetTitle className="sr-only">알림 내역</SheetTitle>
         </SheetHeader>
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full min-h-0">
           {Header}
           <div className="flex-1 overflow-y-auto">
-            <NotificationList />
+            <NotificationList isOpen={isOpen} />
           </div>
         </div>
       </SheetContent>

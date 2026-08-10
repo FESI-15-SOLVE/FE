@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { cancelMeetingAction } from '@/actions/meeting/meeting-actions';
 import { unwrapAction } from '@/lib/safe-action';
 import { meetingQueries } from '../queries/meeting-query';
+import { notificationQueries } from '@/features/notification/queries/notification-query';
 import { updateMeeting } from '../api/update-meeting';
 import { EditMeetingPayload } from '../schema/edit-meeting-schema';
 import { ErrorResponse } from '@/lib/error-response';
@@ -50,6 +51,10 @@ export function useCancelMeeting() {
         queryKey: meetingQueries.detailKey(meetingId),
       });
       queryClient.invalidateQueries({ queryKey: meetingQueries.listKeys() });
+      // 모임 취소 시 백엔드 MEETING_CANCELED 알림 생성되므로 알림 쿼리 즉시 트리거 (0ms 반응성)
+      queryClient.invalidateQueries({
+        queryKey: notificationQueries.unreadCountKey(),
+      });
     },
     onError: (err) => {
       toast.error(

@@ -1,73 +1,56 @@
 'use client';
 
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
-
-import { NotificationTab, NotificationItem } from './notification-tab';
-const MOCK_NOTIFICATIONS: NotificationItem[] = [
-  {
-    id: '1',
-    type: 'MEETING_CONFIRM',
-    title: '모임 확정',
-    timeAgo: '1분 전',
-    message: "‘힐링 오피스 스트레칭' 모임 개설이 확정되었어요!",
-    isRead: false,
-  },
-  {
-    id: '2',
-    type: 'MEETING_CANCEL',
-    title: '모임 취소',
-    timeAgo: '2시간 전',
-    message: "‘힐링 오피스 스트레칭' 모임이 취소되었어요.",
-    isRead: false,
-  },
-  {
-    id: '3',
-    type: 'NEW_COMMENT',
-    title: '새로운 댓글',
-    timeAgo: '4일 전',
-    message: '클라이밍 어때요? – 딸기님의 댓글 재밌어요~',
-
-    isRead: true,
-  },
-  {
-    id: '4',
-    type: 'MEETING_UPDATE',
-    title: '모임 내용 변경',
-    timeAgo: '5일 전',
-    message: "‘카페 투어 멤버 모집' 모임 내용이 변경되었어요",
-    isRead: true,
-  },
-];
+import { notificationQueries } from '../queries/notification-query';
+import { NotificationTab } from './notification-tab';
+import { EmptyState } from '@/components/ui/empty/empty';
+import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 
 interface NotificationListProps {
   className?: string;
-  isEmpty?: boolean;
+  isOpen?: boolean;
 }
 
 export function NotificationList({
   className,
-  isEmpty = false,
+  isOpen = false,
 }: NotificationListProps) {
-  if (isEmpty || MOCK_NOTIFICATIONS.length === 0) {
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isFetching } =
+    useInfiniteQuery(notificationQueries.listQuery({}, isOpen));
+
+  const observerRef = useIntersectionObserver<HTMLDivElement>({
+    onIntersect: () => fetchNextPage(),
+    enabled: Boolean(hasNextPage && !isFetchingNextPage),
+  });
+
+  const notifications = data?.pages.flatMap((p) => p.data ?? []) ?? [];
+
+  // 캐시 재요청 중이거나 로딩 중일 때 스켈레톤 보장 (EmptyState 튀김 방지)
+  if (isLoading || (isFetching && notifications.length === 0)) {
     return (
-      <div
-        className={cn(
-          'flex flex-col items-center justify-center py-14',
-          className,
-        )}
-      >
-        <p className="text-[14px] font-medium text-[#a4a4a4] tracking-[-0.28px]">
-          아직 알림이 없어요
-        </p>
+      <div className="flex flex-col gap-2 p-4 animate-pulse">
+        <div className="h-16 w-full rounded-xl bg-slate-100" />
+        <div className="h-16 w-full rounded-xl bg-slate-100" />
+        <div className="h-16 w-full rounded-xl bg-slate-100" />
+      </div>
+    );
+  }
+
+  if (notifications.length === 0) {
+    return (
+      <div className={cn('py-12', className)}>
+        <EmptyState message="아직 알림이 없어요" />
       </div>
     );
   }
 
   return (
     <div className={cn('flex flex-col w-full', className)}>
-      {MOCK_NOTIFICATIONS.map((notif) => (
+      {notifications.map((notif) => (
         <NotificationTab key={notif.id} data={notif} />
       ))}
+      <div ref={observerRef} className="h-4" />
     </div>
   );
 }
