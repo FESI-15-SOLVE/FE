@@ -38,7 +38,7 @@ function useFileUpload(options: UploadOptions) {
   }, [fileItems]);
 
   const uploadFile = async (file: File): Promise<string | null> => {
-    if (file.size > options.maxSize) {
+    if (options.maxSize > 0 && file.size > options.maxSize) {
       const error = new Error(
         `File size exceeds maximum allowed (${options.maxSize / 1024 / 1024}MB)`,
       );
@@ -286,7 +286,6 @@ export const ImageUploadNode: React.FC<NodeViewProps> = (props) => {
       return {
         type: extension.options.type,
         attrs: {
-          ...extension.options,
           src: url,
           alt: filename,
           title: filename,

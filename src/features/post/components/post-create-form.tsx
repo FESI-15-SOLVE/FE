@@ -13,7 +13,10 @@ import {
 } from '@/features/post/schema/post-schema';
 import { unwrapAction } from '@/lib/safe-action';
 import { TiptapEditor } from './editor/tiptap-editor';
-import { extractFirstImageFromAST } from '../utils/extract-first-image';
+import {
+  extractFirstImageFromAST,
+  hasPendingUploadsInAST,
+} from '../utils/extract-first-image';
 import { Button } from '@/components/ui/button';
 import { ErrorResponse } from '@/lib/error-response';
 
@@ -63,9 +66,7 @@ export function PostCreateForm() {
     }
 
     const jsonAST = editor.getJSON();
-    const hasUnfinishedUpload = jsonAST.content?.some(
-      (node) => node.type === 'imageUpload',
-    );
+    const hasUnfinishedUpload = hasPendingUploadsInAST(jsonAST);
     if (hasUnfinishedUpload) {
       toast.error('이미지 업로드가 진행 중이거나 마무리되지 않았습니다.');
       return;

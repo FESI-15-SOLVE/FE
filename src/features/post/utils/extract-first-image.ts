@@ -23,3 +23,23 @@ export function extractFirstImageFromAST(doc: JSONContent | null | undefined): s
 
   return null;
 }
+
+/**
+ * Tiptap AST 문서 객체(JSONContent)를 재귀 탐색하여
+ * 미완료/진행 중인 이미지 업로드 노드(type === 'imageUpload')가 존재하는지 확인합니다.
+ */
+export function hasPendingUploadsInAST(doc: JSONContent | null | undefined): boolean {
+  if (!doc) return false;
+
+  if (doc.type === 'imageUpload') {
+    return true;
+  }
+
+  if (doc.content && Array.isArray(doc.content)) {
+    for (const childNode of doc.content) {
+      if (hasPendingUploadsInAST(childNode)) return true;
+    }
+  }
+
+  return false;
+}

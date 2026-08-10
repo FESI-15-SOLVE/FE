@@ -8,6 +8,13 @@ export const GET = withErrorHandler<RouteContext<{ id: string }>>(
     const params = await context.params;
     const postId = Number(params?.id);
 
+    if (isNaN(postId) || postId <= 0) {
+      return NextResponse.json(
+        { code: 'BAD_REQUEST', message: '유효하지 않은 게시글 ID입니다.' },
+        { status: 400 },
+      );
+    }
+
     const res = await ServerApi.posts.getPostDetail({
       teamId: TEAM_ID,
       postId,

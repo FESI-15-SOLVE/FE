@@ -145,8 +145,12 @@ export const ImageUploadNode = Node.create<
             this.storage.pendingFiles.set(uploadId, options.files);
           }
 
-          const { files: _files, ...rest } = options ?? {};
-          const attrs = { ...rest, uploadId };
+          const attrs = {
+            uploadId,
+            accept: options?.accept ?? this.options.accept,
+            limit: options?.limit ?? this.options.limit,
+            maxSize: options?.maxSize ?? this.options.maxSize,
+          };
 
           return typeof pos === 'number'
             ? commands.insertContentAt(pos, { type: this.name, attrs })

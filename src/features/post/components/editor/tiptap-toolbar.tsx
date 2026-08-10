@@ -64,7 +64,7 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
+        accept="image/png, image/jpeg, image/webp, image/gif"
         multiple
         className="hidden"
         onChange={handleFileChange}
