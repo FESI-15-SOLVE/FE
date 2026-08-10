@@ -6,6 +6,7 @@ import { DetailCard } from '../cards/detail-card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ROUTES } from '@/constants/routes';
+import { EmptyState } from '@/components/ui/empty/empty';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 
 export function JoinedMeetingListContainer() {
@@ -50,13 +51,15 @@ export function JoinedMeetingListContainer() {
 
   if (meetings.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
-        <p className="text-slate-500 text-lg font-medium">
-          아직 참여한 모임이 없습니다.
-        </p>
-        <Link href={ROUTES.MEETINGS.LIST}>
-          <Button variant="primary">모임 둘러보기</Button>
-        </Link>
+      <div className="py-16">
+        <EmptyState
+          message="아직 참여한 모임이 없습니다."
+          action={
+            <Link href={ROUTES.MEETINGS.LIST}>
+              <Button variant="primary">모임 둘러보기</Button>
+            </Link>
+          }
+        />
       </div>
     );
   }

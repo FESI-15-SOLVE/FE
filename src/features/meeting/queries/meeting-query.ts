@@ -10,11 +10,19 @@ import {
   ParticipantList,
   GetJoinedMeetingsParams,
   JoinedMeetingList,
+  GetMyCreatedMeetingsParams,
 } from '@/api/data-contracts';
 import { fetchMeetings } from '../api/fetch-meetings';
 import { fetchMeetingDetail } from '../api/fetch-meeting-detail';
 import { fetchParticipants } from '../api/fetch-participants';
 import { fetchJoinedMeetings } from '../api/fetch-joined-meetings';
+import { fetchCreatedMeetings } from '../api/fetch-created-meetings';
+
+/** 작성 가능한 리뷰 모임 목록 쿼리 파라미터 상수 (서버 프리페치/클라이언트 양쪽에서 공유) */
+export const JOINED_WRITABLE_PARAMS = {
+  completed: 'true',
+  reviewed: 'false',
+} as const satisfies Partial<GetJoinedMeetingsParams>;
 
 type MeetingQueryFn = (
   context: QueryFunctionContext<readonly unknown[], string | undefined>,
@@ -32,6 +40,10 @@ type JoinedMeetingQueryFn = (
   context: QueryFunctionContext<readonly unknown[], string | undefined>,
 ) => Promise<JoinedMeetingList>;
 
+type CreatedMeetingQueryFn = (
+  context: QueryFunctionContext<readonly unknown[], string | undefined>,
+) => Promise<MeetingList>;
+
 export const meetingQueries = {
   all: () => ['meetings'] as const,
 
@@ -43,6 +55,10 @@ export const meetingQueries = {
   joinedListKeys: () => [...meetingQueries.listKeys(), 'joined'] as const,
   joinedListKey: (params?: Partial<GetJoinedMeetingsParams>) =>
     [...meetingQueries.joinedListKeys(), params ?? {}] as const,
+
+  createdListKeys: () => [...meetingQueries.listKeys(), 'created'] as const,
+  createdListKey: (params?: Partial<GetMyCreatedMeetingsParams>) =>
+    [...meetingQueries.createdListKeys(), params ?? {}] as const,
 
   detailKeys: () => [...meetingQueries.all(), 'detail'] as const,
   detailKey: (id: number) => [...meetingQueries.detailKeys(), String(id)] as const,
@@ -81,6 +97,21 @@ export const meetingQueries = {
       initialPageParam: undefined as string | undefined,
     }),
 
+  createdListQuery: (
+    params?: Partial<GetMyCreatedMeetingsParams>,
+    customQueryFn?: CreatedMeetingQueryFn,
+  ) =>
+    infiniteQueryOptions({
+      queryKey: meetingQueries.createdListKey(params),
+      queryFn:
+        customQueryFn ??
+        (async ({ pageParam }) =>
+          fetchCreatedMeetings(params, pageParam ? String(pageParam) : undefined)),
+      getNextPageParam: (lastPage: MeetingList) =>
+        lastPage.hasMore ? (lastPage.nextCursor ?? undefined) : undefined,
+      initialPageParam: undefined as string | undefined,
+    }),
+
   detailQuery: (id: number, customQueryFn?: MeetingDetailQueryFn) =>
     queryOptions({
       queryKey: meetingQueries.detailKey(id),
@@ -95,4 +126,3 @@ export const meetingQueries = {
       enabled: Boolean(id),
     }),
 };
-
