@@ -53,6 +53,14 @@ export function PostCreateForm() {
       }
 
       const jsonAST = editor.getJSON();
+      const hasUnfinishedUpload = jsonAST.content?.some(
+        (node) => node.type === 'imageUpload',
+      );
+      if (hasUnfinishedUpload) {
+        toast.error('이미지 업로드가 진행 중이거나 마무리되지 않았습니다.');
+        return;
+      }
+
       const contentMarkdown = editor.markdown.serialize(jsonAST);
 
       // 2. AST 트리를 순회하여 첫번째 이미지 URL 추출 (정규식 오탐 방지)

@@ -12,19 +12,21 @@ import { cn } from '@/lib/utils';
 
 export interface TiptapToolbarProps {
   editor: Editor | null;
-  onImageSelect: (file: File) => void;
 }
 
-export function TiptapToolbar({ editor, onImageSelect }: TiptapToolbarProps) {
+export function TiptapToolbar({ editor }: TiptapToolbarProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   if (!editor) return null;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      onImageSelect(file);
-      // Reset input value so same file can be selected again
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      editor
+        .chain()
+        .focus()
+        .setImageUploadNode({ files: Array.from(files) })
+        .run();
       e.target.value = '';
     }
   };
@@ -36,6 +38,7 @@ export function TiptapToolbar({ editor, onImageSelect }: TiptapToolbarProps) {
         ref={fileInputRef}
         type="file"
         accept="image/*"
+        multiple
         className="hidden"
         onChange={handleFileChange}
       />

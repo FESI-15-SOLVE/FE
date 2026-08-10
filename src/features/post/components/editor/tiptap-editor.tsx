@@ -7,9 +7,11 @@ import Image from '@tiptap/extension-image';
 import Placeholder from '@tiptap/extension-placeholder';
 import { Markdown } from '@tiptap/markdown';
 import { FileHandler } from '@tiptap/extension-file-handler';
-import { ImageUploadBlock } from './image-upload-block-extension';
+import { ImageUploadNode } from '@/components/tiptap-node/image-upload-node/image-upload-node-extension';
 import { TiptapToolbar } from './tiptap-toolbar';
-import { uploadImage } from '../../hooks/use-s3-image-upload';
+import { getPresignedUrlAction } from '@/actions/image/image-actions';
+import { unwrapAction } from '@/lib/safe-action';
+import axios from 'axios';
 
 export interface TiptapEditorProps {
   content?: string;
@@ -34,7 +36,34 @@ export function TiptapEditor({
         inline: true,
         allowBase64: false,
       }),
-      ImageUploadBlock,
+      ImageUploadNode.configure({
+        accept: 'image/png, image/jpeg, image/webp, image/gif',
+        maxSize: 10 * 1024 * 1024, // 10MB
+        limit: 3,
+        upload: async (file, onProgress, abortSignal) => {
+          const { presignedUrl, publicUrl } = unwrapAction(
+            await getPresignedUrlAction({
+              fileName: file.name,
+              contentType: file.type as any,
+              folder: 'posts',
+            }),
+          );
+
+          await axios.put(presignedUrl, file, {
+            headers: { 'Content-Type': file.type },
+            signal: abortSignal,
+            onUploadProgress: (e) => {
+              if (e.total) {
+                onProgress?.({
+                  progress: Math.round((e.loaded * 100) / e.total),
+                });
+              }
+            },
+          });
+
+          return publicUrl;
+        },
+      }),
       FileHandler.configure({
         allowedMimeTypes: [
           'image/png',
@@ -43,14 +72,22 @@ export function TiptapEditor({
           'image/webp',
         ],
         onDrop: (currentEditor, files, pos) => {
-          files.forEach((file) => {
-            uploadImage(currentEditor, file, pos);
-          });
+          if (files.length > 0) {
+            currentEditor
+              .chain()
+              .focus()
+              .setImageUploadNode({ files }, pos)
+              .run();
+          }
         },
         onPaste: (currentEditor, files) => {
-          files.forEach((file) => {
-            uploadImage(currentEditor, file);
-          });
+          if (files.length > 0) {
+            currentEditor
+              .chain()
+              .focus()
+              .setImageUploadNode({ files })
+              .run();
+          }
         },
       }),
     ],
@@ -69,10 +106,7 @@ export function TiptapEditor({
   return (
     <div className="flex flex-col flex-1 w-full bg-white rounded-[40px] p-6 sm:p-10 border border-slate-100 shadow-xs">
       {/* 툴바 */}
-      <TiptapToolbar
-        editor={editor}
-        onImageSelect={(file) => uploadImage(editor, file)}
-      />
+      <TiptapToolbar editor={editor} />
 
       {/* 에디터 본문 영역 (부모 높이 100% 장악 + 클릭 시 자동 포커스) */}
       <div
