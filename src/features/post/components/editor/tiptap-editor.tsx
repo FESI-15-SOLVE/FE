@@ -36,7 +36,12 @@ export function TiptapEditor({
       }),
       ImageUploadBlock,
       FileHandler.configure({
-        allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
+        allowedMimeTypes: [
+          'image/png',
+          'image/jpeg',
+          'image/gif',
+          'image/webp',
+        ],
         onDrop: (currentEditor, files, pos) => {
           files.forEach((file) => {
             uploadImage(currentEditor, file, pos);
@@ -56,10 +61,9 @@ export function TiptapEditor({
   useEffect(() => {
     onEditorReady?.(editor);
   }, [editor, onEditorReady]);
+  
 
-  const editorText = editor?.getText() ?? '';
-  const totalLengthWithSpace = editorText.length;
-  const totalLengthNoSpace = editorText.replace(/\s/g, '').length;
+
 
   return (
     <div className="flex flex-col flex-1 w-full bg-white rounded-[40px] p-6 sm:p-10 border border-slate-100 shadow-xs">
@@ -70,19 +74,14 @@ export function TiptapEditor({
       />
 
       {/* 에디터 본문 영역 */}
-      <div className="flex-1 w-full min-h-[460px] py-6 px-2 overflow-y-auto">
+      <div className="flex-1 w-full min-h-115 py-6 px-2 overflow-y-auto">
         <EditorContent
           editor={editor}
-          className="prose prose-slate max-w-none min-h-[420px] focus:outline-none text-[16px] leading-[24px] text-slate-800 tracking-[-0.32px] [&_.is-editor-empty]:before:text-slate-400 [&_.is-editor-empty]:before:content-[attr(data-placeholder)] [&_.is-editor-empty]:before:float-left [&_.is-editor-empty]:before:pointer-events-none"
+          className="prose prose-slate max-w-none min-h-105 focus:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:ring-0 [&_.ProseMirror]:border-none text-[16px] leading-[24px] text-slate-800 tracking-[-0.32px] [&_.is-editor-empty]:before:text-slate-400 [&_.is-editor-empty]:before:content-[attr(data-placeholder)] [&_.is-editor-empty]:before:float-left [&_.is-editor-empty]:before:h-0 [&_.is-editor-empty]:before:pointer-events-none"
         />
       </div>
 
-      {/* 글자수 카운터 바 */}
-      <div className="pt-4 border-t border-slate-100 flex items-center justify-start text-xs sm:text-sm text-slate-400 font-medium tracking-[-0.28px]">
-        <span>
-          공백포함 : 총 {totalLengthWithSpace}자 | 공백제외 : 총 {totalLengthNoSpace}자
-        </span>
-      </div>
+
     </div>
   );
 }
