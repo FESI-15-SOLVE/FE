@@ -8,43 +8,71 @@ import { PresignedUrlRequest } from '@/api/data-contracts';
 import { toast } from 'sonner';
 import axios from 'axios';
 
-function getValidContentType(
-  fileType: string,
-): PresignedUrlRequest['contentType'] | null {
-  if (fileType === 'image/jpeg' || fileType === 'image/jpg')
-    return 'image/jpeg';
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+function getValidContentType(fileType: string): PresignedUrlRequest['contentType'] | null {
+  if (fileType === 'image/jpeg' || fileType === 'image/jpg') return 'image/jpeg';
   if (fileType === 'image/webp') return 'image/webp';
   if (fileType === 'image/gif') return 'image/gif';
   if (fileType === 'image/png') return 'image/png';
   return null;
 }
 
-/**
- *
- * 1. 선택 즉시(0ms) local Blob URL로 에디터 본문에 즉각 프리뷰 렌더링
- * 2. 백그라운드 S3 업로드 진행 후 성공 시 publicUrl로 원활하게 스와프
- * 3. Blob 메모리 해제(URL.revokeObjectURL)로 유수 방지
- */
 export function useS3ImageUpload(editor: Editor | null) {
   const uploadImage = useCallback(
-    async (file: File) => {
+    async (file: File, targetPos?: number) => {
       if (!editor) return;
 
-      const contentType = getValidContentType(file.type);
-      if (!contentType) {
-        toast.error(
-          '지원하지 않는 이미지 형식입니다. (PNG, JPEG, WebP, GIF 지원)',
-        );
+      // 1. 파일 제한 검증
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error('파일 크기는 최대 10MB까지 업로드할 수 있습니다.');
         return;
       }
 
-      // 1. 0ms 즉시 낙관적 프리뷰 생성 및 Tiptap 에디터 삽입
-      const blobUrl = URL.createObjectURL(file);
+      const contentType = getValidContentType(file.type);
+      if (!contentType) {
+        toast.error('지원하지 않는 이미지 형식입니다. (PNG, JPEG, WebP, GIF 지원)');
+        return;
+      }
 
-      editor.chain().focus().setImage({ src: blobUrl, alt: file.name }).run();
+      const uploadId = `upload_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+
+      // 2. 지정된 위치(targetPos) 또는 현재 커서 위치에 ImageUploadBlock 노드 삽입
+      if (typeof targetPos === 'number') {
+        editor
+          .chain()
+          .focus()
+          .insertContentAt(targetPos, {
+            type: 'imageUploadBlock',
+            attrs: {
+              uploadId,
+              fileName: file.name,
+              fileSize: file.size,
+              progress: 0,
+              error: null,
+            },
+          })
+          .run();
+      } else {
+        const currentPos = editor.state.selection.from;
+        editor
+          .chain()
+          .focus()
+          .insertContentAt(currentPos, {
+            type: 'imageUploadBlock',
+            attrs: {
+              uploadId,
+              fileName: file.name,
+              fileSize: file.size,
+              progress: 0,
+              error: null,
+            },
+          })
+          .run();
+      }
 
       try {
-        // 2. 백그라운드 S3 Presigned URL 발급
+        // 3. S3 Presigned URL 발급
         const { presignedUrl, publicUrl } = unwrapAction(
           await getPresignedUrlAction({
             fileName: file.name,
@@ -52,21 +80,59 @@ export function useS3ImageUpload(editor: Editor | null) {
           }),
         );
 
-        // 3. S3 직접 PUT 업로드
+        // 4. S3 PUT 업로드 및 실시간 진행률(0% ~ 100%) 갱신
         await axios.put(presignedUrl, file, {
           headers: {
             'Content-Type': contentType,
           },
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total && !editor.isDestroyed) {
+              const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              editor.commands.command(({ tr }) => {
+                tr.doc.descendants((node, pos) => {
+                  if (node.type.name === 'imageUploadBlock' && node.attrs.uploadId === uploadId) {
+                    tr.setNodeMarkup(pos, undefined, {
+                      ...node.attrs,
+                      progress: percent,
+                    });
+                    return false;
+                  }
+                });
+                return true;
+              });
+            }
+          },
         });
 
-        // 4. 성공: 에디터 내 blobUrl 노드를 publicUrl로 스와프
+        // 5. 성공: ImageUploadBlock 노드를 원자적으로 제거하고 standard Image 노드로 교체
         if (!editor.isDestroyed) {
           editor.commands.command(({ tr }) => {
             tr.doc.descendants((node, pos) => {
-              if (node.type.name === 'image' && node.attrs.src === blobUrl) {
+              if (node.type.name === 'imageUploadBlock' && node.attrs.uploadId === uploadId) {
+                // 노드 삭제 후 동일 위치에 Image 노드 삽입
+                tr.replaceWith(
+                  pos,
+                  pos + node.nodeSize,
+                  editor.schema.nodes.image.create({
+                    src: publicUrl,
+                    alt: file.name,
+                  }),
+                );
+                return false;
+              }
+            });
+            return true;
+          });
+        }
+      } catch {
+        // 6. 에러 처리
+        if (!editor.isDestroyed) {
+          editor.commands.command(({ tr }) => {
+            tr.doc.descendants((node, pos) => {
+              if (node.type.name === 'imageUploadBlock' && node.attrs.uploadId === uploadId) {
                 tr.setNodeMarkup(pos, undefined, {
                   ...node.attrs,
-                  src: publicUrl,
+                  error: '업로드 실패',
                 });
                 return false;
               }
@@ -74,24 +140,6 @@ export function useS3ImageUpload(editor: Editor | null) {
             return true;
           });
         }
-
-        // 5. 임시 blob URL 메모리 정리
-        URL.revokeObjectURL(blobUrl);
-      } catch {
-        // 6. 실패: 에디터에서 임시 blob 노드 제거 및 메모리 해제
-        if (!editor.isDestroyed) {
-          editor.commands.command(({ tr }) => {
-            tr.doc.descendants((node, pos) => {
-              if (node.type.name === 'image' && node.attrs.src === blobUrl) {
-                tr.delete(pos, pos + node.nodeSize);
-                return false;
-              }
-            });
-            return true;
-          });
-        }
-        URL.revokeObjectURL(blobUrl);
-        toast.error('이미지 업로드에 실패했습니다.');
       }
     },
     [editor],

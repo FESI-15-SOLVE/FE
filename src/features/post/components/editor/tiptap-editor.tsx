@@ -6,6 +6,8 @@ import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Placeholder from '@tiptap/extension-placeholder';
 import { Markdown } from '@tiptap/markdown';
+import { FileHandler } from '@tiptap/extension-file-handler';
+import { ImageUploadBlock } from './image-upload-block-extension';
 import { TiptapToolbar } from './tiptap-toolbar';
 import { useS3ImageUpload } from '../../hooks/use-s3-image-upload';
 
@@ -20,6 +22,8 @@ export function TiptapEditor({
   onEditorReady,
   placeholder = '본문 내용을 입력해주세요',
 }: TiptapEditorProps) {
+  const uploadImageRef = React.useRef<((file: File, pos?: number) => Promise<void>) | null>(null);
+
   // Tiptap 공식 패키지 기반 에디터 (immediatelyRender: false 필수!)
   const editor = useEditor({
     extensions: [
@@ -32,6 +36,20 @@ export function TiptapEditor({
         inline: true,
         allowBase64: false,
       }),
+      ImageUploadBlock,
+      FileHandler.configure({
+        allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
+        onDrop: (_editor, files, pos) => {
+          files.forEach((file) => {
+            uploadImageRef.current?.(file, pos);
+          });
+        },
+        onPaste: (_editor, files) => {
+          files.forEach((file) => {
+            uploadImageRef.current?.(file);
+          });
+        },
+      }),
     ],
     content,
     immediatelyRender: false, // SSR 하이드레이션 미스매치 방지 — 필수!
@@ -40,47 +58,19 @@ export function TiptapEditor({
   const { uploadImage } = useS3ImageUpload(editor);
 
   useEffect(() => {
+    uploadImageRef.current = uploadImage;
+  }, [uploadImage]);
+
+  useEffect(() => {
     onEditorReady?.(editor);
   }, [editor, onEditorReady]);
-
-  // 이미지 드래그 앤 드롭 및 붙여넣기 이벤트 가로채기
-  const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
-    const items = e.clipboardData?.items;
-    if (!items) return;
-
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].type.startsWith('image/')) {
-        const file = items[i].getAsFile();
-        if (file) {
-          e.preventDefault();
-          uploadImage(file);
-        }
-      }
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    const files = e.dataTransfer?.files;
-    if (!files || files.length === 0) return;
-
-    for (let i = 0; i < files.length; i++) {
-      if (files[i].type.startsWith('image/')) {
-        e.preventDefault();
-        uploadImage(files[i]);
-      }
-    }
-  };
 
   const editorText = editor?.getText() ?? '';
   const totalLengthWithSpace = editorText.length;
   const totalLengthNoSpace = editorText.replace(/\s/g, '').length;
 
   return (
-    <div
-      className="flex flex-col flex-1 w-full bg-white rounded-[40px] p-6 sm:p-10 border border-slate-100 shadow-xs"
-      onPaste={handlePaste}
-      onDrop={handleDrop}
-    >
+    <div className="flex flex-col flex-1 w-full bg-white rounded-[40px] p-6 sm:p-10 border border-slate-100 shadow-xs">
       {/* 툴바 */}
       <TiptapToolbar
         editor={editor}
