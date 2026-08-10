@@ -34,7 +34,7 @@ export function MeetingListUI({
     return (
       <div className="py-16">
         <EmptyState
-          title={emptyTitle}
+          message={emptyTitle}
           description={emptyDescription}
           icon={emptyImage}
         />
