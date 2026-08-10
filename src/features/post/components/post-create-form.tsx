@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Editor } from '@tiptap/react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm, useWatch, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { createPostAction } from '@/actions/post/post-actions';
@@ -26,6 +26,7 @@ export function PostCreateForm() {
     register,
     handleSubmit,
     control,
+    setValue,
     setError,
     formState: { isValid },
   } = useForm<CreatePostFormValues>({
@@ -39,7 +40,7 @@ export function PostCreateForm() {
   });
 
   const titleValue = useWatch({ control, name: 'title' }) || '';
-  const titleLength = titleValue.length;
+  const titleLength = Math.min(titleValue.length, 30);
 
   const onSubmit = async (data: CreatePostFormValues) => {
     if (!editor) {
@@ -111,7 +112,14 @@ export function PostCreateForm() {
         {/* Title Input Row */}
         <div className="flex-1 flex items-center justify-between border-b border-slate-200 pb-2">
           <input
-            {...register('title')}
+            {...register('title', {
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                if (e.target.value.length > 30) {
+                  const truncated = e.target.value.slice(0, 30);
+                  setValue('title', truncated, { shouldValidate: true });
+                }
+              },
+            })}
             type="text"
             placeholder="제목을 입력해주세요"
             maxLength={30}
@@ -136,7 +144,16 @@ export function PostCreateForm() {
 
       {/* Main Tiptap Editor Container (Figma Node: 15273:43161) */}
       <div className="w-full min-h-[720px] flex flex-col">
-        <TiptapEditor onEditorReady={setEditor} />
+        <Controller
+          name="content"
+          control={control}
+          render={({ field: { onChange } }) => (
+            <TiptapEditor
+              onEditorReady={setEditor}
+              onUpdate={(ed) => onChange(ed.getText().trim())}
+            />
+          )}
+        />
       </div>
     </form>
   );

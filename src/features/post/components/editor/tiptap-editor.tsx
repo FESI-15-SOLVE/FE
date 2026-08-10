@@ -20,6 +20,7 @@ import axios from 'axios';
 export interface TiptapEditorProps {
   content?: string;
   onEditorReady?: (editor: Editor | null) => void;
+  onUpdate?: (editor: Editor) => void;
   placeholder?: string;
 }
 
@@ -49,6 +50,7 @@ function TiptapCharacterCount({ editor }: { editor: Editor | null }) {
 export function TiptapEditor({
   content = '',
   onEditorReady,
+  onUpdate,
   placeholder = '본문 내용을 입력해주세요',
 }: TiptapEditorProps) {
   // Tiptap 공식 패키지 기반 에디터 (immediatelyRender: false 필수!)
@@ -121,6 +123,9 @@ export function TiptapEditor({
     ],
     content,
     immediatelyRender: false, // SSR 하이드레이션 미스매치 방지 — 필수!
+    onUpdate: ({ editor: ed }) => {
+      onUpdate?.(ed);
+    },
   });
 
   useEffect(() => {
