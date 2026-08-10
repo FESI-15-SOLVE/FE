@@ -19,6 +19,19 @@ export async function prefetchJoinedMeetings(queryClient: QueryClient) {
   );
 }
 
+/** 내가 만든 모임 탭 (CreatedMeetingListContainer) 서버 프리페치 */
+export async function prefetchCreatedMeetings(queryClient: QueryClient) {
+  await queryClient.prefetchInfiniteQuery(
+    meetingQueries.createdListQuery(undefined, async () => {
+      const res = await ServerApi.meetings.getMyCreatedMeetings({
+        teamId: TEAM_ID,
+        size: 10,
+      });
+      return res.data;
+    }),
+  );
+}
+
 /** 작성 가능한 리뷰 탭 (SuspensefulWritableReviewList) 서버 프리페치 */
 export async function prefetchWritableMeetings(queryClient: QueryClient) {
   await queryClient.prefetchInfiniteQuery(

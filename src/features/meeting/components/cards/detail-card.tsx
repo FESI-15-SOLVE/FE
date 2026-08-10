@@ -19,6 +19,10 @@ import { WriteReviewModal } from '@/features/review/components/write-review-moda
 export interface DetailCardProps {
   /** API에서 전달받는 모임 데이터 (MeetingWithHost 또는 JoinedMeeting) */
   meeting: MeetingWithHost & { isReviewed?: boolean };
+  /** 하단 액션 버튼 표시 여부 (기본값: true, "내가 만든 모임" 등에서는 false로 숨김) */
+  showActionButton?: boolean;
+  /** 커스텀 액션 영역 주입 시 사용 (없으면 기본 DetailCardActionButton 렌더) */
+  action?: React.ReactNode;
   className?: string;
 }
 
@@ -29,7 +33,12 @@ export interface DetailCardProps {
  * meeting 객체 중심의 마이페이지/세부 모임 정보 카드 컴포넌트.
  * 이용 완료 + 미리뷰 상태인 경우 리뷰 작성 모달을 내부에서 관리한다.
  */
-export function DetailCard({ meeting, className }: DetailCardProps) {
+export function DetailCard({
+  meeting,
+  showActionButton = true,
+  action,
+  className,
+}: DetailCardProps) {
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
 
   const {
@@ -163,19 +172,23 @@ export function DetailCard({ meeting, className }: DetailCardProps) {
             </CardContent>
 
             {/* Footer Section: Action Button */}
-            <CardFooter className="w-full shrink-0 p-0 sm:w-auto sm:self-end">
-              <DetailCardActionButton
-                isCanceled={isCanceled}
-                isHost={isHost}
-                isCompleted={isCompleted}
-                isReviewed={isReviewed}
-                isJoined={isJoined}
-                isRegistrationClosed={isRegistrationClosed}
-                isPending={isJoinPending}
-                onClick={handleJoinClick}
-                className="h-11 w-full min-w-36 sm:h-12 sm:w-auto"
-              />
-            </CardFooter>
+            {showActionButton && (
+              <CardFooter className="w-full shrink-0 p-0 sm:w-auto sm:self-end">
+                {action ?? (
+                  <DetailCardActionButton
+                    isCanceled={isCanceled}
+                    isHost={isHost}
+                    isCompleted={isCompleted}
+                    isReviewed={isReviewed}
+                    isJoined={isJoined}
+                    isRegistrationClosed={isRegistrationClosed}
+                    isPending={isJoinPending}
+                    onClick={handleJoinClick}
+                    className="h-11 w-full min-w-36 sm:h-12 sm:w-auto"
+                  />
+                )}
+              </CardFooter>
+            )}
           </div>
         </div>
       </Card>

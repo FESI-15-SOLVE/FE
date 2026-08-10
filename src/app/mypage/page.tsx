@@ -6,6 +6,7 @@ import {
 import { MyPageView } from '@/features/profile/components/mypage-view';
 import {
   prefetchJoinedMeetings,
+  prefetchCreatedMeetings,
   prefetchWritableMeetings,
   prefetchMyWrittenReviews,
 } from './_api/prefetch';
@@ -20,6 +21,8 @@ export default async function MyPage({ searchParams }: MyPageProps) {
 
   if (tab === 'joined') {
     await prefetchJoinedMeetings(queryClient);
+  } else if (tab === 'created') {
+    await prefetchCreatedMeetings(queryClient);
   } else if (tab === 'reviews') {
     if (reviewTab === 'written') {
       await prefetchMyWrittenReviews(queryClient);
