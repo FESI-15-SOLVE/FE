@@ -5,16 +5,12 @@ import { ServerApi } from '@/api/server-api';
 import { TEAM_ID } from '@/constants/api';
 import { z } from 'zod';
 
-const markReadSchema = z.object({
-  notificationId: z.number(),
-});
-
-const deleteNotificationSchema = z.object({
-  notificationId: z.number(),
-});
-
 export const markNotificationAsReadAction = actionClient
-  .schema(markReadSchema)
+  .inputSchema(
+    z.custom<{
+      notificationId: number;
+    }>(),
+  )
   .action(async ({ parsedInput: { notificationId } }) => {
     const res = await ServerApi.notifications.markNotificationAsRead({
       teamId: TEAM_ID,
@@ -32,7 +28,11 @@ export const markAllNotificationsAsReadAction = actionClient
   });
 
 export const deleteNotificationAction = actionClient
-  .schema(deleteNotificationSchema)
+  .inputSchema(
+    z.custom<{
+      notificationId: number;
+    }>(),
+  )
   .action(async ({ parsedInput: { notificationId } }) => {
     const res = await ServerApi.notifications.deleteNotification({
       teamId: TEAM_ID,
