@@ -30,7 +30,12 @@ export function NotificationTab({ data, className }: NotificationTabProps) {
       role="button"
       tabIndex={0}
       onClick={handleClick}
-      onKeyDown={(e) => e.key === 'Enter' && handleClick()}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
       className={cn(
         'flex gap-4 p-4 items-start w-full transition-colors cursor-pointer hover:bg-slate-50',
         formatted.isRead ? 'bg-white' : 'bg-[#f6f7f9]',
