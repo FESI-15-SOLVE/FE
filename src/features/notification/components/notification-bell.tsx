@@ -37,7 +37,7 @@ export function NotificationBell() {
 
   // 2대 프로덕션 가드: 첫 로드 오탐 완벽 방지 (unreadData 원본 객체 참조) 및 드롭다운 열림 상태별 분기
   useEffect(() => {
-    // 1. 아직 API 데이터가 로드되기 전(undefined)이면 비교 대상이 아니므로 중단
+    // 1. 아직 API 데이터가 로드되기 전(undefined)이면 비교 대상이 아니므로 중단 (0 폴백 오탐 방지)
     if (unreadData === undefined) return;
 
     // 2. 앱 첫 로드 시 오탐 방지 가드
@@ -52,9 +52,7 @@ export function NotificationBell() {
       if (!isOpen) {
         queryClient.resetQueries({ queryKey: notificationQueries.listKeys() });
       } else {
-        queryClient.invalidateQueries({
-          queryKey: notificationQueries.listKeys(),
-        });
+        queryClient.invalidateQueries({ queryKey: notificationQueries.listKeys() });
       }
     }
 
@@ -104,9 +102,9 @@ export function NotificationBell() {
           sideOffset={8}
           className="w-78.5 p-0 rounded-3xl shadow-[0px_4px_16px_0px_rgba(0,0,0,0.04)] border-none overflow-hidden"
         >
-          <div className="flex flex-col bg-white max-h-203">
+          <div className="flex flex-col bg-white max-h-[min(75vh,520px)]">
             {Header}
-            <div className="overflow-y-auto">
+            <div className="flex-1 overflow-y-auto">
               <NotificationList isOpen={isOpen} />
             </div>
           </div>
@@ -121,12 +119,12 @@ export function NotificationBell() {
       <SheetContent
         showCloseButton={false}
         side="right"
-        className="w-full sm:w-85 p-0 flex flex-col bg-white"
+        className="w-full sm:w-85 p-0 flex flex-col bg-white h-full"
       >
         <SheetHeader className="p-0 text-left border-none">
           <SheetTitle className="sr-only">알림 내역</SheetTitle>
         </SheetHeader>
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full min-h-0">
           {Header}
           <div className="flex-1 overflow-y-auto">
             <NotificationList isOpen={isOpen} />
