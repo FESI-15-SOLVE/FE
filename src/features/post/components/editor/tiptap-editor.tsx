@@ -3,9 +3,9 @@
 import React, { useEffect } from 'react';
 import { useEditor, EditorContent, Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import Image from '@tiptap/extension-image';
 import Placeholder from '@tiptap/extension-placeholder';
 import { Markdown } from '@tiptap/markdown';
-import { CustomImage } from './custom-image-extension';
 import { TiptapToolbar } from './tiptap-toolbar';
 import { useS3ImageUpload } from '../../hooks/use-s3-image-upload';
 
@@ -20,7 +20,7 @@ export function TiptapEditor({
   onEditorReady,
   placeholder = '본문 내용을 입력해주세요',
 }: TiptapEditorProps) {
-  // 1. 에디터 훅 선언 (immediatelyRender: false 필수!)
+  // Tiptap 공식 패키지 기반 에디터 (immediatelyRender: false 필수!)
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -28,7 +28,10 @@ export function TiptapEditor({
         placeholder,
       }),
       Markdown,
-      CustomImage,
+      Image.configure({
+        inline: true,
+        allowBase64: false,
+      }),
     ],
     content,
     immediatelyRender: false, // SSR 하이드레이션 미스매치 방지 — 필수!
@@ -85,10 +88,10 @@ export function TiptapEditor({
       />
 
       {/* 에디터 본문 영역 */}
-      <div className="flex-1 w-full min-h-115 py-6 px-2 overflow-y-auto">
+      <div className="flex-1 w-full min-h-[460px] py-6 px-2 overflow-y-auto">
         <EditorContent
           editor={editor}
-          className="prose prose-slate max-w-none min-h-105 focus:outline-none text-[16px] leading-[24px] text-slate-800 tracking-[-0.32px] [&_.is-editor-empty]:before:text-slate-400 [&_.is-editor-empty]:before:content-[attr(data-placeholder)] [&_.is-editor-empty]:before:float-left [&_.is-editor-empty]:before:pointer-events-none"
+          className="prose prose-slate max-w-none min-h-[420px] focus:outline-none text-[16px] leading-[24px] text-slate-800 tracking-[-0.32px] [&_.is-editor-empty]:before:text-slate-400 [&_.is-editor-empty]:before:content-[attr(data-placeholder)] [&_.is-editor-empty]:before:float-left [&_.is-editor-empty]:before:pointer-events-none"
         />
       </div>
 
