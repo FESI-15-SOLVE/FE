@@ -1,22 +1,47 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { useEditor, EditorContent, Editor } from '@tiptap/react';
+import React, { useEffect, useState } from 'react';
+import { useEditor, EditorContent, Editor, useEditorState } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Placeholder from '@tiptap/extension-placeholder';
+import CharacterCount from '@tiptap/extension-character-count';
 import { Markdown } from '@tiptap/markdown';
 import { FileHandler } from '@tiptap/extension-file-handler';
 import { ImageUploadNode } from '@/components/tiptap-node/image-upload-node/image-upload-node-extension';
 import { TiptapToolbar } from './tiptap-toolbar';
 import { getPresignedUrlAction } from '@/actions/image/image-actions';
 import { unwrapAction } from '@/lib/safe-action';
+import type { PresignedUrlRequest } from '@/api/data-contracts';
 import axios from 'axios';
 
 export interface TiptapEditorProps {
   content?: string;
   onEditorReady?: (editor: Editor | null) => void;
   placeholder?: string;
+}
+
+function TiptapCharacterCount({ editor }: { editor: Editor | null }) {
+  const counts = useEditorState({
+    editor,
+    selector: (ctx) => {
+      if (!ctx.editor) return { withSpace: 0, noSpace: 0 };
+      const storageCount = ctx.editor.storage.characterCount?.characters();
+      const text = ctx.editor.getText();
+      const withSpace = typeof storageCount === 'number' && storageCount > 0 ? storageCount : text.length;
+      const noSpace = text.replace(/\s/g, '').length;
+      return { withSpace, noSpace };
+    },
+  });
+
+  return (
+    <div className="pt-4 border-t border-slate-100 flex items-center justify-start text-xs sm:text-sm text-slate-400 font-medium tracking-[-0.28px]">
+      <span>
+        공백포함 : 총 {counts?.withSpace ?? 0}자 | 공백제외 : 총{' '}
+        {counts?.noSpace ?? 0}자
+      </span>
+    </div>
+  );
 }
 
 export function TiptapEditor({
@@ -32,6 +57,7 @@ export function TiptapEditor({
         placeholder,
       }),
       Markdown,
+      CharacterCount,
       Image.configure({
         inline: true,
         allowBase64: false,
@@ -44,7 +70,7 @@ export function TiptapEditor({
           const { presignedUrl, publicUrl } = unwrapAction(
             await getPresignedUrlAction({
               fileName: file.name,
-              contentType: file.type as any,
+              contentType: file.type as PresignedUrlRequest['contentType'],
               folder: 'posts',
             }),
           );
@@ -82,11 +108,7 @@ export function TiptapEditor({
         },
         onPaste: (currentEditor, files) => {
           if (files.length > 0) {
-            currentEditor
-              .chain()
-              .focus()
-              .setImageUploadNode({ files })
-              .run();
+            currentEditor.chain().focus().setImageUploadNode({ files }).run();
           }
         },
       }),
@@ -98,10 +120,6 @@ export function TiptapEditor({
   useEffect(() => {
     onEditorReady?.(editor);
   }, [editor, onEditorReady]);
-
-  const editorText = editor?.getText() ?? '';
-  const totalLengthWithSpace = editorText.length;
-  const totalLengthNoSpace = editorText.replace(/\s/g, '').length;
 
   return (
     <div className="flex flex-col flex-1 w-full bg-white rounded-[40px] p-6 sm:p-10 border border-slate-100 shadow-xs">
@@ -119,12 +137,8 @@ export function TiptapEditor({
         />
       </div>
 
-      {/* 글자수 카운터 바 */}
-      <div className="pt-4 border-t border-slate-100 flex items-center justify-start text-xs sm:text-sm text-slate-400 font-medium tracking-[-0.28px]">
-        <span>
-          공백포함 : 총 {totalLengthWithSpace}자 | 공백제외 : 총 {totalLengthNoSpace}자
-        </span>
-      </div>
+      {/* 실시간 글자수 카운터 바 (독립 서브 컴포넌트로 분리하여 부모 리렌더링 차단) */}
+      <TiptapCharacterCount editor={editor} />
     </div>
   );
 }

@@ -3,31 +3,11 @@
 import { actionClient } from '@/lib/safe-action';
 import { ServerApi } from '@/api/server-api';
 import { TEAM_ID } from '@/constants/api';
-import { z } from 'zod';
-
-const createPostSchema = z.object({
-  title: z
-    .string()
-    .min(1, '제목을 입력해주세요.')
-    .max(30, '제목은 30자 이내로 입력해주세요.'),
-  content: z.string().min(1, '본문 내용을 입력해주세요.'),
-  image: z.string().nullable().optional(),
-});
-
-const updatePostSchema = z.object({
-  postId: z.number(),
-  title: z
-    .string()
-    .min(1, '제목을 입력해주세요.')
-    .max(30, '제목은 30자 이내로 입력해주세요.')
-    .optional(),
-  content: z.string().min(1, '본문 내용을 입력해주세요.').optional(),
-  image: z.string().nullable().optional(),
-});
-
-const deletePostSchema = z.object({
-  postId: z.number(),
-});
+import {
+  createPostSchema,
+  updatePostSchema,
+  deletePostSchema,
+} from '@/features/post/schema/post-schema';
 
 /**
  * 게시글 작성 Server Action
