@@ -6,16 +6,20 @@ import { Loader2, AlertCircle, RefreshCw, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function CustomImageNodeView(props: NodeViewProps) {
-  const { node, deleteNode, getPos, extension } = props;
+  const { node, deleteNode, getPos } = props;
   const { src, alt, isUploading, uploadError } = node.attrs;
 
   const handleRetry = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const rawFile = (node.attrs.rawFile as File | undefined);
+    const rawFile = node.attrs.rawFile as File | undefined;
     if (rawFile && typeof getPos === 'function') {
       const pos = getPos();
       if (typeof pos === 'number') {
-        extension.options.onRetry?.(rawFile, pos);
+        window.dispatchEvent(
+          new CustomEvent('tiptap:retry-image', {
+            detail: { file: rawFile, pos },
+          }),
+        );
       }
     }
   };
