@@ -13,10 +13,8 @@ import {
 } from '@/features/post/schema/post-schema';
 import { unwrapAction } from '@/lib/safe-action';
 import { TiptapEditor } from './editor/tiptap-editor';
-import {
-  extractFirstImageFromAST,
-  hasPendingUploadsInAST,
-} from '../utils/extract-first-image';
+import { ROUTES } from '@/constants/routes';
+import { extractFirstImageFromAST, hasPendingUploadsInAST } from '../utils/extract-first-image';
 import { Button } from '@/components/ui/button';
 import { ErrorResponse } from '@/lib/error-response';
 
@@ -88,9 +86,9 @@ export function PostCreateForm() {
 
       toast.success('게시글이 등록되었습니다!');
       if (createdPost?.id) {
-        router.push(`/talk/${createdPost.id}`);
+        router.push(ROUTES.TALK.DETAIL(createdPost.id));
       } else {
-        router.push('/talk');
+        router.push(ROUTES.TALK.LIST);
       }
     } catch (err) {
       toast.error(

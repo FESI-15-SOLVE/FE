@@ -14,7 +14,11 @@ export const ROUTES = {
   },
   SAVED: '/saved',
   REVIEWS: '/reviews',
-  TALK: '/talk',
+  TALK: {
+    LIST: '/talk',
+    CREATE: '/talk/create',
+    DETAIL: (id: string | number) => `/talk/${id}`,
+  },
   MY_PAGE: {
     ROOT: '/mypage',
     INDEX: '/mypage',

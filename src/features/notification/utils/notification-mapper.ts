@@ -38,8 +38,8 @@ export function formatNotification(notif: Notification): FormattedNotification {
     case 'COMMENT':
       title = '새로운 댓글';
       targetHref = notif.data?.postId
-        ? `/talk`
-        : ROUTES.HOME;
+        ? ROUTES.TALK.DETAIL(notif.data.postId)
+        : ROUTES.TALK.LIST;
       break;
   }
 
