@@ -1,10 +1,13 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { Editor } from '@tiptap/react';
+import { Editor, useEditorState } from '@tiptap/react';
 import {
   Bold,
   Italic,
+  Underline,
+  AlignLeft,
+  AlignCenter,
   List,
   Image as ImageIcon,
 } from 'lucide-react';
@@ -16,6 +19,30 @@ export interface TiptapToolbarProps {
 
 export function TiptapToolbar({ editor }: TiptapToolbarProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const activeState = useEditorState({
+    editor,
+    selector: (ctx) => {
+      if (!ctx.editor) {
+        return {
+          isBold: false,
+          isItalic: false,
+          isUnderline: false,
+          isLeft: false,
+          isCenter: false,
+          isBulletList: false,
+        };
+      }
+      return {
+        isBold: ctx.editor.isActive('bold'),
+        isItalic: ctx.editor.isActive('italic'),
+        isUnderline: ctx.editor.isActive('underline'),
+        isLeft: ctx.editor.isActive({ textAlign: 'left' }),
+        isCenter: ctx.editor.isActive({ textAlign: 'center' }),
+        isBulletList: ctx.editor.isActive('bulletList'),
+      };
+    },
+  });
 
   if (!editor) return null;
 
@@ -49,7 +76,7 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
         onClick={() => editor.chain().focus().toggleBold().run()}
         className={cn(
           'p-1.5 rounded-md transition-colors cursor-pointer text-slate-600 hover:bg-slate-200/60',
-          editor.isActive('bold') && 'bg-slate-900 text-white hover:bg-slate-800',
+          activeState?.isBold && 'bg-slate-900 text-white hover:bg-slate-800',
         )}
         title="Bold (Ctrl+B)"
       >
@@ -62,15 +89,55 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
         onClick={() => editor.chain().focus().toggleItalic().run()}
         className={cn(
           'p-1.5 rounded-md transition-colors cursor-pointer text-slate-600 hover:bg-slate-200/60',
-          editor.isActive('italic') && 'bg-slate-900 text-white hover:bg-slate-800',
+          activeState?.isItalic && 'bg-slate-900 text-white hover:bg-slate-800',
         )}
         title="Italic (Ctrl+I)"
       >
         <Italic className="w-5 h-5" />
       </button>
 
+      {/* Underline */}
+      <button
+        type="button"
+        onClick={() => editor.chain().focus().toggleUnderline().run()}
+        className={cn(
+          'p-1.5 rounded-md transition-colors cursor-pointer text-slate-600 hover:bg-slate-200/60',
+          activeState?.isUnderline &&
+            'bg-slate-900 text-white hover:bg-slate-800',
+        )}
+        title="Underline (Ctrl+U)"
+      >
+        <Underline className="w-5 h-5" />
+      </button>
+
       {/* Divider */}
       <div className="h-5 w-[1px] bg-slate-300 mx-1" />
+
+      {/* Left Align */}
+      <button
+        type="button"
+        onClick={() => editor.chain().focus().setTextAlign('left').run()}
+        className={cn(
+          'p-1.5 rounded-md transition-colors cursor-pointer text-slate-600 hover:bg-slate-200/60',
+          activeState?.isLeft && 'bg-slate-900 text-white hover:bg-slate-800',
+        )}
+        title="Align Left"
+      >
+        <AlignLeft className="w-5 h-5" />
+      </button>
+
+      {/* Center Align */}
+      <button
+        type="button"
+        onClick={() => editor.chain().focus().setTextAlign('center').run()}
+        className={cn(
+          'p-1.5 rounded-md transition-colors cursor-pointer text-slate-600 hover:bg-slate-200/60',
+          activeState?.isCenter && 'bg-slate-900 text-white hover:bg-slate-800',
+        )}
+        title="Align Center"
+      >
+        <AlignCenter className="w-5 h-5" />
+      </button>
 
       {/* Bullet List */}
       <button
@@ -78,7 +145,8 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         className={cn(
           'p-1.5 rounded-md transition-colors cursor-pointer text-slate-600 hover:bg-slate-200/60',
-          editor.isActive('bulletList') && 'bg-slate-900 text-white hover:bg-slate-800',
+          activeState?.isBulletList &&
+            'bg-slate-900 text-white hover:bg-slate-800',
         )}
         title="Bullet List"
       >
