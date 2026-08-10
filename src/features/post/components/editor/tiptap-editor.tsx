@@ -9,7 +9,7 @@ import { Markdown } from '@tiptap/markdown';
 import { FileHandler } from '@tiptap/extension-file-handler';
 import { ImageUploadBlock } from './image-upload-block-extension';
 import { TiptapToolbar } from './tiptap-toolbar';
-import { useS3ImageUpload } from '../../hooks/use-s3-image-upload';
+import { uploadImage } from '../../hooks/use-s3-image-upload';
 
 export interface TiptapEditorProps {
   content?: string;
@@ -22,8 +22,6 @@ export function TiptapEditor({
   onEditorReady,
   placeholder = '본문 내용을 입력해주세요',
 }: TiptapEditorProps) {
-  const uploadImageRef = React.useRef<((file: File, pos?: number) => Promise<void>) | null>(null);
-
   // Tiptap 공식 패키지 기반 에디터 (immediatelyRender: false 필수!)
   const editor = useEditor({
     extensions: [
@@ -39,14 +37,14 @@ export function TiptapEditor({
       ImageUploadBlock,
       FileHandler.configure({
         allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
-        onDrop: (_editor, files, pos) => {
+        onDrop: (currentEditor, files, pos) => {
           files.forEach((file) => {
-            uploadImageRef.current?.(file, pos);
+            uploadImage(currentEditor, file, pos);
           });
         },
-        onPaste: (_editor, files) => {
+        onPaste: (currentEditor, files) => {
           files.forEach((file) => {
-            uploadImageRef.current?.(file);
+            uploadImage(currentEditor, file);
           });
         },
       }),
@@ -54,12 +52,6 @@ export function TiptapEditor({
     content,
     immediatelyRender: false, // SSR 하이드레이션 미스매치 방지 — 필수!
   });
-
-  const { uploadImage } = useS3ImageUpload(editor);
-
-  useEffect(() => {
-    uploadImageRef.current = uploadImage;
-  }, [uploadImage]);
 
   useEffect(() => {
     onEditorReady?.(editor);
@@ -74,7 +66,7 @@ export function TiptapEditor({
       {/* 툴바 */}
       <TiptapToolbar
         editor={editor}
-        onImageSelect={(file) => uploadImage(file)}
+        onImageSelect={(file) => uploadImage(editor, file)}
       />
 
       {/* 에디터 본문 영역 */}
