@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState, useRef, useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { MEDIA_QUERIES } from '@/constants/breakpoint';
 import { useMediaQuery } from '@/hooks/ui/use-media-query';
 import { cn } from '@/lib/utils';
@@ -25,15 +25,40 @@ import { useMarkAllNotificationsAsReadMutation } from '../hooks/use-notification
 export function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
   const isDesktop = useMediaQuery(MEDIA_QUERIES.sm);
-  const lastCountRef = useRef(0);
+  const isInitialRef = useRef(true);
+  const prevCountRef = useRef<number | undefined>(undefined);
+  const queryClient = useQueryClient();
 
-  const { data: unreadData } = useQuery(
-    notificationQueries.unreadCountQuery(lastCountRef),
-  );
+  const { data: unreadData } = useQuery(notificationQueries.unreadCountQuery());
   const markAllAsReadMutation = useMarkAllNotificationsAsReadMutation();
 
   const unreadCount = unreadData?.count ?? 0;
   const hasUnread = unreadCount > 0;
+
+  // 2대 프로덕션 가드: 첫 로드 오탐 방지 & 드롭다운 열림 상태별 분기 (reset vs invalidate)
+  useEffect(() => {
+    if (unreadCount === undefined) return;
+
+    // 가드 1: 앱 첫 진입 시 오탐 방지
+    if (isInitialRef.current || prevCountRef.current === undefined) {
+      isInitialRef.current = false;
+      prevCountRef.current = unreadCount;
+      return;
+    }
+
+    // 가드 2: 새 알림 감지 시 드롭다운 상태에 따라 reset / invalidate 분기
+    if (unreadCount > prevCountRef.current) {
+      if (!isOpen) {
+        // 닫혀 있을 때는 다음 오픈 시 스켈레톤 로딩을 위해 캐시 리셋
+        queryClient.resetQueries({ queryKey: notificationQueries.listKeys() });
+      } else {
+        // 열려 있을 때는 읽던 화면 유지를 위해 백그라운드 자연스러운 갱신
+        queryClient.invalidateQueries({ queryKey: notificationQueries.listKeys() });
+      }
+    }
+
+    prevCountRef.current = unreadCount;
+  }, [unreadCount, isOpen, queryClient]);
 
   // 종 모양 아이콘 트리거 버튼
   const TriggerButton = (

@@ -16,7 +16,7 @@ export function NotificationList({
   className,
   isOpen = false,
 }: NotificationListProps) {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isFetching } =
     useInfiniteQuery(notificationQueries.listQuery({}, isOpen));
 
   const observerRef = useIntersectionObserver<HTMLDivElement>({
@@ -26,7 +26,8 @@ export function NotificationList({
 
   const notifications = data?.pages.flatMap((p) => p.data ?? []) ?? [];
 
-  if (isLoading) {
+  // 캐시 재요청 중이거나 로딩 중일 때 스켈레톤 보장 (EmptyState 튀김 방지)
+  if (isLoading || (isFetching && notifications.length === 0)) {
     return (
       <div className="flex flex-col gap-2 p-4 animate-pulse">
         <div className="h-16 w-full rounded-xl bg-slate-100" />
