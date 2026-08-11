@@ -1,12 +1,19 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { jwtDecode } from 'jwt-decode';
-import { setAuthCookies, clearAuthCookies } from '@/features/auth/lib/auth-cookies';
+import {
+  setAuthCookies,
+  clearAuthCookies,
+} from '@/features/auth/lib/auth-cookies';
 
 import { ROUTES } from '@/constants/routes';
 
 // 로그인이 필수로 요구되는 경로들
-const REQUIRED_AUTH_PATHS = [ROUTES.MY_PAGE.ROOT, ROUTES.SAVED];
+const REQUIRED_AUTH_PATHS = [
+  ROUTES.MY_PAGE.ROOT,
+  ROUTES.SAVED,
+  ROUTES.TALK.CREATE,
+];
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;

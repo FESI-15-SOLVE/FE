@@ -15,10 +15,13 @@ export const GET = withErrorHandler<RouteContext<{ id: string }>>(
       );
     }
 
-    const res = await ServerApi.posts.getPostDetail({
-      teamId: TEAM_ID,
-      postId,
-    });
+    const res = await ServerApi.posts.getPostDetail(
+      {
+        teamId: TEAM_ID,
+        postId,
+      },
+      { next: { revalidate: 1 }, secure: false },
+    );
 
     return NextResponse.json(res.data, { status: res.status });
   },
