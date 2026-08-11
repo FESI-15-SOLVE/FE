@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { PostCreateForm } from '@/features/post/components/post-create-form';
+import { PostForm } from '@/features/post/components/form/post-form';
 
 export const metadata: Metadata = {
   title: '게시글 작성 | 같이달램 달렘토크',
@@ -10,7 +10,7 @@ export default function TalkCreatePage() {
   return (
     <main className="w-full min-h-screen bg-[#f6f7f9] flex flex-col items-center">
       <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-        <PostCreateForm />
+        <PostForm mode="create" />
       </div>
     </main>
   );

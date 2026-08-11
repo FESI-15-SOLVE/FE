@@ -1,7 +1,12 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useEditor, EditorContent, Editor, useEditorState } from '@tiptap/react';
+import {
+  useEditor,
+  EditorContent,
+  Editor,
+  useEditorState,
+} from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -31,7 +36,10 @@ function TiptapCharacterCount({ editor }: { editor: Editor | null }) {
       if (!ctx.editor) return { withSpace: 0, noSpace: 0 };
       const storageCount = ctx.editor.storage.characterCount?.characters();
       const text = ctx.editor.getText();
-      const withSpace = typeof storageCount === 'number' && storageCount > 0 ? storageCount : text.length;
+      const withSpace =
+        typeof storageCount === 'number' && storageCount > 0
+          ? storageCount
+          : text.length;
       const noSpace = text.replace(/\s/g, '').length;
       return { withSpace, noSpace };
     },
@@ -133,13 +141,13 @@ export function TiptapEditor({
   }, [editor, onEditorReady]);
 
   return (
-    <div className="flex flex-col flex-1 w-full bg-white rounded-[40px] p-6 sm:p-10 border border-slate-100 shadow-xs">
+    <div className="flex flex-col flex-1 w-full bg-white rounded-2xl sm:rounded-[40px] p-2 sm:p-10 border border-slate-100 shadow-xs">
       {/* 툴바 */}
       <TiptapToolbar editor={editor} />
 
       {/* 에디터 본문 영역 (부모 높이 100% 장악 + 클릭 시 자동 포커스) */}
       <div
-        className="flex-1 flex flex-col w-full min-h-[320px] sm:min-h-[460px] py-4 sm:py-6 px-2 overflow-y-auto cursor-text"
+        className="flex-1 flex flex-col w-full min-h-[320px] sm:min-h-[460px] py-3 sm:py-6 px-1 sm:px-2 overflow-y-auto cursor-text"
         onClick={() => editor?.chain().focus().run()}
       >
         <EditorContent

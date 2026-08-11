@@ -18,6 +18,7 @@ export const ROUTES = {
     LIST: '/talk',
     CREATE: '/talk/create',
     DETAIL: (id: string | number) => `/talk/${id}`,
+    EDIT: (id: string | number) => `/talk/${id}/edit`,
   },
   MY_PAGE: {
     ROOT: '/mypage',

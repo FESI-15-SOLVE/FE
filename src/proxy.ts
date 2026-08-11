@@ -17,9 +17,9 @@ const REQUIRED_AUTH_PATHS = [
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  const isRequiredAuth = REQUIRED_AUTH_PATHS.some((p) =>
-    pathname.startsWith(p),
-  );
+  const isRequiredAuth =
+    REQUIRED_AUTH_PATHS.some((p) => pathname.startsWith(p)) ||
+    (pathname.startsWith('/talk/') && pathname.endsWith('/edit'));
 
   const accessToken = request.cookies.get('accessToken')?.value;
   const refreshToken = request.cookies.get('refreshToken')?.value;

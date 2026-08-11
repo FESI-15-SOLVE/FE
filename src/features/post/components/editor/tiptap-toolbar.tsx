@@ -59,7 +59,7 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
   };
 
   return (
-    <div className="bg-[#f6f7f9] flex items-center gap-1 px-6 py-4 rounded-[24px] w-full shrink-0 select-none">
+    <div className="bg-slate-50 flex items-center gap-1 sm:gap-1.5 px-5 sm:px-6 py-3.5 sm:py-4 rounded-3xl w-full shrink-0 select-none border border-slate-100">
       {/* Hidden File Input */}
       <input
         ref={fileInputRef}
@@ -75,8 +75,8 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
         type="button"
         onClick={() => editor.chain().focus().toggleBold().run()}
         className={cn(
-          'p-1.5 rounded-md transition-colors cursor-pointer text-slate-600 hover:bg-slate-200/60',
-          activeState?.isBold && 'bg-slate-900 text-white hover:bg-slate-800',
+          'p-1.5 sm:p-2 rounded-lg transition-colors cursor-pointer text-slate-400 hover:text-slate-700 hover:bg-slate-200/50',
+          activeState?.isBold && 'text-green-500 bg-green-50 font-semibold hover:bg-green-100/70',
         )}
         title="Bold (Ctrl+B)"
       >
@@ -88,8 +88,8 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
         type="button"
         onClick={() => editor.chain().focus().toggleItalic().run()}
         className={cn(
-          'p-1.5 rounded-md transition-colors cursor-pointer text-slate-600 hover:bg-slate-200/60',
-          activeState?.isItalic && 'bg-slate-900 text-white hover:bg-slate-800',
+          'p-1.5 sm:p-2 rounded-lg transition-colors cursor-pointer text-slate-400 hover:text-slate-700 hover:bg-slate-200/50',
+          activeState?.isItalic && 'text-green-500 bg-green-50 font-semibold hover:bg-green-100/70',
         )}
         title="Italic (Ctrl+I)"
       >
@@ -101,9 +101,9 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
         type="button"
         onClick={() => editor.chain().focus().toggleUnderline().run()}
         className={cn(
-          'p-1.5 rounded-md transition-colors cursor-pointer text-slate-600 hover:bg-slate-200/60',
+          'p-1.5 sm:p-2 rounded-lg transition-colors cursor-pointer text-slate-400 hover:text-slate-700 hover:bg-slate-200/50',
           activeState?.isUnderline &&
-            'bg-slate-900 text-white hover:bg-slate-800',
+            'text-green-500 bg-green-50 font-semibold hover:bg-green-100/70',
         )}
         title="Underline (Ctrl+U)"
       >
@@ -111,15 +111,15 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
       </button>
 
       {/* Divider */}
-      <div className="h-5 w-[1px] bg-slate-300 mx-1" />
+      <div className="h-6 w-[1px] bg-slate-200 mx-1 sm:mx-2" />
 
       {/* Left Align */}
       <button
         type="button"
         onClick={() => editor.chain().focus().setTextAlign('left').run()}
         className={cn(
-          'p-1.5 rounded-md transition-colors cursor-pointer text-slate-600 hover:bg-slate-200/60',
-          activeState?.isLeft && 'bg-slate-900 text-white hover:bg-slate-800',
+          'p-1.5 sm:p-2 rounded-lg transition-colors cursor-pointer text-slate-400 hover:text-slate-700 hover:bg-slate-200/50',
+          activeState?.isLeft && 'text-green-500 bg-green-50 font-semibold hover:bg-green-100/70',
         )}
         title="Align Left"
       >
@@ -131,8 +131,8 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
         type="button"
         onClick={() => editor.chain().focus().setTextAlign('center').run()}
         className={cn(
-          'p-1.5 rounded-md transition-colors cursor-pointer text-slate-600 hover:bg-slate-200/60',
-          activeState?.isCenter && 'bg-slate-900 text-white hover:bg-slate-800',
+          'p-1.5 sm:p-2 rounded-lg transition-colors cursor-pointer text-slate-400 hover:text-slate-700 hover:bg-slate-200/50',
+          activeState?.isCenter && 'text-green-500 bg-green-50 font-semibold hover:bg-green-100/70',
         )}
         title="Align Center"
       >
@@ -144,9 +144,9 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
         type="button"
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         className={cn(
-          'p-1.5 rounded-md transition-colors cursor-pointer text-slate-600 hover:bg-slate-200/60',
+          'p-1.5 sm:p-2 rounded-lg transition-colors cursor-pointer text-slate-400 hover:text-slate-700 hover:bg-slate-200/50',
           activeState?.isBulletList &&
-            'bg-slate-900 text-white hover:bg-slate-800',
+            'text-green-500 bg-green-50 font-semibold hover:bg-green-100/70',
         )}
         title="Bullet List"
       >
@@ -154,13 +154,13 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
       </button>
 
       {/* Divider */}
-      <div className="h-5 w-[1px] bg-slate-300 mx-1" />
+      <div className="h-6 w-[1px] bg-slate-200 mx-1 sm:mx-2" />
 
       {/* Insert Image */}
       <button
         type="button"
         onClick={() => fileInputRef.current?.click()}
-        className="p-1.5 rounded-md transition-colors cursor-pointer text-slate-600 hover:bg-slate-200/60"
+        className="p-1.5 sm:p-2 rounded-lg transition-colors cursor-pointer text-slate-400 hover:text-slate-700 hover:bg-slate-200/50"
         title="Insert Image"
       >
         <ImageIcon className="w-5 h-5" />
