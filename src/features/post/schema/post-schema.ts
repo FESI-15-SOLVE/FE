@@ -31,3 +31,37 @@ export const deletePostSchema = z.object({
 });
 
 export type DeletePostFormValues = z.infer<typeof deletePostSchema>;
+
+export const postIdParamSchema = z.object({
+  postId: z.number().int().positive(),
+});
+
+export const createCommentSchema = z.object({
+  postId: z.number().int().positive(),
+  content: z
+    .string()
+    .trim()
+    .min(1, '댓글 내용을 입력해 주세요.')
+    .max(1000, '댓글은 최대 1000자까지 작성 가능합니다.'),
+});
+
+export const updateCommentSchema = z.object({
+  postId: z.number().int().positive(),
+  commentId: z.number().int().positive(),
+  content: z
+    .string()
+    .trim()
+    .min(1, '댓글 내용을 입력해 주세요.')
+    .max(1000, '댓글은 최대 1000자까지 작성 가능합니다.'),
+});
+
+export const deleteCommentSchema = z.object({
+  postId: z.number().int().positive(),
+  commentId: z.number().int().positive(),
+});
+
+export const commentIdParamSchema = z.object({
+  postId: z.number().int().positive(),
+  commentId: z.number().int().positive(),
+});
+
