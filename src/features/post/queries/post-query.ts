@@ -34,6 +34,8 @@ export const postQueries = {
     queryOptions({
       queryKey: postQueries.hotKey(),
       queryFn: customQueryFn ?? (async () => fetchHotPosts()),
+      staleTime: 0,
+      gcTime: 0,
     }),
 
   listQuery: (filters: PostListFilters, customQueryFn?: PostQueryFn) =>
@@ -52,6 +54,8 @@ export const postQueries = {
             limit,
           });
         }),
+      staleTime: 0,
+      gcTime: 0,
     }),
 
   detailQuery: (id: number, customQueryFn?: PostDetailQueryFn) =>
@@ -59,5 +63,6 @@ export const postQueries = {
       queryKey: postQueries.detailKey(id),
       queryFn: customQueryFn ?? (async () => fetchPostDetail(id)),
       enabled: Boolean(id),
+      staleTime: 10 * 1000,
     }),
 };

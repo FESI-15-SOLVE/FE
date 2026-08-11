@@ -20,7 +20,7 @@ export const GET = withErrorHandler<RouteContext<{ id: string }>>(
         teamId: TEAM_ID,
         postId,
       },
-      { next: { revalidate: 1 }, secure: false },
+      { cache: 'no-store' },
     );
 
     return NextResponse.json(res.data, { status: res.status });

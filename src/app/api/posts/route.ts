@@ -45,7 +45,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
       offset,
       limit,
     },
-    { next: { revalidate: 1 }, secure: false },
+    { next: { revalidate: 1 } },
   );
 
   return NextResponse.json(res.data, { status: res.status });

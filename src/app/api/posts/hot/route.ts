@@ -13,7 +13,7 @@ export const GET = withErrorHandler(async () => {
       type: 'best',
       size: 4,
     },
-    { next: { revalidate: 60 }, secure: false },
+    { next: { revalidate: 60 } },
   );
 
   return NextResponse.json(res.data, { status: res.status });
