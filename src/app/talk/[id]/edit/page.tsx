@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import {
   QueryClient,
   HydrationBoundary,
@@ -9,6 +9,7 @@ import { ServerApi } from '@/api/server-api';
 import { TEAM_ID } from '@/constants/api';
 import { postQueries } from '@/features/post/queries/post-query';
 import { PostEditView } from '@/features/post/components/form/post-edit-view';
+import { ROUTES } from '@/constants/routes';
 
 interface TalkEditPageProps {
   params: Promise<{ id: string }>;
@@ -56,21 +57,33 @@ export default async function TalkEditPage({ params }: TalkEditPageProps) {
     notFound();
   }
 
-  const queryClient = new QueryClient();
+  let post;
+  let me;
 
   try {
-    await queryClient.prefetchQuery(
-      postQueries.detailQuery(numericId, async () => {
-        const res = await ServerApi.posts.getPostDetail({
-          teamId: TEAM_ID,
-          postId: numericId,
-        });
-        return res.data;
-      }),
-    );
+    const [postRes, userRes] = await Promise.all([
+      ServerApi.posts.getPostDetail({ teamId: TEAM_ID, postId: numericId }),
+      ServerApi.users.getMyProfile({ teamId: TEAM_ID }),
+    ]);
+    post = postRes.data;
+    me = userRes.data;
   } catch {
-    notFound();
+    // 인증 실패 또는 404/403 에러 시 게시글 상세 페이지로 안전 리다이렉트
+    redirect(ROUTES.TALK.DETAIL(numericId));
   }
+
+  // 여기부턴 fetch 성공이 보장된 상태 — try/catch 밖
+  const isAuthor = Boolean(
+    me?.id && (post.authorId === me.id || post.author?.id === me.id),
+  );
+
+  if (!isAuthor) {
+    // 작성자가 아닌 사용자가 URL로 접근 시 SSR 레벨에서 즉시 차단 및 리다이렉트
+    redirect(ROUTES.TALK.DETAIL(numericId));
+  }
+
+  const queryClient = new QueryClient();
+  queryClient.setQueryData(postQueries.detailKey(numericId), post);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
