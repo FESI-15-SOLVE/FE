@@ -23,8 +23,8 @@ export function PublicReviewCard({ review }: PublicReviewCardProps) {
   const userImage = review.user?.image;
 
   return (
-    <div className="flex flex-col sm:flex-row items-start gap-6 sm:gap-8 w-full bg-white pb-6 pt-4 border-b border-slate-200 last:border-b-0">
-      {/* 썸네일 이미지 */}
+    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 w-full bg-white pb-6 pt-4 border-b border-slate-200 last:border-b-0">
+      {/* 썸네일 이미지 (Figma 184px x 184px, rounded-3xl) */}
       {meetingImage ? (
         <div className="relative w-full sm:w-46 h-46 shrink-0 rounded-3xl overflow-hidden bg-slate-100">
           <Image
@@ -41,13 +41,13 @@ export function PublicReviewCard({ review }: PublicReviewCardProps) {
         </div>
       )}
 
-      {/* 본문 콘텐츠 */}
-      <div className="flex flex-col justify-between flex-1 min-w-0 w-full gap-4 sm:gap-6">
+      {/* 오른쪽 콘텐츠 영역 */}
+      <div className="flex flex-col justify-center flex-1 min-w-0 w-full gap-6 pb-6 pt-4">
         {/* 헤더: 평점 하트 + 프로필 아바타 & 작성일 */}
         <div className="flex flex-col gap-1.5">
           <RatingDisplay score={review.score} size="md" />
 
-          <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-400 font-medium">
+          <div className="flex items-center gap-1.5 text-xs sm:text-sm text-slate-500 font-normal leading-5 tracking-[-0.28px]">
             {userImage ? (
               <div className="relative w-6 h-6 rounded-full overflow-hidden shrink-0 bg-slate-200">
                 <Image
@@ -63,17 +63,19 @@ export function PublicReviewCard({ review }: PublicReviewCardProps) {
               </div>
             )}
             <span>{userName}</span>
-            <span>{formattedDate}</span>
+            <div className="flex items-center gap-2">
+              <span>{formattedDate}</span>
+            </div>
           </div>
         </div>
 
-        {/* 리뷰 내용 및 서브타이틀 */}
+        {/* 리뷰 본문 내용 및 모임 정보 서브타이틀 */}
         <div className="flex flex-col gap-2 w-full">
-          <p className="text-base sm:text-lg font-normal text-slate-800 leading-relaxed whitespace-pre-wrap break-words">
+          <p className="px-0.5 text-base sm:text-lg font-normal leading-7 text-slate-700 tracking-[-0.36px] whitespace-pre-wrap break-words">
             {review.comment}
           </p>
 
-          <div className="flex items-center gap-1.5 text-xs sm:text-sm text-slate-400 font-medium pt-1">
+          <div className="flex items-center gap-1 px-0.5 text-xs sm:text-sm font-medium leading-5 tracking-[-0.28px] text-slate-500">
             <span>{meetingName}</span>
             {meetingType && (
               <>
@@ -87,3 +89,4 @@ export function PublicReviewCard({ review }: PublicReviewCardProps) {
     </div>
   );
 }
+
