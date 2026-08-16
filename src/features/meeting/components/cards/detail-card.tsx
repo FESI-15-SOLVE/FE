@@ -31,7 +31,7 @@ export interface DetailCardProps {
  * Figma Node: 13976:63499 (Detail Card)
  *
  * meeting 객체 중심의 마이페이지/세부 모임 정보 카드 컴포넌트.
- * 이용 완료 + 미리뷰 상태인 경우 리뷰 작성 모달을 내부에서 관리한다.
+ * 이용 완료 상태인 경우 리뷰 작성 모달을 내부에서 관리한다.
  */
 export function DetailCard({
   meeting,
@@ -193,8 +193,8 @@ export function DetailCard({
         </div>
       </Card>
 
-      {/* 리뷰 작성 모달: 이용 완료 + 미리뷰 상태인 경우에만 렌더 */}
-      {isCompleted && !isReviewed && (
+      {/* 리뷰 작성 모달: 이용 완료 상태인 경우 렌더 (열림 상태로 종료 흐름 보장) */}
+      {isCompleted && (
         <WriteReviewModal
           key={`write-${meeting.id}`}
           isOpen={isWriteModalOpen}

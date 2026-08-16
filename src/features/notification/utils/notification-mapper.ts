@@ -1,6 +1,6 @@
 import { Notification } from '@/api/data-contracts';
 import { ROUTES } from '@/constants/routes';
-import { formatDistanceToNowStrict } from 'date-fns';
+import { formatDistanceToNowStrict, isValid } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
 export interface FormattedNotification {
@@ -43,12 +43,14 @@ export function formatNotification(notif: Notification): FormattedNotification {
       break;
   }
 
-  const timeAgo = notif.createdAt
-    ? formatDistanceToNowStrict(new Date(notif.createdAt), {
-        addSuffix: true,
-        locale: ko,
-      })
-    : '';
+  const parsedDate = notif.createdAt ? new Date(notif.createdAt) : null;
+  const timeAgo =
+    parsedDate && isValid(parsedDate)
+      ? formatDistanceToNowStrict(parsedDate, {
+          addSuffix: true,
+          locale: ko,
+        })
+      : '';
 
   return {
     id: notif.id,

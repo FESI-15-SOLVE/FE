@@ -32,6 +32,12 @@ export function useIntersectionObserver<
   rootMargin = '0px',
 }: UseIntersectionObserverOptions) {
   const ref = useRef<T | null>(null);
+  const onIntersectRef = useRef(onIntersect);
+
+  // 콜백 함수를 ref로 최신화하여 렌더링마다 옵저버가 재구독되는 낭비 방지
+  useEffect(() => {
+    onIntersectRef.current = onIntersect;
+  }, [onIntersect]);
 
   useEffect(() => {
     if (!ref.current || !enabled) return;
@@ -39,7 +45,7 @@ export function useIntersectionObserver<
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && enabled) {
-          onIntersect();
+          onIntersectRef.current();
         }
       },
       { threshold, rootMargin },
@@ -48,7 +54,7 @@ export function useIntersectionObserver<
     observer.observe(ref.current);
 
     return () => observer.disconnect();
-  }, [enabled, onIntersect, threshold, rootMargin]);
+  }, [enabled, threshold, rootMargin]);
 
   return ref;
 }
