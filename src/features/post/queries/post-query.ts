@@ -1,7 +1,4 @@
-import {
-  queryOptions,
-  QueryFunctionContext,
-} from '@tanstack/react-query';
+import { queryOptions, QueryFunctionContext } from '@tanstack/react-query';
 import { PostList, PostWithComments } from '@/api/data-contracts';
 import { fetchPosts, fetchHotPosts, fetchPostDetail } from '../api/fetch-posts';
 import { PostSortBy } from '../schema/post-search-params';
@@ -28,14 +25,14 @@ export const postQueries = {
     [...postQueries.listKeys(), filters] as const,
 
   hotKey: () => [...postQueries.all(), 'hot'] as const,
-  detailKey: (id: number) => [...postQueries.all(), 'detail', String(id)] as const,
+  detailKey: (id: number) =>
+    [...postQueries.all(), 'detail', String(id)] as const,
 
   hotQuery: (customQueryFn?: PostQueryFn) =>
     queryOptions({
       queryKey: postQueries.hotKey(),
       queryFn: customQueryFn ?? (async () => fetchHotPosts()),
       staleTime: 0,
-      gcTime: 0,
     }),
 
   listQuery: (filters: PostListFilters, customQueryFn?: PostQueryFn) =>
@@ -55,7 +52,6 @@ export const postQueries = {
           });
         }),
       staleTime: 0,
-      gcTime: 0,
     }),
 
   detailQuery: (id: number, customQueryFn?: PostDetailQueryFn) =>

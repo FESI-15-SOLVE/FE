@@ -87,7 +87,7 @@ export default async function TalkEditPage({ params }: TalkEditPageProps) {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <main className="w-full min-h-screen bg-[#f6f7f9] flex flex-col items-center">
+      <main className="w-full min-h-screen flex flex-col items-center">
         <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
           <PostEditView postId={numericId} />
         </div>

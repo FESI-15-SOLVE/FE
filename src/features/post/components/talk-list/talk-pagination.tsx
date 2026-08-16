@@ -18,12 +18,17 @@ export function TalkPagination({
 
   const totalPages = Math.ceil(totalCount / pageSize);
 
+  const handlePageChange = (page: number) => {
+    setParams({ page });
+    window.scrollTo({ top: 0 });
+  };
+
   return (
     <div className="flex justify-center w-full pt-6 items-center">
       <MeetingPagination
         currentPage={params.page}
         totalPages={totalPages}
-        onNavigate={(page) => setParams({ page })}
+        onNavigate={handlePageChange}
         size="lg"
         className="justify-center"
       />
