@@ -16,3 +16,9 @@ export const reviewSearchParams = {
 
 export const reviewSearchParamsCache =
   createSearchParamsCache(reviewSearchParams);
+
+export type ReviewSearchParams = Awaited<
+  ReturnType<typeof reviewSearchParamsCache.parse>
+>;
+
+

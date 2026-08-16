@@ -21,9 +21,8 @@ export function AllReviewsContainer() {
     enabled: hasNextPage && !isFetchingNextPage,
   });
 
-
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto flex flex-col gap-8">
         {/* 페이지 타이틀 & 헤더 */}
         <AllReviewsHeader />
