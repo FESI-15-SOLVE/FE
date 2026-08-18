@@ -2,13 +2,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { produce } from 'immer';
 import { meetingQueries } from '../queries/meeting-query';
 import { MeetingWithHost, MeetingList } from '@/api/data-contracts';
-import { toast } from 'sonner';
 import {
   joinMeetingAction,
   leaveMeetingAction,
 } from '@/actions/meeting/meeting-actions';
 import { unwrapAction } from '@/lib/safe-action';
-import { ErrorResponse } from '@/lib/error-response';
 
 export function useJoinMeeting() {
   const queryClient = useQueryClient();
@@ -22,26 +20,21 @@ export function useJoinMeeting() {
       isJoined: boolean;
     }) => {
       if (isJoined) {
-        unwrapAction(
-          await leaveMeetingAction({ meetingId }),
-        );
+        unwrapAction(await leaveMeetingAction({ meetingId }));
       } else {
         unwrapAction(await joinMeetingAction({ meetingId }));
       }
     },
 
-    onError: (err) => {
-      toast.error(
-        err instanceof ErrorResponse
-          ? err.message
-          : '참여 처리 중 오류가 발생했습니다.',
-      );
+    meta: {
+      toastMessage: (vars: unknown) => {
+        const { isJoined } = vars as { meetingId: number; isJoined: boolean };
+        return isJoined ? '참여가 취소되었습니다.' : '참여 신청이 완료되었습니다.';
+      },
+      errorMessage: '참여 처리 중 오류가 발생했습니다.',
     },
 
     onSuccess: (_data, { meetingId, isJoined }) => {
-      toast.success(
-        isJoined ? '참여가 취소되었습니다.' : '참여 신청이 완료되었습니다.',
-      );
 
       const detailKey = meetingQueries.detailKey(meetingId);
       const listKeys = meetingQueries.listKeys();

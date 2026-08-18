@@ -8,8 +8,6 @@ import {
   MeetingList,
   FavoriteList,
 } from '@/api/data-contracts';
-import { toast } from 'sonner';
-import { ErrorResponse } from '@/lib/error-response';
 
 export function useToggleFavorite() {
   const queryClient = useQueryClient();
@@ -29,6 +27,14 @@ export function useToggleFavorite() {
       }
     },
 
+    meta: {
+      toastMessage: (vars: unknown) => {
+        const { isSaved } = vars as { meetingId: number; isSaved: boolean };
+        return isSaved ? '찜 목록에서 삭제되었습니다.' : '찜 목록에 추가되었습니다.';
+      },
+      errorMessage: '찜 처리 중 오류가 발생했습니다.',
+    },
+
     // 1. onMutate: 낙관적 업데이트 (메모리 캐시 패치)
     onMutate: async ({ meetingId, isSaved }) => {
       const detailKey = meetingQueries.detailKey(meetingId);
@@ -36,7 +42,7 @@ export function useToggleFavorite() {
       const favListKeys = favoriteQueries.listKeys();
       const countKey = favoriteQueries.countKey();
 
-      // 병렬 취소로 레이스 조건 방지 (countKey 취소 포함)
+      // 병렬 취소로 레이스 조건 방지
       await Promise.all([
         queryClient.cancelQueries({ queryKey: detailKey }),
         queryClient.cancelQueries({ queryKey: listKeys }),
@@ -49,14 +55,10 @@ export function useToggleFavorite() {
         queryClient.getQueryData<MeetingWithHost>(detailKey);
       const previousLists = queryClient.getQueriesData<{
         pages?: MeetingList[];
-      }>({
-        queryKey: listKeys,
-      });
+      }>({ queryKey: listKeys });
       const previousFavLists = queryClient.getQueriesData<{
         pages?: FavoriteList[];
-      }>({
-        queryKey: favListKeys,
-      });
+      }>({ queryKey: favListKeys });
       const previousCount = queryClient.getQueryData<{ count: number }>(
         countKey,
       );
@@ -98,12 +100,9 @@ export function useToggleFavorite() {
               } else {
                 const item = page.data?.find(
                   (i) =>
-                    i.meetingId === meetingId ||
-                    i.meeting?.id === meetingId,
+                    i.meetingId === meetingId || i.meeting?.id === meetingId,
                 );
-                if (item?.meeting) {
-                  item.meeting.isFavorited = true;
-                }
+                if (item?.meeting) item.meeting.isFavorited = true;
               }
             });
           }),
@@ -119,41 +118,24 @@ export function useToggleFavorite() {
       return { previousDetail, previousLists, previousFavLists, previousCount };
     },
 
-    // 2. onError: 실패 시 스냅샷으로 정밀 롤백
-    onError: (err, { meetingId }, context) => {
+    // 2. onError: 실패 시 스냅샷으로 정밀 롤백 (toast는 MutationCache에서 처리)
+    onError: (_err, { meetingId }, context) => {
       if (context?.previousDetail) {
         queryClient.setQueryData(
           meetingQueries.detailKey(meetingId),
           context.previousDetail,
         );
       }
-      if (context?.previousLists) {
-        context.previousLists.forEach(([key, data]) => {
-          queryClient.setQueryData(key, data);
-        });
-      }
-      if (context?.previousFavLists) {
-        context.previousFavLists.forEach(([key, data]) => {
-          queryClient.setQueryData(key, data);
-        });
-      }
+      context?.previousLists?.forEach(([key, data]) =>
+        queryClient.setQueryData(key, data),
+      );
+      context?.previousFavLists?.forEach(([key, data]) =>
+        queryClient.setQueryData(key, data),
+      );
       if (context?.previousCount !== undefined) {
         queryClient.setQueryData(
           favoriteQueries.countKey(),
           context.previousCount,
-        );
-      }
-      toast.error(
-        err instanceof ErrorResponse
-          ? err.message
-          : '찜 처리 중 오류가 발생했습니다. (로그인이 필요할 수 있습니다)',
-      );
-    },
-    // 3. onSettled: 성공 토스트 알림만 수행 (낙관적 업데이트 유지)
-    onSettled: (_data, error, { isSaved }) => {
-      if (!error) {
-        toast.success(
-          isSaved ? '찜 목록에서 삭제되었습니다.' : '찜 목록에 추가되었습니다.',
         );
       }
     },
