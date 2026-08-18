@@ -25,7 +25,7 @@ vi.mock('@/lib/safe-action', async (importOriginal) => {
   return await importOriginal();
 });
 
-// TiptapEditor 모킹: 마운트 시 1회만 editor 및 내용 초기화 (무한 리렌더 방지)
+// TiptapEditor 모킹: 마운트 시 1회만 editor 및 내용 초기화 (무한 리렌더 루프 방지)
 vi.mock('../../editor/tiptap-editor', () => ({
   TiptapEditor: ({
     onEditorReady,
@@ -124,9 +124,10 @@ describe('PostForm 컴포넌트', () => {
 
     const titleInput = screen.getByPlaceholderText('제목을 입력해주세요') as HTMLInputElement;
     expect(titleInput.value).toBe('수정할 게시글 제목');
-    expect(screen.getByRole('button', { name: '수정' })).toBeInTheDocument();
 
     const submitBtn = screen.getByRole('button', { name: '수정' });
+    await waitFor(() => expect(submitBtn).toBeEnabled());
+
     await user.click(submitBtn);
 
     await waitFor(() => {
