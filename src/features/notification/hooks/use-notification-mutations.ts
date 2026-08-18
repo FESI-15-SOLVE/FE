@@ -15,6 +15,9 @@ export function useMarkNotificationAsReadMutation() {
     mutationFn: async (notificationId: number) => {
       return unwrapAction(await markNotificationAsReadAction({ notificationId }));
     },
+    meta: {
+      errorMessage: '알림 읽음 처리에 실패했습니다.',
+    },
     onMutate: async (notificationId) => {
       // 1. 진행 중인 백그라운드 재요청 취소 (경쟁 상태 방지)
       await queryClient.cancelQueries({
@@ -83,6 +86,9 @@ export function useMarkAllNotificationsAsReadMutation() {
   return useMutation({
     mutationFn: async () => {
       return unwrapAction(await markAllNotificationsAsReadAction());
+    },
+    meta: {
+      errorMessage: '전체 알림 읽음 처리에 실패했습니다.',
     },
     onMutate: async () => {
       // 1. 진행 중인 백그라운드 재요청 취소 (경쟁 상태 방지)

@@ -4,8 +4,6 @@ import { updateReviewAction } from '@/actions/review/review-actions';
 import { unwrapAction } from '@/lib/safe-action';
 import { reviewQueries } from '../queries/review-query';
 import { UserReviewsResponse } from '@/api/data-contracts';
-import { toast } from 'sonner';
-import { ErrorResponse } from '@/lib/error-response';
 
 export interface UpdateReviewPayload {
   reviewId: number;
@@ -21,9 +19,12 @@ export function useUpdateReviewMutation() {
       return unwrapAction(await updateReviewAction(payload));
     },
 
-    onSuccess: (_data, { reviewId, score, comment }) => {
-      toast.success('리뷰가 수정되었습니다.');
+    meta: {
+      toastMessage: '리뷰가 수정되었습니다.',
+      errorMessage: '리뷰 수정 중 오류가 발생했습니다.',
+    },
 
+    onSuccess: (_data, { reviewId, score, comment }) => {
       // 내 리뷰 무한스크롤 캐시에서 수정된 항목만 정밀 패치 (목록 전체 리셋 방지)
       queryClient.setQueriesData<{ pages?: UserReviewsResponse[] }>(
         { queryKey: reviewQueries.myWrittenListKeys() },
@@ -37,14 +38,6 @@ export function useUpdateReviewMutation() {
               }
             });
           }),
-      );
-    },
-
-    onError: (err) => {
-      toast.error(
-        err instanceof ErrorResponse
-          ? err.message
-          : '리뷰 수정 중 오류가 발생했습니다.',
       );
     },
   });
