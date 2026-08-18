@@ -6,7 +6,6 @@ import { createCommentAction } from '@/actions/post/post-actions';
 import { unwrapAction } from '@/lib/safe-action';
 import { postQueries } from '../queries/post-query';
 import { useAuthAction } from '@/hooks/use-auth-action';
-import { ErrorResponse } from '@/lib/error-response';
 
 export function useCreateComment(postId: number, onSuccessCallback?: () => void) {
   const queryClient = useQueryClient();
@@ -16,15 +15,13 @@ export function useCreateComment(postId: number, onSuccessCallback?: () => void)
     mutationFn: async (content: string) => {
       return unwrapAction(await createCommentAction({ postId, content }));
     },
+    meta: {
+      toastMessage: '댓글이 작성되었습니다.',
+      errorMessage: '댓글 작성에 실패했습니다.',
+    },
     onSuccess: () => {
-      toast.success('댓글이 작성되었습니다.');
       onSuccessCallback?.();
       queryClient.invalidateQueries({ queryKey: postQueries.detailKey(postId) });
-    },
-    onError: (err) => {
-      toast.error(
-        err instanceof ErrorResponse ? err.message : '댓글 작성에 실패했습니다.',
-      );
     },
   });
 

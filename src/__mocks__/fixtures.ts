@@ -1,4 +1,4 @@
-import { MeetingWithHost, User } from '@/api/data-contracts';
+import { MeetingWithHost, User, PostWithComments } from '@/api/data-contracts';
 
 /**
  * 테스트용 User Mock 생성 팩토리 함수
@@ -24,7 +24,7 @@ export const createMockMeeting = (overrides?: Partial<MeetingWithHost>): Meeting
   name: '테스트 모임',
   type: '달램핏',
   region: '서울',
-  address: '서울 강남구 역삼동   101호',
+  address: '서울 강남구 역삼동 101호',
   latitude: 37.5,
   longitude: 127.0,
   capacity: 5,
@@ -47,5 +47,31 @@ export const createMockMeeting = (overrides?: Partial<MeetingWithHost>): Meeting
   isJoined: false,
   isFavorited: false,
   isCompleted: false,
+  ...overrides,
+});
+
+/**
+ * 테스트용 PostWithComments Mock 생성 팩토리 함수
+ */
+export const createMockPost = (overrides?: Partial<PostWithComments>): PostWithComments => ({
+  id: 201,
+  teamId: 'team1',
+  title: '테스트 게시글',
+  content: '테스트 본문 내용입니다.',
+  image: null,
+  viewCount: 0,
+  likeCount: 5,
+  createdAt: '2026-08-17T00:00:00.000Z',
+  updatedAt: '2026-08-17T00:00:00.000Z',
+  authorId: 1,
+  author: {
+    id: 1,
+    name: '작성자',
+    image: null,
+    email: 'author@example.com',
+  },
+  _count: { comments: 0 },
+  comments: [],
+  isLiked: false,
   ...overrides,
 });

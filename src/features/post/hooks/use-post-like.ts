@@ -1,15 +1,13 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
 import { likePostAction, unlikePostAction } from '@/actions/post/post-actions';
 import { unwrapAction } from '@/lib/safe-action';
 import { postQueries } from '../queries/post-query';
 import { PostWithComments } from '@/api/data-contracts';
 import { useAuthAction } from '@/hooks/use-auth-action';
-import { ErrorResponse } from '@/lib/error-response';
 
-export function usePostLike(postId: number, initialLiked?: boolean, initialCount?: number) {
+export function usePostLike(postId: number, _initialLiked?: boolean, _initialCount?: number) {
   const queryClient = useQueryClient();
   const withAuth = useAuthAction();
 
@@ -20,6 +18,9 @@ export function usePostLike(postId: number, initialLiked?: boolean, initialCount
       } else {
         return unwrapAction(await likePostAction({ postId }));
       }
+    },
+    meta: {
+      errorMessage: '좋아요 처리에 실패했습니다.',
     },
     onMutate: async (isLikedCurrently) => {
       const detailKey = postQueries.detailKey(postId);
@@ -39,13 +40,10 @@ export function usePostLike(postId: number, initialLiked?: boolean, initialCount
 
       return { previousPost };
     },
-    onError: (err, _variables, context) => {
+    onError: (_err, _variables, context) => {
       if (context?.previousPost) {
         queryClient.setQueryData(postQueries.detailKey(postId), context.previousPost);
       }
-      toast.error(
-        err instanceof ErrorResponse ? err.message : '좋아요 처리에 실패했습니다.',
-      );
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: postQueries.all() });
