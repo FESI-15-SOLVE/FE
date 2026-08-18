@@ -45,7 +45,7 @@ export default async function RootLayout({
           <AuthProvider initialUser={initialUser}>
             <GlobalNavigationBar initialUser={initialUser} />
 
-            <main className="flex-1 flex flex-col sm:max-w-7xl sm:mx-auto w-full">
+            <main className="flex-1 flex flex-col w-full">
               <NuqsAdapter>{children}</NuqsAdapter>
             </main>
 

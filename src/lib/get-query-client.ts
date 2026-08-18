@@ -3,7 +3,7 @@ import {
   defaultShouldDehydrateQuery,
   environmentManager,
 } from '@tanstack/react-query';
-import { createAppQueryClient } from '@/providers/query-provider';
+import { createAppQueryClient } from '@/lib/create-query-client';
 
 function makeQueryClient(): QueryClient {
   return createAppQueryClient({

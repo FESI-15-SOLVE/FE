@@ -48,7 +48,11 @@ export async function proxy(request: NextRequest) {
     return isRequiredAuth ? redirectToLogin(request) : NextResponse.next();
   }
 
-  // 5. 모두 유효하면 그대로 통과
+  // 5. 모두 유효한 로그인 상태에서 메인 홈('/') 접속 시 모임 목록(/meetings)으로 리다이렉트
+  if (pathname === ROUTES.HOME) {
+    return redirectToMeetings(request);
+  }
+
   return NextResponse.next();
 }
 
@@ -126,5 +130,19 @@ function redirectToLogin(request: NextRequest) {
   const loginUrl = new URL(ROUTES.AUTH.SIGN_IN, request.url);
   const response = NextResponse.redirect(loginUrl);
   clearAuthCookies(response.cookies);
+  return response;
+}
+
+function redirectToMeetings(
+  request: NextRequest,
+  responseWithCookies?: NextResponse,
+) {
+  const meetingsUrl = new URL(ROUTES.MEETINGS.LIST, request.url);
+  const response = NextResponse.redirect(meetingsUrl);
+  if (responseWithCookies) {
+    responseWithCookies.cookies.getAll().forEach((cookie) => {
+      response.cookies.set(cookie);
+    });
+  }
   return response;
 }
