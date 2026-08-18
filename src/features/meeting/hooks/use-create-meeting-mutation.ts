@@ -8,6 +8,10 @@ export function useCreateMeetingMutation() {
 
   return useMutation({
     mutationFn: (payload: CreateMeetingPayload) => createMeeting(payload),
+    meta: {
+      toastMessage: '모임이 생성되었습니다.',
+      errorMessage: '모임 생성 중 오류가 발생했습니다.',
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: meetingQueries.listKeys(),
