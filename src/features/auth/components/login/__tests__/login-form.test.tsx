@@ -3,8 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { LoginForm } from '../login-form';
 import { loginAction } from '@/actions/auth/auth-actions';
-import { ErrorResponse } from '@/lib/error-response';
-import { User } from '@/api/data-contracts';
+import { createMockUser } from '@/__mocks__/fixtures';
 import { AuthState } from '@/store/use-auth-store';
 
 const mockPush = vi.fn();
@@ -30,30 +29,21 @@ vi.mock('@/providers/auth-provider', () => ({
     }),
 }));
 
-const mockUser: User = {
-  id: 1,
-  teamId: '15-15',
-  email: 'test@example.com',
-  name: '홍길동',
-  companyName: '코드잇',
-  image: null,
-  createdAt: '2026-08-04T00:00:00Z',
-  updatedAt: '2026-08-04T00:00:00Z',
-};
+const mockUser = createMockUser({ name: '홍길동' });
 
 describe('LoginForm 행위 및 통합 테스트', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('기본 UI 입력창과 로그인 버튼이 올바르게 렌더링되어야 합니다', () => {
+  it('기본 UI 입력창과 로그인 버튼을 올바르게 렌더링한다', () => {
     render(<LoginForm />);
     expect(screen.getByLabelText(/이메일/)).toBeInTheDocument();
     expect(screen.getByLabelText(/비밀번호/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '로그인' })).toBeInTheDocument();
   });
 
-  it('잘못된 이메일 형식 입력 시 유효성 에러 메시지를 표시하고 로그인 버튼을 비활성화해야 합니다', async () => {
+  it('잘못된 이메일 형식 입력 시 유효성 에러 메시지를 표시하고 로그인 버튼을 비활성화한다', async () => {
     const user = userEvent.setup();
     render(<LoginForm />);
 
@@ -69,7 +59,7 @@ describe('LoginForm 행위 및 통합 테스트', () => {
     expect(submitButton).toBeDisabled();
   });
 
-  it('8자 미만 비밀번호 입력 시 유효성 에러 메시지를 표시하고 로그인 버튼을 비활성화해야 합니다', async () => {
+  it('8자 미만 비밀번호 입력 시 유효성 에러 메시지를 표시하고 로그인 버튼을 비활성화한다', async () => {
     const user = userEvent.setup();
     render(<LoginForm />);
 
@@ -85,7 +75,7 @@ describe('LoginForm 행위 및 통합 테스트', () => {
     expect(submitButton).toBeDisabled();
   });
 
-  it('올바른 계정 정보 입력 후 제출 시 loginAction 및 setAuth가 호출되고 메인 페이지(/)로 이동해야 합니다', async () => {
+  it('올바른 계정 정보 입력 후 제출 시 loginAction 및 setAuth가 호출되고 메인 페이지(/)로 이동한다', async () => {
     const user = userEvent.setup();
     vi.mocked(loginAction).mockResolvedValueOnce({
       data: {
@@ -113,7 +103,7 @@ describe('LoginForm 행위 및 통합 테스트', () => {
     expect(mockPush).toHaveBeenCalledWith('/');
   });
 
-  it('서버 에러 응답 수신 시 폼 하단에 root 에러 메시지를 표시해야 합니다', async () => {
+  it('서버 에러 응답 수신 시 폼 하단에 root 에러 메시지를 표시한다', async () => {
     const user = userEvent.setup();
     vi.mocked(loginAction).mockResolvedValueOnce({
       serverError: {

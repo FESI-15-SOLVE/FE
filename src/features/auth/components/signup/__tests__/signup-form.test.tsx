@@ -3,8 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SignupForm } from '../signup-form';
 import { signupAction } from '@/actions/auth/auth-actions';
-import { ErrorResponse } from '@/lib/error-response';
-import { User } from '@/api/data-contracts';
+import { createMockUser } from '@/__mocks__/fixtures';
 
 const mockPush = vi.fn();
 
@@ -18,23 +17,14 @@ vi.mock('@/actions/auth/auth-actions', () => ({
   signupAction: vi.fn(),
 }));
 
-const mockUser: User = {
-  id: 1,
-  teamId: '15-15',
-  email: 'test@example.com',
-  name: '홍길동',
-  companyName: '코드잇',
-  image: null,
-  createdAt: '2026-08-04T00:00:00Z',
-  updatedAt: '2026-08-04T00:00:00Z',
-};
+const mockUser = createMockUser({ name: '홍길동' });
 
 describe('SignupForm 행위 및 통합 테스트', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('기본 UI 입력창과 확인 버튼이 올바르게 렌더링되어야 합니다', () => {
+  it('기본 UI 입력창과 확인 버튼을 올바르게 렌더링한다', () => {
     render(<SignupForm />);
     expect(screen.getByLabelText(/이름/)).toBeInTheDocument();
     expect(screen.getByLabelText(/이메일/)).toBeInTheDocument();
@@ -43,7 +33,7 @@ describe('SignupForm 행위 및 통합 테스트', () => {
     expect(screen.getByRole('button', { name: '확인' })).toBeInTheDocument();
   });
 
-  it('잘못된 이메일 형식이나 비밀번호 불일치 시 유효성 에러 메시지를 표시하고 제출 버튼을 비활성화해야 합니다', async () => {
+  it('잘못된 이메일 형식이나 비밀번호 불일치 시 유효성 에러 메시지를 표시하고 제출 버튼을 비활성화한다', async () => {
     const user = userEvent.setup();
     render(<SignupForm />);
 
@@ -52,7 +42,6 @@ describe('SignupForm 행위 및 통합 테스트', () => {
     const passwordConfirmInput = screen.getByLabelText(/비밀번호 확인/);
     const submitButton = screen.getByRole('button', { name: '확인' });
 
-    // 1. 잘못된 이메일 입력
     await user.type(emailInput, 'invalid-email');
     expect(
       await screen.findByText('유효한 이메일 형식이 아닙니다.'),
@@ -69,7 +58,7 @@ describe('SignupForm 행위 및 통합 테스트', () => {
     expect(submitButton).toBeDisabled();
   });
 
-  it('올바른 양식을 입력하고 제출 시 signupAction이 호출되고 /sign-in 페이지로 이동해야 합니다', async () => {
+  it('올바른 양식을 입력하고 제출 시 signupAction이 호출되고 /sign-in 페이지로 이동한다', async () => {
     const user = userEvent.setup();
     vi.mocked(signupAction).mockResolvedValueOnce({
       data: mockUser,
@@ -96,7 +85,7 @@ describe('SignupForm 행위 및 통합 테스트', () => {
     expect(mockPush).toHaveBeenCalledWith('/sign-in');
   });
 
-  it('서버 에러 응답 수신 시 폼 하단에 root 에러 메시지를 표시해야 합니다', async () => {
+  it('서버 에러 응답 수신 시 폼 하단에 root 에러 메시지를 표시한다', async () => {
     const user = userEvent.setup();
     vi.mocked(signupAction).mockResolvedValueOnce({
       serverError: {
