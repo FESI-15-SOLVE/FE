@@ -1,8 +1,8 @@
 import {
-  QueryClient,
   dehydrate,
   HydrationBoundary,
 } from '@tanstack/react-query';
+import { getQueryClient } from '@/lib/get-query-client';
 import { MyPageView } from '@/features/profile/components/mypage-view';
 import {
   prefetchJoinedMeetings,
@@ -17,7 +17,7 @@ interface MyPageProps {
 
 export default async function MyPage({ searchParams }: MyPageProps) {
   const { tab = 'joined', reviewTab = 'writable' } = await searchParams;
-  const queryClient = new QueryClient();
+  const queryClient = getQueryClient();
 
   if (tab === 'joined') {
     await prefetchJoinedMeetings(queryClient);

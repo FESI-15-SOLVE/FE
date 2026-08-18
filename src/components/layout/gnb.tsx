@@ -6,8 +6,8 @@ import { User } from '@/api/data-contracts';
 import {
   dehydrate,
   HydrationBoundary,
-  QueryClient,
 } from '@tanstack/react-query';
+import { getQueryClient } from '@/lib/get-query-client';
 import { ServerApi } from '@/api/server-api';
 import { TEAM_ID } from '@/constants/api';
 import { favoriteQueries } from '@/features/meeting/queries/favorite-query';
@@ -20,7 +20,7 @@ export async function GlobalNavigationBar({ initialUser }: GlobalNavigationBarPr
   const isLoggedIn = !!initialUser;
 
   // SSR 하이드레이션을 위한 QueryClient 생성 및 찜 개수 prefetch
-  const queryClient = new QueryClient();
+  const queryClient = getQueryClient();
   if (isLoggedIn) {
     try {
       const res = await ServerApi.favorites.getFavoriteCount({

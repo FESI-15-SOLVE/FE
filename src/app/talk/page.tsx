@@ -1,9 +1,9 @@
 import React from 'react';
 import {
-  QueryClient,
   dehydrate,
   HydrationBoundary,
 } from '@tanstack/react-query';
+import { getQueryClient } from '@/lib/get-query-client';
 import { SearchParams } from 'nuqs/server';
 import { postSearchParamsCache } from '@/features/post/schema/post-search-params';
 import { prefetchHotPosts, prefetchTalkPosts } from './_api/prefetch';
@@ -20,7 +20,7 @@ interface TalkPageProps {
 
 export default async function TalkPage({ searchParams }: TalkPageProps) {
   const filters = postSearchParamsCache.parse(await searchParams);
-  const queryClient = new QueryClient();
+  const queryClient = getQueryClient();
 
   // HOT 게시물 & 메인 게시글 목록 동시 서버 프리페치
   await Promise.all([

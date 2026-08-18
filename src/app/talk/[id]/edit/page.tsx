@@ -1,10 +1,10 @@
 import { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import {
-  QueryClient,
   HydrationBoundary,
   dehydrate,
 } from '@tanstack/react-query';
+import { getQueryClient } from '@/lib/get-query-client';
 import { ServerApi } from '@/api/server-api';
 import { TEAM_ID } from '@/constants/api';
 import { postQueries } from '@/features/post/queries/post-query';
@@ -82,7 +82,7 @@ export default async function TalkEditPage({ params }: TalkEditPageProps) {
     redirect(ROUTES.TALK.DETAIL(numericId));
   }
 
-  const queryClient = new QueryClient();
+  const queryClient = getQueryClient();
   queryClient.setQueryData(postQueries.detailKey(numericId), post);
 
   return (

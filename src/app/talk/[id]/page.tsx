@@ -1,10 +1,10 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import {
-  QueryClient,
   HydrationBoundary,
   dehydrate,
 } from '@tanstack/react-query';
+import { getQueryClient } from '@/lib/get-query-client';
 import { ServerApi } from '@/api/server-api';
 import { TEAM_ID } from '@/constants/api';
 import { postQueries } from '@/features/post/queries/post-query';
@@ -66,7 +66,7 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
     notFound();
   }
 
-  const queryClient = new QueryClient();
+  const queryClient = getQueryClient();
 
   try {
     // SSR 사전 페칭 (ServerApi 연동)

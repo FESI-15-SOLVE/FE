@@ -1,8 +1,8 @@
 import {
-  QueryClient,
   dehydrate,
   HydrationBoundary,
 } from '@tanstack/react-query';
+import { getQueryClient } from '@/lib/get-query-client';
 import { SavedMeetingListContainer } from '@/features/meeting/components/saved-meeting-list/saved-meeting-list-container';
 import { ServerApi } from '@/api/server-api';
 import { meetingSearchParamsCache } from '@/features/meeting/schema/meeting-search-params';
@@ -16,7 +16,7 @@ interface PageProps {
 
 export default async function SavedPage({ searchParams }: PageProps) {
   const filters = meetingSearchParamsCache.parse(await searchParams);
-  const queryClient = new QueryClient();
+  const queryClient = getQueryClient();
 
   const queryParams = mapFiltersToQueryParams(filters);
 
