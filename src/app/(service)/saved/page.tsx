@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import {
   dehydrate,
   HydrationBoundary,
@@ -9,6 +10,11 @@ import { meetingSearchParamsCache } from '@/features/meeting/schema/meeting-sear
 import { TEAM_ID } from '@/constants/api';
 import { favoriteQueries } from '@/features/meeting/queries/favorite-query';
 import { mapFiltersToQueryParams } from '@/features/meeting/utils/filter-mapper';
+
+export const metadata: Metadata = {
+  title: '찜한 모임',
+  description: '관심 있는 모임을 한눈에 모아보세요.',
+};
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
