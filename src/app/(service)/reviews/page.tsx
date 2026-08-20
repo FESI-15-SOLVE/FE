@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import {
   dehydrate,
   HydrationBoundary,
@@ -9,6 +10,11 @@ import {
   prefetchPublicReviews,
   prefetchActiveReviewStatistics,
 } from './_api/prefetch';
+
+export const metadata: Metadata = {
+  title: '모든 리뷰',
+  description: '실제 참가자들이 남긴 생생한 모임 후기를 확인해보세요.',
+};
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

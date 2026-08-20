@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import {
   dehydrate,
   HydrationBoundary,
@@ -7,6 +8,11 @@ import { getQueryClient } from '@/lib/get-query-client';
 import { SearchParams } from 'nuqs/server';
 import { postSearchParamsCache } from '@/features/post/schema/post-search-params';
 import { prefetchHotPosts, prefetchTalkPosts } from './_api/prefetch';
+
+export const metadata: Metadata = {
+  title: '달램토크',
+  description: '모임 후기와 일상을 자유롭게 공유하는 커뮤니티',
+};
 
 import { TalkHeader } from '@/features/post/components/talk-list/talk-header';
 import { HotPostsSection } from '@/features/post/components/talk-list/hot-posts-section';

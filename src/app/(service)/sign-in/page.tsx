@@ -2,7 +2,7 @@ import { LoginContainer } from '@/features/auth/components/login/login-container
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: '로그인 | 같이달램',
+  title: '로그인',
   description: '같이달램 서비스에 로그인하세요.',
 };
 

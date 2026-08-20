@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { PostForm } from '@/features/post/components/form/post-form';
 
 export const metadata: Metadata = {
-  title: '게시글 작성 | 같이달램 달렘토크',
+  title: '게시글 작성',
   description:
     '같이달램 달렘토크 커뮤니티에 새로운 소식과 이야기를 공유해보세요.',
 };

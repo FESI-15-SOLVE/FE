@@ -1,4 +1,10 @@
+import type { Metadata } from 'next';
 import { ProfileCard } from '@/features/profile/components/profile-card';
+
+export const metadata: Metadata = {
+  title: '마이페이지',
+  description: '참여한 모임과 내가 만든 모임, 작성한 리뷰를 관리하세요.',
+};
 
 export default function MyPageLayout({
   children,

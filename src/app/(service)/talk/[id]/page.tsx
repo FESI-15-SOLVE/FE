@@ -35,7 +35,7 @@ export async function generateMetadata({
   const numericId = parsePostId(id);
   if (!numericId) {
     return {
-      title: '달렘토크 게시글 | 같이달램',
+      title: '달렘토크 게시글',
     };
   }
 
@@ -43,7 +43,7 @@ export async function generateMetadata({
     const post = await getPostDetailCached(numericId);
 
     return {
-      title: `${post.title} | 같이달램 달렘토크`,
+      title: post.title,
       description: post.content.slice(0, 100),
       openGraph: {
         title: post.title,
@@ -53,7 +53,7 @@ export async function generateMetadata({
     };
   } catch {
     return {
-      title: '달렘토크 게시글 | 같이달램',
+      title: '달렘토크 게시글',
     };
   }
 }

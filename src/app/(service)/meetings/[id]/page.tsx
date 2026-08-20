@@ -29,7 +29,7 @@ export async function generateMetadata({
   const numericId = parseMeetingId(id);
   if (!numericId) {
     return {
-      title: '모임 상세 | 같이달래',
+      title: '모임 상세',
     };
   }
 
@@ -41,7 +41,7 @@ export async function generateMetadata({
     const meeting = res.data;
 
     return {
-      title: `${meeting.name} | 같이달래`,
+      title: meeting.name,
       description:
         meeting.description ||
         `${meeting.region || ''} ${meeting.name} 모임입니다.`,
@@ -54,7 +54,7 @@ export async function generateMetadata({
     };
   } catch {
     return {
-      title: '모임 상세 | 같이달래',
+      title: '모임 상세',
     };
   }
 }

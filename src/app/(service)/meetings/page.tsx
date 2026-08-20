@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import {
   dehydrate,
   HydrationBoundary,
@@ -9,6 +10,11 @@ import { meetingSearchParamsCache } from '@/features/meeting/schema/meeting-sear
 import { TEAM_ID } from '@/constants/api';
 import { meetingQueries } from '@/features/meeting/queries/meeting-query';
 import { mapFiltersToQueryParams } from '@/features/meeting/utils/filter-mapper';
+
+export const metadata: Metadata = {
+  title: '모임 찾기',
+  description: '다양한 관심사의 온·오프라인 모임을 탐색해보세요.',
+};
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

@@ -30,7 +30,7 @@ export async function generateMetadata({
   const numericId = parsePostId(id);
   if (!numericId) {
     return {
-      title: '게시글 수정 | 같이달램 달렘토크',
+      title: '게시글 수정',
     };
   }
 
@@ -40,11 +40,11 @@ export async function generateMetadata({
       postId: numericId,
     });
     return {
-      title: `${res.data.title} 수정 | 같이달램 달렘토크`,
+      title: `${res.data.title} 수정`,
     };
   } catch {
     return {
-      title: '게시글 수정 | 같이달램 달렘토크',
+      title: '게시글 수정',
     };
   }
 }
