@@ -1,10 +1,10 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { actionClient } from '@/lib/safe-action';
 import { ServerApi } from '@/api/server-api';
 import { TEAM_ID } from '@/constants/api';
-import { ROUTES } from '@/constants/routes';
+import { CACHE_TAGS } from '@/constants/cache-tags';
 import {
   createPostSchema,
   updatePostSchema,
@@ -30,8 +30,9 @@ export const createPostAction = actionClient
         image: image ?? undefined,
       },
     );
-    // 새 게시글 등록 시 목록 캐시(Data Cache + Router Cache) 무효화
-    revalidatePath(ROUTES.TALK.LIST);
+    // 새 게시글 등록 시 목록 캐시(SSR + Route Handler) 한번에 무효화
+    revalidateTag(CACHE_TAGS.POSTS_LIST, 'max');
+    revalidateTag(CACHE_TAGS.POSTS_HOT, 'max');
     return res.data;
   });
 
@@ -49,9 +50,10 @@ export const updatePostAction = actionClient
         ...(image ? { image } : {}),
       },
     );
-    // 수정된 내용은 공용 데이터이므로 목록 + 상세 Router Cache 무효화
-    revalidatePath(ROUTES.TALK.LIST);
-    revalidatePath(ROUTES.TALK.DETAIL(postId));
+    // 수정된 내용은 공용 데이터이므로 목록 + 상세 캐시 한번에 무효화
+    revalidateTag(CACHE_TAGS.POSTS_LIST, 'max');
+    revalidateTag(CACHE_TAGS.POSTS_HOT, 'max');
+    revalidateTag(CACHE_TAGS.postDetail(postId), 'max');
     return res.data;
   });
 
@@ -65,9 +67,10 @@ export const deletePostAction = actionClient
       teamId: TEAM_ID,
       postId,
     });
-    // 삭제 후 목록에서 제거 + 상세 Router Cache bust (뒤로가기 시 구 데이터 방지)
-    revalidatePath(ROUTES.TALK.LIST);
-    revalidatePath(ROUTES.TALK.DETAIL(postId));
+    // 삭제 후 목록 + 상세 캐시 한번에 무효화 (뒤로가기 시 구 데이터 방지)
+    revalidateTag(CACHE_TAGS.POSTS_LIST, 'max');
+    revalidateTag(CACHE_TAGS.POSTS_HOT, 'max');
+    revalidateTag(CACHE_TAGS.postDetail(postId), 'max');
     return res.data;
   });
 
@@ -107,8 +110,8 @@ export const createCommentAction = actionClient
       { teamId: TEAM_ID, postId },
       { content },
     );
-    // 댓글은 해당 상세 페이지 Router Cache만 무효화
-    revalidatePath(ROUTES.TALK.DETAIL(postId));
+    // 댓글은 해당 상세 페이지 캐시만 무효화
+    revalidateTag(CACHE_TAGS.postDetail(postId), 'max');
     return res.data;
   });
 
@@ -122,7 +125,7 @@ export const updateCommentAction = actionClient
       { teamId: TEAM_ID, postId, commentId },
       { content },
     );
-    revalidatePath(ROUTES.TALK.DETAIL(postId));
+    revalidateTag(CACHE_TAGS.postDetail(postId), 'max');
     return res.data;
   });
 
@@ -137,7 +140,7 @@ export const deleteCommentAction = actionClient
       postId,
       commentId,
     });
-    revalidatePath(ROUTES.TALK.DETAIL(postId));
+    revalidateTag(CACHE_TAGS.postDetail(postId), 'max');
     return res.data;
   });
 

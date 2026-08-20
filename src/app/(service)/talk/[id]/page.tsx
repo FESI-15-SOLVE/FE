@@ -10,6 +10,7 @@ import { TEAM_ID } from '@/constants/api';
 import { postQueries } from '@/features/post/queries/post-query';
 import { PostDetailView } from '@/features/post/components/detail/post-detail-view';
 import { cache } from 'react';
+import { CACHE_TAGS } from '@/constants/cache-tags';
 
 interface TalkDetailPageProps {
   params: Promise<{ id: string }>;
@@ -24,7 +25,10 @@ function parsePostId(id: string): number | null {
 }
 
 const getPostDetailCached = cache(async (postId: number) => {
-  const res = await ServerApi.posts.getPostDetail({ teamId: TEAM_ID, postId });
+  const res = await ServerApi.posts.getPostDetail(
+    { teamId: TEAM_ID, postId },
+    { next: { tags: [CACHE_TAGS.postDetail(postId)] } },
+  );
   return res.data;
 });
 

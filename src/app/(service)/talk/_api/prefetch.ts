@@ -3,6 +3,7 @@ import 'server-only';
 import { QueryClient } from '@tanstack/react-query';
 import { ServerApi } from '@/api/server-api';
 import { TEAM_ID } from '@/constants/api';
+import { CACHE_TAGS } from '@/constants/cache-tags';
 import {
   postQueries,
   PostListFilters,
@@ -19,7 +20,7 @@ export async function prefetchHotPosts(queryClient: QueryClient) {
           size: 4,
         },
 
-        { next: { revalidate: 60 }, secure: false },
+        { next: { tags: [CACHE_TAGS.POSTS_HOT] }, secure: false },
       );
       return res.data;
     }),
@@ -46,7 +47,7 @@ export async function prefetchTalkPosts(
           limit,
         },
 
-        { next: { revalidate: 1 }, secure: false },
+        { next: { tags: [CACHE_TAGS.POSTS_LIST] }, secure: false },
       );
       return res.data;
     }),

@@ -3,6 +3,7 @@ import { ServerApi } from '@/api/server-api';
 import { TEAM_ID } from '@/constants/api';
 import { withErrorHandler } from '@/lib/api-handler';
 import { GetPostsParams } from '@/api/data-contracts';
+import { CACHE_TAGS } from '@/constants/cache-tags';
 
 export const GET = withErrorHandler(async (request: NextRequest) => {
   const searchParams = request.nextUrl.searchParams;
@@ -45,7 +46,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
       offset,
       limit,
     },
-    { next: { revalidate: 1 } },
+    { next: { tags: [CACHE_TAGS.POSTS_LIST] } },
   );
 
   return NextResponse.json(res.data, { status: res.status });
