@@ -1,35 +1,24 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import IconPerson from '@/assets/icons/person.svg';
 import { Button } from '@/components/ui/button';
 import { NotificationBell } from '@/features/notification/components/notification-bell';
 import { useAuthStore } from '@/providers/auth-provider';
-import { logoutAction } from '@/actions/auth/auth-actions';
-import { unwrapAction } from '@/lib/safe-action';
+import { useLogout } from '@/hooks/use-logout';
 import { MobileMenuSheet } from './mobile-menu-sheet';
 import { useNavLinks } from '@/hooks/use-nav-links';
 import { ROUTES } from '@/constants/routes';
 
 export function GnbUserActions() {
-  const router = useRouter();
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
   const user = useAuthStore((s) => s.user);
-  const clearAuth = useAuthStore((s) => s.clearAuth);
   const links = useNavLinks(isLoggedIn);
   const myPageLink = links.find((link) => link.label === '마이페이지');
   const myPageHref = myPageLink?.href ?? ROUTES.MY_PAGE.JOINED;
 
-  const handleLogout = async () => {
-    try {
-      unwrapAction(await logoutAction());
-    } finally {
-      clearAuth();
-      router.push(ROUTES.AUTH.SIGN_IN);
-    }
-  };
+  const { logout } = useLogout();
 
   return (
     <div className="flex items-center gap-3 sm:gap-6">
@@ -60,7 +49,7 @@ export function GnbUserActions() {
 
             <Button
               variant={'custom'}
-              onClick={handleLogout}
+              onClick={logout}
               className="px-4 text-[14px] font-semibold leading-5 shadow-none h-10 transition-colors  text-slate-700  hover:bg-slate-50 cursor-pointer"
             >
               로그아웃

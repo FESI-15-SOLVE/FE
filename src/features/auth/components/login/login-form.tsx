@@ -37,10 +37,10 @@ export function LoginForm() {
   const onSubmit = async (data: LoginValues) => {
     try {
       const response = unwrapAction(await loginAction(data));
-      if (response?.user) {
-        setAuth(response.user);
-      }
       startTransition(() => {
+        if (response?.user) {
+          setAuth(response.user);
+        }
         router.push('/');
       });
     } catch (error) {

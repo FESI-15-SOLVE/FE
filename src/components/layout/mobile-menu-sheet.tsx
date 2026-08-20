@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import IconMenu from '@/assets/icons/menu.svg';
 import IconDelete from '@/assets/icons/delete.svg';
 import {
@@ -12,9 +11,7 @@ import {
   SheetClose,
 } from '@/components/ui/sheet';
 import { MobileMenuNav } from './mobile-menu-nav';
-import { useAuthStore } from '@/providers/auth-provider';
-import { logoutAction } from '@/actions/auth/auth-actions';
-import { unwrapAction } from '@/lib/safe-action';
+import { useLogout } from '@/hooks/use-logout';
 import { useNavLinks } from '@/hooks/use-nav-links';
 import { ROUTES } from '@/constants/routes';
 
@@ -26,19 +23,14 @@ export function MobileMenuSheet({
   isLoggedIn,
 }: MobileMenuSheetProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
-  const clearAuth = useAuthStore((s) => s.clearAuth);
   const links = useNavLinks(isLoggedIn);
+  const { logout } = useLogout();
 
   const handleLogout = async () => {
     setIsOpen(false);
-    try {
-      unwrapAction(await logoutAction());
-    } finally {
-      clearAuth();
-      router.push(ROUTES.AUTH.SIGN_IN);
-    }
+    await logout();
   };
+
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
