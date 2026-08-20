@@ -1,5 +1,6 @@
 'use client';
 
+import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -38,12 +39,15 @@ export function SignupForm() {
   });
 
   const router = useRouter();
+  const [isNavPending, startTransition] = useTransition();
 
   const onSubmit = async (data: SignupFormData) => {
     const { passwordConfirm, ...requestData } = data;
     try {
       unwrapAction(await signupAction(requestData));
-      router.push('/sign-in');
+      startTransition(() => {
+        router.push('/sign-in');
+      });
     } catch (error) {
       if (error instanceof ErrorResponse) {
         setError('root', { type: 'server', message: error.message });
@@ -125,7 +129,7 @@ export function SignupForm() {
         )}
         <Button
           type="submit"
-          disabled={!isValid || isSubmitting}
+          disabled={!isValid || isSubmitting || isNavPending}
           className="w-full h-14 text-base font-semibold mt-2"
         >
           확인

@@ -7,6 +7,6 @@ export interface CreateMeetingModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialStep?: number;
-  onSubmit: (values: CreateMeetingValues) => void;
+  onSubmit: (meetingId: number) => void;
   categories: MeetingCategory[];
 }

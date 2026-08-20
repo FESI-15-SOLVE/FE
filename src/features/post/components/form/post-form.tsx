@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Editor } from '@tiptap/react';
 import { useForm, useWatch, Controller } from 'react-hook-form';
@@ -33,6 +33,7 @@ export function PostForm({ mode, postId, initialData }: PostFormProps) {
   const queryClient = useQueryClient();
   const [editor, setEditor] = useState<Editor | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isNavPending, startTransition] = useTransition();
 
   const {
     register,
@@ -105,14 +106,17 @@ export function PostForm({ mode, postId, initialData }: PostFormProps) {
         );
         toast.success('게시글이 등록되었습니다!');
         queryClient.invalidateQueries({ queryKey: postQueries.all() });
-        if (createdPost?.id) {
-          router.push(ROUTES.TALK.DETAIL(createdPost.id));
-        } else {
-          router.push(ROUTES.TALK.LIST);
-        }
+        startTransition(() => {
+          if (createdPost?.id) {
+            router.push(ROUTES.TALK.DETAIL(createdPost.id));
+          } else {
+            router.push(ROUTES.TALK.LIST);
+          }
+        });
       } else {
         if (!postId) {
           toast.error('게시글 ID가 누락되었습니다.');
+          setIsSubmitting(false);
           return;
         }
 
@@ -126,7 +130,9 @@ export function PostForm({ mode, postId, initialData }: PostFormProps) {
         );
         toast.success('게시글이 수정되었습니다!');
         queryClient.invalidateQueries({ queryKey: postQueries.all() });
-        router.push(ROUTES.TALK.DETAIL(updatedPost?.id ?? postId));
+        startTransition(() => {
+          router.push(ROUTES.TALK.DETAIL(updatedPost?.id ?? postId));
+        });
       }
     } catch (err) {
       toast.error(
@@ -136,7 +142,6 @@ export function PostForm({ mode, postId, initialData }: PostFormProps) {
           ? '게시글 등록 중 오류가 발생했습니다.'
           : '게시글 수정 중 오류가 발생했습니다.',
       );
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -174,7 +179,7 @@ export function PostForm({ mode, postId, initialData }: PostFormProps) {
         {/* Submit Button */}
         <Button
           type="submit"
-          disabled={!isValid || isSubmitting}
+          disabled={!isValid || isSubmitting || isNavPending}
           className="h-12 px-6 rounded-xl bg-[#00bb86] hover:bg-[#009973] text-white font-semibold text-base transition-colors shrink-0 disabled:bg-slate-100 disabled:text-slate-400 cursor-pointer"
         >
           {isSubmitting

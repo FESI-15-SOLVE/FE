@@ -11,7 +11,7 @@ import { useCreateMeetingMutation } from './use-create-meeting-mutation';
 
 interface UseCreateMeetingProps {
   initialStep?: number;
-  onSubmit: (values: CreateMeetingValues) => void;
+  onSubmit: (meetingId: number) => void;
 }
 
 export function useCreateMeeting({
@@ -62,8 +62,8 @@ export function useCreateMeeting({
 
   // 폼 최종 제출
   const submitForm = handleSubmit(async (data) => {
-    await createMeetingAsync(data);
-    onSubmit(methods.getValues());
+    const createdMeeting = await createMeetingAsync(data);
+    onSubmit(createdMeeting.id);
   });
 
   return {

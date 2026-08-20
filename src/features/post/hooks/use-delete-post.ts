@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { useTransition } from 'react';
 import { deletePostAction } from '@/actions/post/post-actions';
 import { unwrapAction } from '@/lib/safe-action';
 import { postQueries } from '../queries/post-query';
@@ -10,6 +11,7 @@ import { ROUTES } from '@/constants/routes';
 export function useDeletePost(postId: number) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [isNavPending, startTransition] = useTransition();
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -21,12 +23,14 @@ export function useDeletePost(postId: number) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: postQueries.all() });
-      router.push(ROUTES.TALK.LIST);
+      startTransition(() => {
+        router.push(ROUTES.TALK.LIST);
+      });
     },
   });
 
   return {
     deletePost: mutation.mutate,
-    isDeleting: mutation.isPending,
+    isDeleting: mutation.isPending || isNavPending,
   };
 }

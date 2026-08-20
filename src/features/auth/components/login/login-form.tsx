@@ -1,5 +1,6 @@
 'use client';
 
+import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -31,6 +32,7 @@ export function LoginForm() {
   });
   const router = useRouter();
   const setAuth = useAuthStore((s) => s.setAuth);
+  const [isNavPending, startTransition] = useTransition();
 
   const onSubmit = async (data: LoginValues) => {
     try {
@@ -38,7 +40,9 @@ export function LoginForm() {
       if (response?.user) {
         setAuth(response.user);
       }
-      router.push('/');
+      startTransition(() => {
+        router.push('/');
+      });
     } catch (error) {
       if (error instanceof ErrorResponse) {
         setError('root', { type: 'server', message: error.message });
@@ -90,7 +94,7 @@ export function LoginForm() {
         type="submit"
         size="lg"
         className="w-full"
-        disabled={isSubmitting || !isValid}
+        disabled={isSubmitting || isNavPending || !isValid}
       >
         로그인
       </Button>
